@@ -1,0 +1,56 @@
+.App {
+  height: 100vh;
+  background: linear-gradient(135deg, #e8e8e8 0%, #d0d0d0 100%);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 20px;
+}
+
+.app-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  gap: 20px;
+}
+
+.left-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.app-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 25px;
+  padding: 15px;
+  width: 110px;
+  height: 110px;
+}
+
+.app-logo-image {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  border-radius: 22px;
+  background: #1a1a1a;
+  padding: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.app-logo-image:hover {
+  transform: scale(1.05);
+}
+
+.main-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  overflow: hidden;
+}

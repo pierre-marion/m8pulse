@@ -1,0 +1,183 @@
+.home-page {
+  padding: 0;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.home-hero {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 60px 40px;
+  border-radius: 25px;
+  margin: 20px;
+  color: #fff;
+  text-align: center;
+}
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-title {
+  font-size: 48px;
+  font-weight: 900;
+  margin: 0 0 15px 0;
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+  letter-spacing: 2px;
+}
+
+.hero-subtitle {
+  font-size: 18px;
+  margin: 0 0 40px 0;
+  opacity: 0.95;
+}
+
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.stat-box {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  padding: 25px 40px;
+  border-radius: 20px;
+  min-width: 120px;
+}
+
+.stat-number {
+  font-size: 48px;
+  font-weight: 900;
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+  margin-bottom: 5px;
+}
+
+.stat-label {
+  font-size: 14px;
+  opacity: 0.9;
+  font-weight: 600;
+}
+
+.home-sections {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 20px;
+}
+
+.section-card {
+  background: #fff;
+  padding: 30px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.section-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.section-icon {
+  font-size: 48px;
+  margin-bottom: 15px;
+}
+
+.section-title {
+  font-size: 24px;
+  font-weight: 900;
+  margin: 0 0 10px 0;
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+  letter-spacing: 1px;
+}
+
+.section-description {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.home-highlights {
+  padding: 20px;
+}
+
+.highlights-title {
+  font-size: 32px;
+  font-weight: 900;
+  margin: 0 0 20px 0;
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.highlights-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.highlight-card {
+  background: #fff;
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.highlight-game {
+  font-size: 12px;
+  font-weight: 900;
+  color: #667eea;
+  margin-bottom: 15px;
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+  letter-spacing: 1px;
+}
+
+.highlight-result {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.team-name {
+  font-size: 14px;
+  font-weight: 700;
+  flex: 1;
+}
+
+.score {
+  font-size: 24px;
+  font-weight: 900;
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+  color: #FF6B7A;
+  padding: 5px 15px;
+  background: #f5f5f5;
+  border-radius: 10px;
+}
+
+.score.win {
+  color: #4CAF50;
+  background: #E8F5E9;
+}
+
+.highlight-date {
+  font-size: 12px;
+  color: #999;
+  text-align: center;
+}
+
+@media (max-width: 1024px) {
+  .home-sections,
+  .highlights-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .hero-title {
+    font-size: 36px;
+  }
+}
