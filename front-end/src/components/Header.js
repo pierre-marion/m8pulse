@@ -5,9 +5,7 @@ function Header({ currentPage, setCurrentPage }) {
   return (
     <header className="header">
       <div className="logo">
-        <div className="logo-circle">
-          <span className="logo-text">M8</span>
-        </div>
+        <img src="/m8logo.png" alt="M8 Logo" className="header-logo-image" />
       </div>
       <nav className="nav">
         <button 
@@ -28,7 +26,12 @@ function Header({ currentPage, setCurrentPage }) {
         >
           Equipe
         </button>
-        <button className="nav-btn">Joueur</button>
+        <button 
+          className={`nav-btn ${currentPage === 'abonnement' ? 'active' : ''}`}
+          onClick={() => setCurrentPage('abonnement')}
+        >
+          Abonnement
+        </button>
         <button 
           className={`nav-btn ${currentPage === 'news' ? 'active' : ''}`}
           onClick={() => setCurrentPage('news')}

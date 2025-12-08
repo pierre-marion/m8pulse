@@ -1,22 +1,444 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@400;500;700&family=Fira+Code:wght@400;500&display=swap');
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+:root {
+  /* Couleurs principales */
+  --primary-color: #7D3CFF;
+  --secondary-color: #00F0FF;
+  --background-main: #F5F5F5;
+  --text-primary: #222222;
+  --text-secondary: #555555;
+  --error-color: #FF3B3B;
+  --success-color: #4CAF50;
+  
+  /* Couleurs jeux */
+  --valorant-color: #FF4655;
+  --cs-color: #FF9F1C;
+  --cod-color: #8A2BE2;
+  --fortnite-color: #00AEEF;
+  
+  /* Typographie */
+  --font-title: 'Poppins', sans-serif;
+  --font-body: 'Roboto', sans-serif;
+  --font-code: 'Fira Code', monospace;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  background: var(--background-main);
+  color: var(--text-primary);
+  font-size: 16px;
+  line-height: 1.6;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark Mode */
+body.dark-mode {
+  --background-main: #0f0f0f;
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0a0;
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 100%);
+}
+
+body.dark-mode .App {
+  background: transparent;
+}
+
+body.dark-mode .main-section {
+  background: transparent;
+}
+
+body.dark-mode .app-body {
+  background: transparent;
+}
+
+body.dark-mode .panel-section {
+  background: rgba(30, 30, 45, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(125, 60, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .header {
+  background: rgba(20, 20, 30, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(125, 60, 255, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .nav-button,
+body.dark-mode .nav-btn {
+  background: rgba(40, 40, 55, 0.6);
+  color: #a0a0a0;
+  border: 1px solid rgba(125, 60, 255, 0.2);
+}
+
+body.dark-mode .nav-button:hover,
+body.dark-mode .nav-button.active,
+body.dark-mode .nav-btn:hover,
+body.dark-mode .nav-btn.active {
+  background: rgba(125, 60, 255, 0.3);
+  color: #ffffff;
+  border-color: rgba(125, 60, 255, 0.5);
+}
+
+body.dark-mode .news-card,
+body.dark-mode .match-card,
+body.dark-mode .player-card,
+body.dark-mode .team-stats-card,
+body.dark-mode .achievement-card {
+  background: rgba(35, 35, 50, 0.9);
+  border: 1px solid rgba(125, 60, 255, 0.15);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .player-card:hover,
+body.dark-mode .news-card:hover,
+body.dark-mode .match-card:hover {
+  border-color: rgba(125, 60, 255, 0.4);
+  box-shadow: 0 8px 30px rgba(125, 60, 255, 0.2);
+}
+
+body.dark-mode .game-selector-btn,
+body.dark-mode .game-btn {
+  background: rgba(40, 40, 55, 0.7);
+  color: #a0a0a0;
+  border: 1px solid rgba(125, 60, 255, 0.2);
+}
+
+body.dark-mode .game-selector-btn.active,
+body.dark-mode .game-btn.active {
+  color: #ffffff;
+  border-color: currentColor;
+}
+
+body.dark-mode .team-content-wrapper,
+body.dark-mode .game-selector {
+  background: rgba(30, 30, 45, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(125, 60, 255, 0.2);
+}
+
+body.dark-mode .stat-bar-track {
+  background: rgba(50, 50, 70, 0.5);
+}
+
+body.dark-mode .action-icon-btn {
+  background: rgba(50, 50, 70, 0.6);
+  border: 1px solid rgba(125, 60, 255, 0.2);
+}
+
+body.dark-mode .action-icon-btn:hover {
+  background: rgba(70, 70, 90, 0.8);
+  border-color: rgba(125, 60, 255, 0.4);
+  box-shadow: 0 4px 15px rgba(125, 60, 255, 0.3);
+}
+
+body.dark-mode .calendar-day {
+  background: rgba(35, 35, 50, 0.6);
+  color: #ffffff;
+  border: 1px solid rgba(125, 60, 255, 0.1);
+}
+
+body.dark-mode .calendar-day:hover {
+  background: rgba(50, 50, 70, 0.8);
+  border-color: rgba(125, 60, 255, 0.3);
+}
+
+body.dark-mode .calendar-day.today {
+  background: rgba(255, 59, 59, 0.3);
+  border-color: #FF3B3B;
+}
+
+body.dark-mode .avatar-circle,
+body.dark-mode .hexagon {
+  border-color: rgba(20, 20, 30, 0.8);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode h1, 
+body.dark-mode h2, 
+body.dark-mode h3,
+body.dark-mode .profile-username,
+body.dark-mode .player-name-large,
+body.dark-mode .panel-title,
+body.dark-mode .panel-title-center,
+body.dark-mode .team-name,
+body.dark-mode .achievement-title,
+body.dark-mode .news-title,
+body.dark-mode .match-opponent,
+body.dark-mode .player-name {
+  color: #ffffff;
+  text-shadow: 0 2px 10px rgba(125, 60, 255, 0.3);
+}
+
+body.dark-mode .stat-bar-label,
+body.dark-mode .player-role-text,
+body.dark-mode .stats-subtitle,
+body.dark-mode .calendar-month,
+body.dark-mode .player-role,
+body.dark-mode .match-date,
+body.dark-mode .news-category,
+body.dark-mode .achievement-description {
+  color: #a0a0a0;
+}
+
+body.dark-mode .hexagon-wrapper:not(.active) .hexagon {
+  background: linear-gradient(135deg, rgba(40, 40, 55, 0.8), rgba(30, 30, 45, 0.8));
+}
+
+body.dark-mode .hexagon-wrapper:not(.active) .hexagon-content {
+  color: #888;
+}
+
+body.dark-mode .profile-info-simple {
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .ranking-table,
+body.dark-mode .ranking-row {
+  background: rgba(35, 35, 50, 0.6);
+  border-color: rgba(125, 60, 255, 0.1);
+}
+
+body.dark-mode .ranking-header {
+  background: rgba(20, 20, 35, 0.8);
+  color: #a0a0a0;
+}
+
+body.dark-mode .ranking-row.highlight {
+  background: rgba(125, 60, 255, 0.2);
+  border-color: rgba(125, 60, 255, 0.4);
+}
+
+body.dark-mode .ranking-row:hover {
+  background: rgba(50, 50, 70, 0.8);
+}
+
+body.dark-mode .rank-col,
+body.dark-mode .points-col {
+  color: #ffffff;
+}
+
+body.dark-mode .team-col {
+  color: #ffffff;
+}
+
+body.dark-mode .stats-col {
+  color: #a0a0a0;
+}
+
+body.dark-mode .advanced-stat-card {
+  background: rgba(35, 35, 50, 0.8);
+  border: 2px solid rgba(125, 60, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+body.dark-mode .advanced-stat-card:hover {
+  border-color: rgba(125, 60, 255, 0.5);
+  box-shadow: 0 8px 30px rgba(125, 60, 255, 0.3);
+}
+
+body.dark-mode .advanced-stat-value {
+  color: #ffffff;
+}
+
+body.dark-mode .advanced-stat-label {
+  color: #a0a0a0;
+}
+
+body.dark-mode .chart-container {
+  background: rgba(30, 30, 45, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(125, 60, 255, 0.2);
+}
+
+body.dark-mode .chart-label {
+  color: #a0a0a0;
+}
+
+body.dark-mode .match-row {
+  background: rgba(35, 35, 50, 0.6);
+  border-left-color: rgba(125, 60, 255, 0.3);
+}
+
+body.dark-mode .match-row.win {
+  background: rgba(76, 175, 80, 0.15);
+  border-left-color: #4CAF50;
+}
+
+body.dark-mode .match-row.loss {
+  background: rgba(255, 107, 122, 0.15);
+  border-left-color: #FF6B7A;
+}
+
+body.dark-mode .match-row:hover {
+  background: rgba(50, 50, 70, 0.8);
+}
+
+body.dark-mode .match-date,
+body.dark-mode .match-team,
+body.dark-mode .match-score,
+body.dark-mode .match-opponent,
+body.dark-mode .match-tournament {
+  color: #ffffff;
+}
+
+body.dark-mode .section-title {
+  color: #ffffff;
+  text-shadow: 0 2px 10px rgba(125, 60, 255, 0.3);
+}
+
+body.dark-mode .toggle-matches-btn {
+  background: rgba(125, 60, 255, 0.6);
+  border: 1px solid rgba(125, 60, 255, 0.4);
+}
+
+body.dark-mode .toggle-matches-btn:hover {
+  background: rgba(125, 60, 255, 0.8);
+  border-color: rgba(125, 60, 255, 0.6);
+}
+
+body.dark-mode .team-players,
+body.dark-mode .team-region-inline {
+  color: #a0a0a0;
+}
+
+body.dark-mode .team-logo-wrapper {
+  background: rgba(50, 50, 70, 0.8);
+  border: 1px solid rgba(125, 60, 255, 0.2);
+}
+
+body.dark-mode .team-dots {
+  background: rgba(20, 20, 30, 0.9);
+}
+
+body.dark-mode .player-card {
+  background: rgba(35, 35, 50, 0.8);
+  border: 2px solid rgba(125, 60, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+body.dark-mode .player-card:hover {
+  border-color: rgba(125, 60, 255, 0.5);
+  box-shadow: 0 10px 30px rgba(125, 60, 255, 0.3);
+}
+
+body.dark-mode .player-info h3,
+body.dark-mode .player-info p {
+  color: #ffffff;
+}
+
+body.dark-mode .player-kd,
+body.dark-mode .player-acs,
+body.dark-mode .player-rating {
+  color: #a0a0a0;
+}
+
+body.dark-mode .news-card {
+  background: rgba(35, 35, 50, 0.8);
+  border: 2px solid rgba(125, 60, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+body.dark-mode .news-card:hover {
+  border-color: rgba(125, 60, 255, 0.5);
+  box-shadow: 0 10px 30px rgba(125, 60, 255, 0.3);
+}
+
+body.dark-mode .news-card-title {
+  color: #ffffff;
+}
+
+body.dark-mode .news-date {
+  color: #a0a0a0;
+}
+
+body.dark-mode .match-result {
+  color: #ffffff;
+}
+
+body.dark-mode .locked-overlay {
+  background: rgba(20, 20, 30, 0.95);
+  border-color: rgba(125, 60, 255, 0.4);
+}
+
+body.dark-mode .locked-overlay::before {
+  background: linear-gradient(135deg, rgba(125, 60, 255, 0.1), rgba(255, 215, 0, 0.1));
+}
+
+body.dark-mode .timeline-container,
+body.dark-mode .heatmap-container {
+  background: rgba(35, 35, 50, 0.8);
+  border-color: rgba(125, 60, 255, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+body.dark-mode .timeline-header {
+  border-bottom-color: rgba(125, 60, 255, 0.2);
+}
+
+body.dark-mode .timeline-label {
+  color: #a0a0a0;
+}
+
+body.dark-mode .timeline-bar {
+  background: linear-gradient(90deg, rgba(125, 60, 255, 0.2), rgba(255, 70, 85, 0.2));
+  border-color: rgba(125, 60, 255, 0.3);
+}
+
+body.dark-mode .kill-marker {
+  border-color: rgba(20, 20, 30, 0.9);
+}
+
+body.dark-mode .legend-item {
+  color: #a0a0a0;
+}
+
+body.dark-mode .legend-color {
+  border-color: rgba(125, 60, 255, 0.3);
+}
+
+body.dark-mode p,
+body.dark-mode span,
+body.dark-mode div {
+  color: inherit;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-title);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+h1 {
+  font-size: 32px;
+}
+
+h2 {
+  font-size: 24px;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+p, span, div {
+  font-family: var(--font-body);
+  color: var(--text-primary);
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: var(--font-code);
 }
 
 #root {

@@ -6,14 +6,39 @@
 
 .calendar-header {
   margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 5px;
+}
+
+.calendar-nav-btn {
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.calendar-nav-btn:hover {
+  background: var(--text-primary);
+  transform: scale(1.1);
 }
 
 .calendar-month {
   font-size: 13px;
-  font-weight: 900;
-  color: #000;
-  font-family: 'Bebas Neue', 'Impact', sans-serif;
-  letter-spacing: 1px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: var(--font-title);
+  letter-spacing: 0;
 }
 
 .calendar-days-header {
@@ -26,9 +51,9 @@
 .calendar-day-name {
   text-align: center;
   font-size: 8px;
-  font-weight: 700;
-  color: #666;
-  font-family: 'Arial', sans-serif;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
 }
 
 .calendar-grid {
@@ -44,32 +69,37 @@
   justify-content: center;
   border-radius: 50%;
   font-size: 11px;
-  font-weight: 700;
-  background: #000;
-  color: #fff;
+  font-weight: 600;
+  background: #fff;
+  color: var(--text-primary);
   cursor: pointer;
   transition: all 0.2s ease;
   width: 100%;
   height: auto;
+  border: 2px solid transparent;
+  font-family: var(--font-body);
 }
 
 .calendar-day.empty {
   background: transparent;
   cursor: default;
-  border: 2px dashed #ddd;
+  border: none;
 }
 
-.calendar-day.highlighted {
-  background: #000;
-  color: #fff;
-  font-weight: 900;
+.calendar-day.has-match {
+  background: #fff;
+  color: var(--text-primary);
+  font-weight: 700;
+  border-width: 3px;
 }
 
 .calendar-day.today {
-  background: #FF6B7A;
+  background: var(--error-color);
   color: #fff;
+  font-weight: 700;
 }
 
-.calendar-day:not(.empty):not(.highlighted):not(.today):hover {
-  background: #333;
+.calendar-day:not(.empty):not(.today):hover {
+  background: var(--background-main);
+  transform: scale(1.05);
 }

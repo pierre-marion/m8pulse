@@ -1,27 +1,76 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Calendar.css';
 
-function Calendar() {
-  const days = ['LUN', 'MAR', 'MER', 'JEU', 'VEN', 'SAM', 'DIM'];
+function Calendar({ currentGame }) {
+  const [currentDate, setCurrentDate] = useState(new Date());
   
-  // Novembre 2025 - génération des jours
-  const generateDays = () => {
-    const daysInMonth = [];
-    // Novembre 2025 commence un samedi (jour 6)
-    // Ajouter des jours vides pour l'alignement
-    for (let i = 0; i < 5; i++) {
-      daysInMonth.push({ day: null, isEmpty: true });
+  const days = ['LUN', 'MAR', 'MER', 'JEU', 'VEN', 'SAM', 'DIM'];
+  const months = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 
+                  'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+
+  // Données des matchs par jeu (format: jour/mois)
+  const matchDates = {
+    'Valorant': ['28/11', '25/11', '22/11', '19/11', '15/11', '01/12', '05/12'],
+    'Counter Strike': ['27/11', '24/11', '21/11', '18/11', '14/11', '03/12', '08/12'],
+    'Call of Duty': ['26/11', '23/11', '20/11', '17/11', '13/11', '02/12', '07/12'],
+    'Fortnite': ['29/11', '26/11', '23/11', '20/11', '16/11', '04/12', '09/12']
+  };
+
+  const getGameColor = () => {
+    switch(currentGame) {
+      case 'Valorant': return '#FF4655';
+      case 'Counter Strike': return '#FF9F1C';
+      case 'Call of Duty': return '#8A2BE2';
+      case 'Fortnite': return '#00AEEF';
+      default: return '#7D3CFF';
     }
-    // Ajouter les jours du mois (1-30)
-    for (let i = 1; i <= 30; i++) {
-      daysInMonth.push({ 
-        day: i, 
+  };
+
+  const generateDays = () => {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    
+    // Ajuster pour que Lundi soit 0 (au lieu de Dimanche)
+    let firstDayOfWeek = firstDay.getDay() - 1;
+    if (firstDayOfWeek === -1) firstDayOfWeek = 6;
+    
+    const daysArray = [];
+    
+    // Ajouter les jours vides au début
+    for (let i = 0; i < firstDayOfWeek; i++) {
+      daysArray.push({ day: null, isEmpty: true });
+    }
+    
+    // Ajouter les jours du mois
+    for (let i = 1; i <= daysInMonth; i++) {
+      const dateStr = `${i.toString().padStart(2, '0')}/${(month + 1).toString().padStart(2, '0')}`;
+      const hasMatch = matchDates[currentGame]?.includes(dateStr) || false;
+      
+      // Vérifier si c'est aujourd'hui
+      const today = new Date();
+      const isToday = i === today.getDate() && 
+                      month === today.getMonth() && 
+                      year === today.getFullYear();
+      
+      daysArray.push({
+        day: i,
         isEmpty: false,
-        isHighlighted: i === 1 || i === 2, // Exemple: 1er et 2 décembre
-        isToday: i === 29 || i === 30 // Exemple: dates rouges
+        hasMatch: hasMatch,
+        isToday: isToday
       });
     }
-    return daysInMonth;
+    
+    return daysArray;
+  };
+
+  const changeMonth = (direction) => {
+    const newDate = new Date(currentDate);
+    newDate.setMonth(currentDate.getMonth() + direction);
+    setCurrentDate(newDate);
   };
 
   const daysInMonth = generateDays();
@@ -29,7 +78,11 @@ function Calendar() {
   return (
     <div className="calendar">
       <div className="calendar-header">
-        <span className="calendar-month">NOVEMBRE</span>
+        <button className="calendar-nav-btn" onClick={() => changeMonth(-1)}>‹</button>
+        <span className="calendar-month">
+          {months[currentDate.getMonth()]} {currentDate.getFullYear()}
+        </span>
+        <button className="calendar-nav-btn" onClick={() => changeMonth(1)}>›</button>
       </div>
       <div className="calendar-days-header">
         {days.map((day, index) => (
@@ -42,7 +95,8 @@ function Calendar() {
         {daysInMonth.map((item, index) => (
           <div 
             key={index} 
-            className={`calendar-day ${item.isEmpty ? 'empty' : ''} ${item.isHighlighted ? 'highlighted' : ''} ${item.isToday ? 'today' : ''}`}
+            className={`calendar-day ${item.isEmpty ? 'empty' : ''} ${item.isToday ? 'today' : ''} ${item.hasMatch ? 'has-match' : ''}`}
+            style={item.hasMatch ? { borderColor: getGameColor() } : {}}
           >
             {item.day}
           </div>

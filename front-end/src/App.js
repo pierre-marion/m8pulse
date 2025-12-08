@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import './App.css';
 import Header from './components/Header';
-import Sidebar from './components/Sidebar';
 import HomePage from './components/HomePage';
 import GamesPage from './components/GamesPage';
 import RightPanel from './components/RightPanel';
 import TeamPage from './components/TeamPage';
 import NewsPage from './components/NewsPage';
+import SubscriptionPage from './components/SubscriptionPage';
+import { DarkModeProvider } from './contexts/DarkModeContext';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('accueil');
@@ -24,27 +25,25 @@ function App() {
         return <TeamPage currentGame={games[currentGame]} onGameChange={setCurrentGame} />;
       case 'news':
         return <NewsPage />;
+      case 'abonnement':
+        return <SubscriptionPage />;
       default:
         return <HomePage />;
     }
   };
 
   return (
-    <div className="App">
-      <div className="app-body">
-        <div className="left-section">
-          <div className="app-logo">
-            <img src="/m8logo.png" alt="M8 Logo" className="app-logo-image" />
+    <DarkModeProvider>
+      <div className="App">
+        <div className="app-body">
+          <div className="main-section">
+            <Header currentPage={currentPage} setCurrentPage={setCurrentPage} />
+            {renderPage()}
           </div>
-          <Sidebar currentGame={currentGame} />
+          <RightPanel currentGame={games[currentGame]} />
         </div>
-        <div className="main-section">
-          <Header currentPage={currentPage} setCurrentPage={setCurrentPage} />
-          {renderPage()}
-        </div>
-        <RightPanel />
       </div>
-    </div>
+    </DarkModeProvider>
   );
 }
 

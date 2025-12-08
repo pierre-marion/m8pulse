@@ -1,9 +1,10 @@
 .team-page {
   padding: 15px 20px;
-  color: #000;
+  color: var(--text-primary);
   height: 100%;
   overflow-y: auto;
-  background-color: #f0f0f0;
+  background-color: var(--background-main);
+  font-family: var(--font-body);
 }
 
 .equipes-title {
@@ -20,6 +21,76 @@
   padding: 20px;
 }
 
+.game-selector {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding: 10px;
+  background: #f8f8f8;
+  border-radius: 20px;
+}
+
+.game-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 15px 20px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-title);
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--text-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.game-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 16px rgba(125, 60, 255, 0.2);
+}
+
+.game-icon {
+  font-size: 20px;
+}
+
+.game-name {
+  font-size: 14px;
+}
+
+.game-btn.valorant-btn.active {
+  background: var(--valorant-color);
+  color: #fff;
+  border-color: var(--valorant-color);
+  box-shadow: 0 4px 16px rgba(255, 70, 85, 0.3);
+}
+
+.game-btn.cs-btn.active {
+  background: var(--cs-color);
+  color: #fff;
+  border-color: var(--cs-color);
+  box-shadow: 0 4px 16px rgba(255, 159, 28, 0.3);
+}
+
+.game-btn.cod-btn.active {
+  background: var(--cod-color);
+  color: #fff;
+  border-color: var(--cod-color);
+  box-shadow: 0 4px 16px rgba(138, 43, 226, 0.3);
+}
+
+.game-btn.fortnite-btn.active {
+  background: var(--fortnite-color);
+  color: #fff;
+  border-color: var(--fortnite-color);
+  box-shadow: 0 4px 16px rgba(0, 174, 239, 0.3);
+}
+
 .team-header-section {
   margin-bottom: 20px;
 }
@@ -34,6 +105,15 @@
   letter-spacing: 0.5px;
   display: inline-block;
   margin-bottom: 12px;
+}
+
+.team-region-inline {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-top: 5px;
+  font-family: var(--font-title);
+  letter-spacing: 0;
 }
 
 .team-info-card {
@@ -101,13 +181,13 @@
 }
 
 .team-name {
-  font-size: 38px;
-  font-weight: 900;
+  font-size: 32px;
+  font-weight: 700;
   margin: 0;
-  font-family: 'Bebas Neue', 'Impact', sans-serif;
-  letter-spacing: 0.5px;
+  font-family: var(--font-title);
+  letter-spacing: 0;
   line-height: 1;
-  color: #000;
+  color: var(--text-primary);
   white-space: nowrap;
 }
 
@@ -130,6 +210,24 @@
   color: #fff;
   flex-shrink: 1;
   min-width: 0;
+  transition: all 0.3s ease;
+}
+
+/* Couleurs team-stats-card par jeu */
+.team-stats-card.valorant-game {
+  background: linear-gradient(135deg, #FF4655 0%, #BD333F 100%);
+}
+
+.team-stats-card.counter-strike-game {
+  background: linear-gradient(135deg, #FF9F1C 0%, #FF8C00 100%);
+}
+
+.team-stats-card.call-of-duty-game {
+  background: linear-gradient(135deg, #8A2BE2 0%, #7B1FA2 100%);
+}
+
+.team-stats-card.fortnite-game {
+  background: linear-gradient(135deg, #00AEEF 0%, #0096FF 100%);
 }
 
 .stat-item {
@@ -148,18 +246,249 @@
 
 .stat-value {
   font-size: 32px;
-  font-weight: 900;
+  font-weight: 700;
   margin-bottom: 2px;
   line-height: 1;
-  font-family: 'Bebas Neue', 'Impact', sans-serif;
-  letter-spacing: 0.3px;
+  font-family: var(--font-code);
+  letter-spacing: 0;
+  color: #fff;
 }
 
 .stat-label {
-  font-size: 10px;
+  font-size: 12px;
   opacity: 1;
-  font-weight: 600;
-  letter-spacing: 0.3px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: #fff;
+}
+
+.players-stats-section {
+  margin-bottom: 20px;
+}
+
+.players-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 15px;
+}
+
+.player-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid var(--background-main);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.player-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.player-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(125, 60, 255, 0.2);
+}
+
+.player-card:hover::before {
+  opacity: 1;
+}
+
+.player-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 900;
+  margin-bottom: 12px;
+  border: 3px solid rgba(102, 126, 234, 0.3);
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+}
+
+/* Couleurs spécifiques par jeu */
+.player-card.valorant-game {
+  border-color: rgba(255, 70, 85, 0.3);
+}
+
+.player-card.valorant-game:hover {
+  border-color: #FF4655;
+  box-shadow: 0 10px 30px rgba(255, 70, 85, 0.4);
+}
+
+.player-card.valorant-game::before {
+  background: linear-gradient(135deg, rgba(255, 70, 85, 0.1) 0%, rgba(189, 51, 63, 0.1) 100%);
+}
+
+.player-card.valorant-game .player-avatar {
+  background: linear-gradient(135deg, #FF4655 0%, #BD333F 100%);
+  border-color: rgba(255, 70, 85, 0.4);
+}
+
+.player-card.counter-strike-game {
+  border-color: rgba(255, 159, 28, 0.3);
+}
+
+.player-card.counter-strike-game:hover {
+  border-color: #FF9F1C;
+  box-shadow: 0 10px 30px rgba(255, 159, 28, 0.4);
+}
+
+.player-card.counter-strike-game::before {
+  background: linear-gradient(135deg, rgba(255, 159, 28, 0.1) 0%, rgba(255, 140, 0, 0.1) 100%);
+}
+
+.player-card.counter-strike-game .player-avatar {
+  background: linear-gradient(135deg, #FF9F1C 0%, #FF8C00 100%);
+  border-color: rgba(255, 159, 28, 0.4);
+}
+
+.player-card.call-of-duty-game {
+  border-color: rgba(138, 43, 226, 0.3);
+}
+
+.player-card.call-of-duty-game:hover {
+  border-color: #8A2BE2;
+  box-shadow: 0 10px 30px rgba(138, 43, 226, 0.4);
+}
+
+.player-card.call-of-duty-game::before {
+  background: linear-gradient(135deg, rgba(138, 43, 226, 0.1) 0%, rgba(123, 31, 162, 0.1) 100%);
+}
+
+.player-card.call-of-duty-game .player-avatar {
+  background: linear-gradient(135deg, #8A2BE2 0%, #7B1FA2 100%);
+  border-color: rgba(138, 43, 226, 0.4);
+}
+
+.player-card.fortnite-game {
+  border-color: rgba(0, 174, 239, 0.3);
+}
+
+.player-card.fortnite-game:hover {
+  border-color: #00AEEF;
+  box-shadow: 0 10px 30px rgba(0, 174, 239, 0.4);
+}
+
+.player-card.fortnite-game::before {
+  background: linear-gradient(135deg, rgba(0, 174, 239, 0.1) 0%, rgba(0, 150, 255, 0.1) 100%);
+}
+
+.player-card.fortnite-game .player-avatar {
+  background: linear-gradient(135deg, #00AEEF 0%, #0096FF 100%);
+  border-color: rgba(0, 174, 239, 0.4);
+}
+
+.player-info {
+  margin-bottom: 15px;
+  position: relative;
+  z-index: 1;
+}
+
+.player-name {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  font-family: var(--font-title);
+  letter-spacing: 0;
+  color: var(--text-primary);
+}
+
+.player-role {
+  font-size: 12px;
+  margin: 0;
+  opacity: 0.7;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+}
+
+.player-stats {
+  display: flex;
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.player-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-key {
+  font-size: 10px;
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.player-stat .stat-value {
+  font-size: 18px;
+  font-weight: 900;
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+}
+
+.additional-stats-section {
+  margin-bottom: 20px;
+}
+
+.stats-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+
+.advanced-stat-card {
+  background: #fff;
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border: 2px solid #f0f0f0;
+  transition: all 0.3s ease;
+}
+
+.advanced-stat-card:hover {
+  border-color: #667eea;
+  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
+  transform: translateY(-3px);
+}
+
+.advanced-stat-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 5px;
+  font-family: var(--font-code);
+  letter-spacing: 0;
+}
+
+.advanced-stat-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-transform: capitalize;
+  letter-spacing: 0;
 }
 
 .team-content-grid {
@@ -170,11 +499,12 @@
 }
 
 .section-title {
-  font-size: 28px;
-  font-weight: 900;
+  font-size: 24px;
+  font-weight: 700;
   margin-bottom: 15px;
-  font-family: 'Bebas Neue', 'Impact', sans-serif;
-  letter-spacing: 0.5px;
+  font-family: var(--font-title);
+  letter-spacing: 0;
+  color: var(--text-primary);
 }
 
 .team-matches-section {
@@ -191,24 +521,51 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 0;
-  background-color: transparent;
-  font-size: 14px;
+  padding: 12px;
+  background-color: #f8f8f8;
+  border-radius: 10px;
+  font-size: 13px;
   font-weight: 700;
+  border-left: 4px solid transparent;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.match-row:hover {
+  background-color: #e8e8f8;
+  transform: translateX(5px) scale(1.02);
+  box-shadow: 0 4px 15px rgba(125, 60, 255, 0.2);
+  border-left-width: 6px;
+}
+
+.match-row.win {
+  border-left-color: #4CAF50;
+  background-color: #f1f8f4;
+}
+
+.match-row.loss {
+  border-left-color: #FF6B7A;
+  background-color: #fff5f6;
 }
 
 .match-date {
   font-weight: 900;
   min-width: 45px;
   font-family: 'Bebas Neue', 'Impact', sans-serif;
-  font-size: 18px;
+  font-size: 16px;
   letter-spacing: 0.5px;
 }
 
-.match-opponent {
-  min-width: 120px;
+.match-team {
+  min-width: 100px;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 13px;
+}
+
+.match-opponent {
+  min-width: 100px;
+  font-weight: 700;
+  font-size: 13px;
 }
 
 .match-separator-bar {
@@ -216,53 +573,394 @@
   height: 3px;
   background-color: #D8D8D8;
   border-radius: 2px;
-  min-width: 25px;
+  min-width: 20px;
 }
 
 .match-score {
   font-weight: 900;
-  min-width: 40px;
+  min-width: 50px;
   text-align: center;
   font-family: 'Bebas Neue', 'Impact', sans-serif;
   font-size: 18px;
   letter-spacing: 0.5px;
+  padding: 4px 8px;
+  background: #fff;
+  border-radius: 8px;
 }
 
-.match-against {
-  min-width: 80px;
-  font-weight: 700;
-  font-size: 14px;
-}
-
-.match-tournament {
-  display: flex;
-  align-items: center;
-  margin-left: 5px;
-}
-
-.tournament-logo {
-  width: 35px;
-  height: 35px;
-}
-
-.vct-logo {
-  width: 100%;
-  height: 100%;
+.match-tournament-badge {
+  font-size: 10px;
+  font-weight: 900;
+  background: #667eea;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 12px;
+  white-space: nowrap;
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+  letter-spacing: 0.5px;
 }
 
 .team-ranking-section {
   background-color: transparent;
 }
 
-.news-section {
-  background-color: #DCDCDC;
-  border-radius: 25px;
-  padding: 50px;
+.ranking-table {
+  background: #fff;
+  border-radius: 15px;
+  overflow: hidden;
+  border: 1px solid #eee;
+}
+
+.ranking-header {
+  display: grid;
+  grid-template-columns: 50px 1fr 80px 80px;
+  gap: 10px;
+  padding: 12px 15px;
+  background: #f5f5f5;
+  font-weight: 900;
+  font-size: 11px;
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+  letter-spacing: 0.5px;
+  color: #666;
+}
+
+.ranking-row {
+  display: grid;
+  grid-template-columns: 50px 1fr 80px 80px;
+  gap: 10px;
+  padding: 12px 15px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 13px;
+  transition: background-color 0.2s ease;
+}
+
+.ranking-row:hover {
+  background-color: #f8f8f8;
+}
+
+.ranking-row:last-child {
+  border-bottom: none;
+}
+
+.ranking-row.highlight {
+  background-color: #FFF3E0;
+  font-weight: 900;
+  border-left: 4px solid #FF9800;
+}
+
+.ranking-row.highlight:hover {
+  background-color: #FFE0B2;
+}
+
+.rank-col {
+  font-weight: 900;
+  color: #667eea;
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+  font-size: 16px;
+}
+
+.team-col {
+  font-weight: 700;
+}
+
+.stats-col {
   text-align: center;
-  min-height: 150px;
+  font-size: 12px;
+  color: #666;
+}
+
+.points-col {
+  text-align: right;
+  font-weight: 900;
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+  font-size: 16px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.toggle-matches-btn {
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: var(--font-title);
+  letter-spacing: 0;
+}
+
+.toggle-matches-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(125, 60, 255, 0.4);
+}
+
+.achievements-section {
+  margin-bottom: 20px;
+}
+
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+
+.achievement-card {
+  background: #fff;
+  border-radius: 15px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border: 2px solid #f0f0f0;
+  transition: all 0.3s ease;
+}
+
+.achievement-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.achievement-card.valorant-game {
+  border-color: rgba(255, 70, 85, 0.3);
+}
+
+.achievement-card.valorant-game:hover {
+  border-color: #FF4655;
+  box-shadow: 0 5px 20px rgba(255, 70, 85, 0.3);
+}
+
+.achievement-card.counter-strike-game {
+  border-color: rgba(255, 159, 28, 0.3);
+}
+
+.achievement-card.counter-strike-game:hover {
+  border-color: #FF9F1C;
+  box-shadow: 0 5px 20px rgba(255, 159, 28, 0.3);
+}
+
+.achievement-card.call-of-duty-game {
+  border-color: rgba(138, 43, 226, 0.3);
+}
+
+.achievement-card.call-of-duty-game:hover {
+  border-color: #8A2BE2;
+  box-shadow: 0 5px 20px rgba(138, 43, 226, 0.3);
+}
+
+.achievement-card.fortnite-game {
+  border-color: rgba(0, 174, 239, 0.3);
+}
+
+.achievement-card.fortnite-game:hover {
+  border-color: #00AEEF;
+  box-shadow: 0 5px 20px rgba(0, 174, 239, 0.3);
+}
+
+.achievement-icon {
+  font-size: 28px;
+  line-height: 1;
+  width: 50px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: var(--primary-color);
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 700;
+}
+
+.achievement-card.valorant-game .achievement-icon {
+  background: var(--valorant-color);
+}
+
+.achievement-card.counter-strike-game .achievement-icon {
+  background: var(--cs-color);
+}
+
+.achievement-card.call-of-duty-game .achievement-icon {
+  background: var(--cod-color);
+}
+
+.achievement-card.fortnite-game .achievement-icon {
+  background: var(--fortnite-color);
+}
+
+.icon-trophy,
+.icon-star,
+.icon-fire,
+.icon-crown,
+.icon-default {
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.achievement-info {
+  flex: 1;
+}
+
+.achievement-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  font-family: var(--font-title);
+  letter-spacing: 0;
+  color: var(--text-primary);
+}
+
+.achievement-date {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin: 0;
+  font-weight: 400;
+}
+
+.performance-chart-section {
+  margin-bottom: 20px;
+}
+
+.chart-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  gap: 20px;
+  background: #fff;
+  border-radius: 15px;
+  padding: 30px 20px 20px 20px;
+  height: 250px;
+}
+
+.chart-bar-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.chart-bar-container {
+  width: 100%;
+  height: 180px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.chart-bar {
+  width: 60%;
+  border-radius: 10px 10px 0 0;
+  position: relative;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 10px;
+}
+
+.chart-bar:hover {
+  transform: scaleY(1.05);
+  opacity: 0.9;
+}
+
+.chart-bar.valorant-game {
+  background: var(--valorant-color);
+}
+
+.chart-bar.counter-strike-game {
+  background: var(--cs-color);
+}
+
+.chart-bar.call-of-duty-game {
+  background: var(--cod-color);
+}
+
+.chart-bar.fortnite-game {
+  background: var(--fortnite-color);
+}
+
+.bar-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  font-family: var(--font-code);
+}
+
+.chart-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-family: var(--font-title);
+  letter-spacing: 0;
+}
+
+.news-section {
+  margin-bottom: 20px;
+}
+
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.news-card {
+  background: #fff;
+  border-radius: 15px;
+  padding: 20px;
+  border: 2px solid #f0f0f0;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.news-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(125, 60, 255, 0.15);
+  border-color: var(--primary-color);
+}
+
+.news-category {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  font-family: var(--font-title);
+  background: var(--text-primary);
+  color: #fff;
+}
+
+.news-date {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 400;
+  margin-bottom: 10px;
+}
+
+.news-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  font-family: var(--font-title);
+  letter-spacing: 0;
+  color: var(--text-primary);
+}
+
+.news-description {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
 }
 
 .news-title {
@@ -272,6 +970,290 @@
   font-family: 'Bebas Neue', 'Impact', sans-serif;
   margin: 0;
   letter-spacing: 1.5px;
+}
+
+/* Premium Sections */
+.premium-section {
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.section-header-premium {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.premium-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: var(--font-title);
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+  animation: pulse-premium 2s ease-in-out infinite;
+}
+
+.premium-badge .premium-icon {
+  font-size: 16px;
+}
+
+@keyframes pulse-premium {
+  0%, 100% {
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+  }
+  50% {
+    box-shadow: 0 4px 25px rgba(255, 215, 0, 0.6);
+  }
+}
+
+.locked-overlay {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 60px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  border: 3px dashed rgba(125, 60, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.locked-overlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(125, 60, 255, 0.05), rgba(255, 215, 0, 0.05));
+  pointer-events: none;
+}
+
+.lock-content {
+  text-align: center;
+  max-width: 500px;
+  position: relative;
+  z-index: 1;
+}
+
+.lock-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+  animation: lock-shake 3s ease-in-out infinite;
+}
+
+@keyframes lock-shake {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-5deg);
+  }
+  75% {
+    transform: rotate(5deg);
+  }
+}
+
+.lock-content h3 {
+  font-size: 28px;
+  font-weight: 900;
+  margin: 0 0 15px 0;
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+  letter-spacing: 1px;
+  background: linear-gradient(135deg, #7D3CFF, #FFD700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.lock-content p {
+  font-size: 16px;
+  color: var(--text-secondary);
+  margin: 0 0 25px 0;
+  line-height: 1.6;
+}
+
+.unlock-btn {
+  background: linear-gradient(135deg, #7D3CFF, #9D5CFF);
+  color: #fff;
+  border: none;
+  padding: 15px 40px;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: var(--font-title);
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 20px rgba(125, 60, 255, 0.4);
+}
+
+.unlock-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(125, 60, 255, 0.6);
+}
+
+/* Timeline des Kills */
+.timeline-container {
+  background: #fff;
+  border-radius: 20px;
+  padding: 30px;
+  border: 2px solid #f0f0f0;
+}
+
+.timeline-header {
+  display: grid;
+  grid-template-columns: 80px repeat(5, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.timeline-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.timeline-row {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.timeline-round {
+  font-size: 16px;
+  font-weight: 900;
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.timeline-bar {
+  position: relative;
+  height: 40px;
+  background: linear-gradient(90deg, rgba(125, 60, 255, 0.1), rgba(255, 70, 85, 0.1));
+  border-radius: 8px;
+  border: 2px solid rgba(125, 60, 255, 0.2);
+}
+
+.kill-marker {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  background: #FF4655;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 10px rgba(255, 70, 85, 0.5);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.kill-marker:hover {
+  transform: translateY(-50%) scale(1.5);
+  z-index: 10;
+}
+
+.kill-marker:hover .kill-tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+.kill-tooltip {
+  position: absolute;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a1a1a;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.kill-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #1a1a1a;
+}
+
+/* Heatmap Tactique */
+.heatmap-container {
+  background: #fff;
+  border-radius: 20px;
+  padding: 30px;
+  border: 2px solid #f0f0f0;
+}
+
+.heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 5px;
+  margin-bottom: 20px;
+  aspect-ratio: 1;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.heatmap-cell {
+  aspect-ratio: 1;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.heatmap-cell:hover {
+  transform: scale(1.2);
+  z-index: 10;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.heatmap-legend {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 20px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.legend-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 @media (max-width: 1024px) {
