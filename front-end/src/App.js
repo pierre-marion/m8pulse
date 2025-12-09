@@ -7,6 +7,7 @@ import RightPanel from './components/RightPanel';
 import TeamPage from './components/TeamPage';
 import NewsPage from './components/NewsPage';
 import SubscriptionPage from './components/SubscriptionPage';
+import DashboardPage from './components/DashboardPage';
 import { DarkModeProvider } from './contexts/DarkModeContext';
 
 function App() {
@@ -27,6 +28,8 @@ function App() {
         return <NewsPage />;
       case 'abonnement':
         return <SubscriptionPage />;
+      case 'dashboard':
+        return <DashboardPage currentGame={games[currentGame]} />;
       default:
         return <HomePage />;
     }
@@ -40,7 +43,10 @@ function App() {
             <Header currentPage={currentPage} setCurrentPage={setCurrentPage} />
             {renderPage()}
           </div>
-          <RightPanel currentGame={games[currentGame]} />
+          <RightPanel 
+            currentGame={games[currentGame]} 
+            onDashboardClick={() => setCurrentPage('dashboard')}
+          />
         </div>
       </div>
     </DarkModeProvider>

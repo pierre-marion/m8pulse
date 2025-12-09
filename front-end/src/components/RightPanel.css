@@ -121,6 +121,32 @@
   margin-left: auto;
 }
 
+.dashboard-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #7D3CFF, #9D5CFF);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(125, 60, 255, 0.3);
+  flex-shrink: 0;
+}
+
+.dashboard-btn:hover {
+  background: linear-gradient(135deg, #6b2ce6, #8b4ce6);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(125, 60, 255, 0.5);
+}
+
+.dashboard-btn span {
+  font-size: 14px;
+  filter: none;
+}
+
 .action-icon-btn {
   width: 32px;
   height: 32px;

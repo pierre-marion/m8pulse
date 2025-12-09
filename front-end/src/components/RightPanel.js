@@ -3,7 +3,7 @@ import Calendar from './Calendar';
 import './RightPanel.css';
 import { useDarkMode } from '../contexts/DarkModeContext';
 
-function RightPanel({ currentGame }) {
+function RightPanel({ currentGame, onDashboardClick }) {
   const [selectedPlayer, setSelectedPlayer] = useState(0);
   const { isDarkMode, toggleDarkMode } = useDarkMode();
 
@@ -74,6 +74,13 @@ function RightPanel({ currentGame }) {
             </div>
             
             <div className="profile-actions">
+              <button 
+                className="dashboard-btn"
+                onClick={onDashboardClick}
+                title="Dashboard"
+              >
+                <span>📊</span>
+              </button>
               <button 
                 className={`action-icon-btn ${isDarkMode ? 'active' : ''}`}
                 onClick={toggleDarkMode}
