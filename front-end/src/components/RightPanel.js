@@ -3,7 +3,7 @@ import Calendar from './Calendar';
 import './RightPanel.css';
 import { useDarkMode } from '../contexts/DarkModeContext';
 
-function RightPanel({ currentGame, onDashboardClick }) {
+function RightPanel({ currentGame, onDashboardClick, user, onLogout, onLoginClick }) {
   const [selectedPlayer, setSelectedPlayer] = useState(0);
   const { isDarkMode, toggleDarkMode } = useDarkMode();
 
@@ -64,32 +64,49 @@ function RightPanel({ currentGame, onDashboardClick }) {
           <div className="profile-single-row">
             <div className="profile-avatar">
               <div className="avatar-circle" style={{ background: `linear-gradient(135deg, ${getGameColor()}, ${getGameColor()}dd)` }}>
-                <span className="avatar-initial">P</span>
+                <span className="avatar-initial">
+                  {user ? user.username.charAt(0).toUpperCase() : 'G'}
+                </span>
               </div>
-              <div className="online-indicator"></div>
+              {user && <div className="online-indicator"></div>}
             </div>
             
-            <div className="subscription-badge premium">
-              <span className="badge-text">PRO</span>
-            </div>
+            {user ? (
+              <div className="user-info-compact">
+                <span className="username-text">{user.username}</span>
+                <button 
+                  className="logout-btn-compact"
+                  onClick={onLogout}
+                  title="Se déconnecter"
+                >
+                  🚪
+                </button>
+              </div>
+            ) : (
+              <button 
+                className="login-btn-compact"
+                onClick={onLoginClick}
+              >
+                Se connecter
+              </button>
+            )}
             
             <div className="profile-actions">
-              <button 
-                className="dashboard-btn"
-                onClick={onDashboardClick}
-                title="Dashboard"
-              >
-                <span>📊</span>
-              </button>
+              {user && user.roles?.includes('ROLE_ADMIN') && (
+                <button 
+                  className="dashboard-btn"
+                  onClick={onDashboardClick}
+                  title="Dashboard Admin"
+                >
+                  <span>📊</span>
+                </button>
+              )}
               <button 
                 className={`action-icon-btn ${isDarkMode ? 'active' : ''}`}
                 onClick={toggleDarkMode}
                 title={isDarkMode ? "Mode clair" : "Mode sombre"}
               >
                 <span>{isDarkMode ? '☀️' : '🌙'}</span>
-              </button>
-              <button className="action-icon-btn" title="Notifications">
-                <span>🔔</span>
               </button>
             </div>
           </div>

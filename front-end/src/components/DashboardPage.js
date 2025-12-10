@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import './DashboardPage.css';
+import ArticleManager from './ArticleManager';
 
 function DashboardPage({ currentGame }) {
-  const [activeSection, setActiveSection] = useState('overview');
+  const [activeSection, setActiveSection] = useState('articles');
   const [showArticleForm, setShowArticleForm] = useState(false);
   const [showMatchForm, setShowMatchForm] = useState(false);
   const [showThemeForm, setShowThemeForm] = useState(false);
@@ -248,132 +249,7 @@ function DashboardPage({ currentGame }) {
 
       {/* Articles Section */}
       {activeSection === 'articles' && (
-        <div className="content-section">
-          <div className="section-header">
-            <h2>📝 Gestion des articles</h2>
-            <button className="create-btn" onClick={() => setShowArticleForm(!showArticleForm)}>
-              ➕ Créer un article
-            </button>
-          </div>
-
-          {showArticleForm && (
-            <div className="dashboard-card form-card">
-              <h3>Nouvel article</h3>
-              <form onSubmit={handleArticleSubmit} className="content-form">
-                <div className="form-group">
-                  <label>Titre</label>
-                  <input
-                    type="text"
-                    value={articleForm.title}
-                    onChange={(e) => setArticleForm({...articleForm, title: e.target.value})}
-                    placeholder="Titre de l'article"
-                    required
-                  />
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Jeu</label>
-                    <select
-                      value={articleForm.game}
-                      onChange={(e) => setArticleForm({...articleForm, game: e.target.value})}
-                    >
-                      <option value="Valorant">Valorant</option>
-                      <option value="CS2">CS2</option>
-                      <option value="COD">Call of Duty</option>
-                      <option value="Fortnite">Fortnite</option>
-                      <option value="League of Legends">League of Legends</option>
-                      <option value="Rocket League">Rocket League</option>
-                    </select>
-                  </div>
-
-                  <div className="form-group">
-                    <label>Catégorie</label>
-                    <select
-                      value={articleForm.category}
-                      onChange={(e) => setArticleForm({...articleForm, category: e.target.value})}
-                    >
-                      <option value="news">News</option>
-                      <option value="interview">Interview</option>
-                      <option value="analysis">Analyse</option>
-                      <option value="announcement">Annonce</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label>URL de l'image</label>
-                  <input
-                    type="url"
-                    value={articleForm.image}
-                    onChange={(e) => setArticleForm({...articleForm, image: e.target.value})}
-                    placeholder="https://..."
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label>Contenu</label>
-                  <textarea
-                    value={articleForm.content}
-                    onChange={(e) => setArticleForm({...articleForm, content: e.target.value})}
-                    placeholder="Contenu de l'article..."
-                    rows="8"
-                    required
-                  ></textarea>
-                </div>
-
-                <div className="form-group checkbox-group">
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={articleForm.featured}
-                      onChange={(e) => setArticleForm({...articleForm, featured: e.target.checked})}
-                    />
-                    <span>Article en vedette</span>
-                  </label>
-                </div>
-
-                <div className="form-actions">
-                  <button type="submit" className="submit-btn">Publier</button>
-                  <button type="button" className="cancel-btn" onClick={() => setShowArticleForm(false)}>
-                    Annuler
-                  </button>
-                </div>
-              </form>
-            </div>
-          )}
-
-          <div className="dashboard-card">
-            <h3>Articles récents</h3>
-            <div className="content-table">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Titre</th>
-                    <th>Jeu</th>
-                    <th>Date</th>
-                    <th>Statut</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {recentArticles.map(article => (
-                    <tr key={article.id}>
-                      <td>{article.title}</td>
-                      <td><span className="game-tag">{article.game}</span></td>
-                      <td>{article.date}</td>
-                      <td><span className={`status-badge ${article.status}`}>{article.status}</span></td>
-                      <td>
-                        <button className="icon-btn">✏️</button>
-                        <button className="icon-btn">🗑️</button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
+        <ArticleManager />
       )}
 
       {/* Matches Section */}

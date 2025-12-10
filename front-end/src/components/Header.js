@@ -1,7 +1,7 @@
 import React from 'react';
 import './Header.css';
 
-function Header({ currentPage, setCurrentPage }) {
+function Header({ currentPage, setCurrentPage, user }) {
   return (
     <header className="header">
       <div className="logo">
@@ -39,6 +39,25 @@ function Header({ currentPage, setCurrentPage }) {
           News
         </button>
       </nav>
+      <div className="header-user">
+        {user ? (
+          <button 
+            className="user-button"
+            onClick={() => setCurrentPage('profile')}
+          >
+            <span className="user-avatar">{user.username.charAt(0).toUpperCase()}</span>
+            <span className="user-name">{user.username}</span>
+            {user.roles?.includes('ROLE_ADMIN') && <span className="admin-crown">👑</span>}
+          </button>
+        ) : (
+          <button 
+            className="login-button"
+            onClick={() => setCurrentPage('login')}
+          >
+            Se connecter
+          </button>
+        )}
+      </div>
     </header>
   );
 }

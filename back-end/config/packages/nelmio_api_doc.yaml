@@ -1,0 +1,42 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: M8Pulse API Backend
+            description: 'API REST Symfony pour un CMS de Data Storytelling avec gestion fine des utilisateurs, articles, blocs, médias, datasets et visualisations'
+            version: 1.0.0
+        servers:
+            - url: http://localhost:8000
+              description: Serveur de développement
+        tags:
+            - name: Authentification
+              description: 'Connexion, inscription et gestion des tokens'
+            - name: Utilisateurs
+              description: 'Gestion des utilisateurs et profils'
+            - name: Articles
+              description: 'CRUD des articles et publications'
+            - name: Blocs
+              description: 'Gestion des blocs de contenu dans les articles'
+            - name: Media
+              description: 'Upload et gestion des fichiers média'
+            - name: Datasets
+              description: 'Upload et traitement des fichiers CSV'
+            - name: Visualisations
+              description: 'Création et gestion des graphiques'
+            - name: Notations
+              description: 'Système de notation par étoiles'
+            - name: Thèmes
+              description: 'Gestion des thèmes visuels'
+            - name: Page d''accueil
+              description: 'Configuration de la page d''accueil'
+        components:
+            securitySchemes:
+                Bearer:
+                    type: http
+                    scheme: bearer
+                    bearerFormat: JWT
+                    description: 'JWT Token obtenu via POST /api/login'
+        security:
+            - Bearer: []
+    areas: # to filter documented areas
+        path_patterns:
+            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc

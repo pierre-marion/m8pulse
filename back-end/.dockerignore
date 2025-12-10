@@ -1,0 +1,20 @@
+# Vendor
+vendor/
+
+# Cache & logs
+var/cache/
+var/log/
+
+# Tests
+tests/
+
+# Documentation
+*.md
+
+# IDE
+.vscode
+.idea
+
+# Env local
+.env.local
+.env.*.local

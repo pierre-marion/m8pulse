@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './TeamPage.css';
 import MatchDetailPage from './MatchDetailPage';
 
@@ -6,38 +6,97 @@ function TeamPage({ currentGame, onGameChange }) {
   const [showAllMatches, setShowAllMatches] = useState(false);
   const [userSubscription] = useState('basic'); // basic, pro, elite
   const [selectedMatch, setSelectedMatch] = useState(null);
+  const [livePlayersData, setLivePlayersData] = useState(null);
+  const [liveMatchesData, setLiveMatchesData] = useState(null);
+  const [loadingPlayers, setLoadingPlayers] = useState(false);
+  const [loadingMatches, setLoadingMatches] = useState(false);
   const gameIndex = ['Valorant', 'Counter Strike', 'Call of Duty', 'Fortnite'].indexOf(currentGame);
+
+  // IDs des Google Sheets
+  const VALORANT_SHEET_ID = '1d6b3E3KEy1TwPRJgjvbgcrDrUbawUkHl9ckpNESyzeg';
+  const COD_SHEET_ID = '1semtK-pmRquxyF88CjpjwmNpwhYezCHaWRKFkX90WkY';
+
+  // Charger les données depuis Google Sheets
+  useEffect(() => {
+    if (currentGame === 'Valorant') {
+      fetchLivePlayersData('valorant', VALORANT_SHEET_ID);
+      fetchLiveMatchesData('valorant', VALORANT_SHEET_ID);
+    } else if (currentGame === 'Call of Duty') {
+      fetchLivePlayersData('cod', COD_SHEET_ID);
+      fetchLiveMatchesData('cod', COD_SHEET_ID);
+    }
+  }, [currentGame]);
+
+  const fetchLivePlayersData = async (game, sheetId) => {
+    try {
+      setLoadingPlayers(true);
+      const response = await fetch(
+        `http://localhost:8000/api/google-sheets/players/${game}?spreadsheetId=${sheetId}`
+      );
+      const data = await response.json();
+      
+      if (data.success) {
+        setLivePlayersData(data.players);
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des stats:', error);
+    } finally {
+      setLoadingPlayers(false);
+    }
+  };
+
+  const fetchLiveMatchesData = async (game, sheetId) => {
+    try {
+      setLoadingMatches(true);
+      const response = await fetch(
+        `http://localhost:8000/api/google-sheets/matches/${game}?spreadsheetId=${sheetId}`
+      );
+      const data = await response.json();
+      
+      if (data.success) {
+        setLiveMatchesData(data.matches);
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des matchs:', error);
+    } finally {
+      setLoadingMatches(false);
+    }
+  };
 
   const gameData = {
     'Valorant': {
       title: 'Valorant - VCT',
-      players: [
-        { name: 'Minny', role: 'Duelist', kd: '1.24', acs: '245' },
-        { name: 'Dipzh', role: 'Controller', kd: '1.08', acs: '198' },
-        { name: 'Buys', role: 'Initiator', kd: '1.15', acs: '215' },
-        { name: 'Marteen', role: 'Sentinel', kd: '0.98', acs: '167' },
-        { name: 'Starxo', role: 'Flex', kd: '1.19', acs: '223' }
-      ],
+      players: livePlayersData ? livePlayersData.map(player => ({
+        name: player.id, // ID = pseudo du joueur
+        role: player.roleSpecific,
+        kd: player.kda?.toFixed(2) || '0.00',
+        acs: player.acs?.toString() || '0',
+        rating: player.rating?.toFixed(2) || '0.00',
+        gamesPlayed: player.gamesPlayed,
+        wins: player.wins,
+        losses: player.losses,
+        nationality: player.nationality
+      })) : [],
       region: '#8 EMEA',
       stats: {
-        parties: 247,
-        winRate: '64%',
+        parties: livePlayersData ? livePlayersData.reduce((sum, p) => sum + p.gamesPlayed, 0) : 0,
+        winRate: livePlayersData ? 
+          `${Math.round((livePlayersData.reduce((sum, p) => sum + p.wins, 0) / 
+          livePlayersData.reduce((sum, p) => sum + p.gamesPlayed, 0) * 100))}%` : '0%',
         formats: 12,
         earning: '$156,420'
       },
       additionalStats: {
-        killsPerRound: '0.89',
-        firstBloods: '18%',
-        clutchRate: '42%',
-        headshot: '28%'
+        avgKDA: livePlayersData ? 
+          (livePlayersData.reduce((sum, p) => sum + (p.kda || 0), 0) / livePlayersData.length).toFixed(2) : '0.00',
+        avgACS: livePlayersData ? 
+          Math.round(livePlayersData.reduce((sum, p) => sum + (p.acs || 0), 0) / livePlayersData.length) : 0,
+        avgRating: livePlayersData ? 
+          (livePlayersData.reduce((sum, p) => sum + (p.rating || 0), 0) / livePlayersData.length).toFixed(2) : '0.00',
+        totalGames: livePlayersData ? 
+          livePlayersData.reduce((sum, p) => sum + p.gamesPlayed, 0) : 0
       },
-      matches: [
-        { date: '28/11', team: 'Gentle Mates', score: '2-1', opponent: 'Team Vitality', tournament: 'VCT EMEA', win: true },
-        { date: '25/11', team: 'Gentle Mates', score: '1-2', opponent: 'Fnatic', tournament: 'VCT EMEA', win: false },
-        { date: '22/11', team: 'Gentle Mates', score: '2-0', opponent: 'KOI', tournament: 'VCT EMEA', win: true },
-        { date: '19/11', team: 'Gentle Mates', score: '2-1', opponent: 'Heretics', tournament: 'VCT EMEA', win: true },
-        { date: '15/11', team: 'Gentle Mates', score: '0-2', opponent: 'Liquid', tournament: 'VCT EMEA', win: false }
-      ],
+      matches: liveMatchesData && liveMatchesData.length > 0 ? liveMatchesData : [],
       ranking: [
         { pos: 1, team: 'Fnatic', points: 450, wins: 28, losses: 12 },
         { pos: 2, team: 'Team Vitality', points: 425, wins: 26, losses: 14 },
@@ -97,32 +156,40 @@ function TeamPage({ currentGame, onGameChange }) {
     },
     'Call of Duty': {
       title: 'Call of Duty - CDL',
-      players: [
-        { name: 'HyDra', role: 'SMG', kd: '1.22', spm: '342' },
-        { name: 'Nastie', role: 'AR', kd: '1.18', spm: '298' },
-        { name: 'Vikul', role: 'Flex', kd: '1.05', spm: '276' },
-        { name: 'Kremp', role: 'AR', kd: '1.11', spm: '289' }
-      ],
+      players: livePlayersData && currentGame === 'Call of Duty' ? livePlayersData.map(player => ({
+        name: player.id, // ID = pseudo du joueur
+        role: player.roleSpecific,
+        kd: player.overallKD?.toFixed(2) || '0.00',
+        spm: 'N/A', // Pas de SPM dans les données Google Sheets
+        gamesPlayed: player.gamesPlayed,
+        wins: player.wins,
+        losses: player.losses,
+        nationality: player.nationality,
+        hpKD: player.hpKD?.toFixed(2) || '0.00',
+        sndKD: player.sndKD?.toFixed(2) || '0.00',
+        olKD: player.olKD?.toFixed(2) || '0.00'
+      })) : [],
       region: '#10 International',
       stats: {
-        parties: 156,
-        winRate: '61%',
+        parties: livePlayersData && currentGame === 'Call of Duty' ? 
+          livePlayersData.reduce((sum, p) => sum + p.gamesPlayed, 0) : 0,
+        winRate: livePlayersData && currentGame === 'Call of Duty' ? 
+          `${Math.round((livePlayersData.reduce((sum, p) => sum + p.wins, 0) / 
+          livePlayersData.reduce((sum, p) => sum + p.gamesPlayed, 0) * 100))}%` : '0%',
         formats: 7,
         earning: '$72,800'
       },
       additionalStats: {
-        hillTime: '142s',
-        sndWins: '67%',
-        ctrlWins: '58%',
-        hardpoint: '62%'
+        avgOverallKD: livePlayersData && currentGame === 'Call of Duty' ? 
+          (livePlayersData.reduce((sum, p) => sum + (p.overallKD || 0), 0) / livePlayersData.length).toFixed(2) : '0.00',
+        avgHpKD: livePlayersData && currentGame === 'Call of Duty' ? 
+          (livePlayersData.reduce((sum, p) => sum + (p.hpKD || 0), 0) / livePlayersData.length).toFixed(2) : '0.00',
+        avgSndKD: livePlayersData && currentGame === 'Call of Duty' ? 
+          (livePlayersData.reduce((sum, p) => sum + (p.sndKD || 0), 0) / livePlayersData.length).toFixed(2) : '0.00',
+        avgOlKD: livePlayersData && currentGame === 'Call of Duty' ? 
+          (livePlayersData.reduce((sum, p) => sum + (p.olKD || 0), 0) / livePlayersData.length).toFixed(2) : '0.00'
       },
-      matches: [
-        { date: '26/11', team: 'Gentle Mates', score: '3-1', opponent: 'OpTic Gaming', tournament: 'CDL Major', win: true },
-        { date: '23/11', team: 'Gentle Mates', score: '2-3', opponent: 'Atlanta FaZe', tournament: 'CDL Major', win: false },
-        { date: '20/11', team: 'Gentle Mates', score: '3-2', opponent: 'LA Thieves', tournament: 'CDL Major', win: true },
-        { date: '17/11', team: 'Gentle Mates', score: '3-0', opponent: 'London Royal Ravens', tournament: 'CDL Major', win: true },
-        { date: '13/11', team: 'Gentle Mates', score: '1-3', opponent: 'New York Subliners', tournament: 'CDL Major', win: false }
-      ],
+      matches: liveMatchesData && liveMatchesData.length > 0 && currentGame === 'Call of Duty' ? liveMatchesData : [],
       ranking: [
         { pos: 1, team: 'Atlanta FaZe', points: 850, wins: 38, losses: 10 },
         { pos: 2, team: 'OpTic Gaming', points: 820, wins: 36, losses: 12 },
@@ -338,28 +405,103 @@ function TeamPage({ currentGame, onGameChange }) {
         </div>
 
         <div className="players-stats-section">
-          <h2 className="section-title">Roster & Stats</h2>
-          <div className="players-grid">
-            {data.players.map((player, index) => (
-              <div key={index} className={`player-card ${currentGame.toLowerCase().replace(' ', '-')}-game`}>
-                <div className="player-avatar">{player.name.charAt(0)}</div>
-                <div className="player-info">
-                  <h3 className="player-name">{player.name}</h3>
-                  <p className="player-role">{player.role}</p>
+          <div className="section-header">
+            <h2 className="section-title">Roster & Stats</h2>
+            {currentGame === 'Valorant' && livePlayersData && (
+              <span className="live-indicator">
+                <span className="live-dot"></span>
+                Données en direct
+              </span>
+            )}
+          </div>
+          {loadingPlayers ? (
+            <div className="loading-players-styled">
+              <div className="loading-animation">
+                <div className="loading-logo">
+                  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <polygon points="30,20 50,60 30,80" fill="#FF4655" className="logo-part-1"/>
+                    <polygon points="50,60 70,20 70,80" fill="#FF4655" className="logo-part-2"/>
+                  </svg>
                 </div>
-                <div className="player-stats">
-                  <div className="player-stat">
-                    <span className="stat-key">{Object.keys(player)[2]}:</span>
-                    <span className="stat-value">{Object.values(player)[2]}</span>
-                  </div>
-                  <div className="player-stat">
-                    <span className="stat-key">{Object.keys(player)[3]}:</span>
-                    <span className="stat-value">{Object.values(player)[3]}</span>
-                  </div>
+                <div className="loading-dots">
+                  <span className="dot"></span>
+                  <span className="dot"></span>
+                  <span className="dot"></span>
                 </div>
               </div>
-            ))}
-          </div>
+              <p className="loading-text">Récupération des stats depuis Google Sheets...</p>
+            </div>
+          ) : data.players.length === 0 ? (
+            <div className="no-data-message">
+              <div className="no-data-icon">📊</div>
+              <h3>Aucune donnée disponible</h3>
+              <p>Les stats des joueurs {currentGame} seront chargées depuis Google Sheets.</p>
+            </div>
+          ) : (
+            <div className="players-grid">
+              {data.players.map((player, index) => (
+                <div key={index} className={`player-card ${currentGame.toLowerCase().replace(' ', '-')}-game`}>
+                  <div className="player-avatar">{player.name.charAt(0)}</div>
+                  <div className="player-info">
+                    <h3 className="player-name">{player.name}</h3>
+                    <p className="player-role">{player.role}</p>
+                    {player.nationality && (
+                      <p className="player-nationality">{player.nationality}</p>
+                    )}
+                  </div>
+                  <div className="player-stats">
+                    {currentGame === 'Call of Duty' ? (
+                      <>
+                        <div className="player-stat">
+                          <span className="stat-key">K/D:</span>
+                          <span className="stat-value">{player.kd}</span>
+                        </div>
+                        {player.hpKD && (
+                          <div className="player-stat">
+                            <span className="stat-key">HP K/D:</span>
+                            <span className="stat-value">{player.hpKD}</span>
+                          </div>
+                        )}
+                        {player.sndKD && (
+                          <div className="player-stat">
+                            <span className="stat-key">SnD K/D:</span>
+                            <span className="stat-value">{player.sndKD}</span>
+                          </div>
+                        )}
+                        {player.wins !== undefined && (
+                          <div className="player-stat">
+                            <span className="stat-key">W/L:</span>
+                            <span className="stat-value">{player.wins}/{player.losses}</span>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <div className="player-stat">
+                          <span className="stat-key">KDA:</span>
+                          <span className="stat-value">{player.kd}</span>
+                        </div>
+                        <div className="player-stat">
+                          <span className="stat-key">ACS:</span>
+                          <span className="stat-value">{player.acs}</span>
+                        </div>
+                        <div className="player-stat">
+                          <span className="stat-key">Rating:</span>
+                          <span className="stat-value">{player.rating}</span>
+                        </div>
+                        {player.wins !== undefined && (
+                          <div className="player-stat">
+                            <span className="stat-key">W/L:</span>
+                            <span className="stat-value">{player.wins}/{player.losses}</span>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="additional-stats-section">
@@ -369,7 +511,15 @@ function TeamPage({ currentGame, onGameChange }) {
               <div key={index} className="advanced-stat-card">
                 <div className="advanced-stat-value">{value}</div>
                 <div className="advanced-stat-label">
-                  {key.replace(/([A-Z])/g, ' $1').trim()}
+                  {key === 'avgKDA' ? 'KDA Moyen' : 
+                   key === 'avgACS' ? 'ACS Moyen' : 
+                   key === 'avgRating' ? 'Rating Moyen' : 
+                   key === 'totalGames' ? 'Matchs Totaux' : 
+                   key === 'avgOverallKD' ? 'K/D Global Moyen' :
+                   key === 'avgHpKD' ? 'K/D Hardpoint Moyen' :
+                   key === 'avgSndKD' ? 'K/D SnD Moyen' :
+                   key === 'avgOlKD' ? 'K/D Control Moyen' :
+                   key.replace(/([A-Z])/g, ' $1').trim()}
                 </div>
               </div>
             ))}

@@ -6,6 +6,15 @@
   color: var(--text-primary);
 }
 
+/* Loading */
+.loading-news {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 18px;
+  color: #7D3CFF;
+  font-weight: 600;
+}
+
 /* Filtres */
 .news-filters {
   background: rgba(255, 255, 255, 0.6);
@@ -301,6 +310,19 @@
 .meta-author {
   font-size: 13px;
   color: #888;
+}
+
+.meta-rating {
+  font-size: 13px;
+  color: #ffd700;
+  font-weight: 600;
+}
+
+.article-stats {
+  font-size: 13px;
+  color: #7D3CFF;
+  margin-bottom: 15px;
+  font-weight: 600;
 }
 
 .read-more-news-btn {

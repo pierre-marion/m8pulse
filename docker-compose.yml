@@ -1,0 +1,84 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: m8pulse_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: m8pulse
+      MYSQL_USER: m8user
+      MYSQL_PASSWORD: m8password
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+    networks:
+      - m8pulse_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: m8pulse_phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    networks:
+      - m8pulse_network
+
+  backend:
+    build:
+      context: ./back-end
+      dockerfile: Dockerfile
+    container_name: m8pulse_backend
+    restart: always
+    environment:
+      DATABASE_URL: mysql://m8user:m8password@db:3306/m8pulse
+      APP_ENV: dev
+      APP_SECRET: VotreCléSecrèteÀModifier
+      JWT_SECRET_KEY: '%kernel.project_dir%/config/jwt/private.pem'
+      JWT_PUBLIC_KEY: '%kernel.project_dir%/config/jwt/public.pem'
+      JWT_PASSPHRASE: votre_passphrase
+    volumes:
+      - ./back-end:/var/www/html
+      - backend_vendor:/var/www/html/vendor
+    ports:
+      - "8000:80"
+    depends_on:
+      - db
+    networks:
+      - m8pulse_network
+
+  frontend:
+    build:
+      context: ./front-end
+      dockerfile: Dockerfile
+    container_name: m8pulse_frontend
+    restart: always
+    environment:
+      REACT_APP_API_URL: http://localhost:8000
+    volumes:
+      - ./front-end:/app
+      - frontend_node_modules:/app/node_modules
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - m8pulse_network
+    stdin_open: true
+    tty: true
+
+volumes:
+  db_data:
+  backend_vendor:
+  frontend_node_modules:
+
+networks:
+  m8pulse_network:
+    driver: bridge
