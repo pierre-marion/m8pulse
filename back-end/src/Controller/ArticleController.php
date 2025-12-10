@@ -92,6 +92,11 @@ class ArticleController extends AbstractController
     #[Route('', name: 'create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
+        // DEBUG: Vérifier si le token arrive
+        $authHeader = $request->headers->get('Authorization');
+        error_log('🔑 Authorization header: ' . ($authHeader ?? 'NULL'));
+        error_log('👤 User: ' . ($this->getUser() ? get_class($this->getUser()) : 'NULL'));
+        
         // Vérifier la permission via le Voter
         $this->denyAccessUnlessGranted('ARTICLE_CREATE');
         
@@ -105,6 +110,7 @@ class ArticleController extends AbstractController
         $article->setTitle($data['title']);
         $article->setSummary($data['summary'] ?? null);
         $article->setType($data['type'] ?? 'standard');
+        $article->setGame($data['game'] ?? 'general');
         $article->setStatus($data['status'] ?? 'draft');
         $article->setAuthor($this->getUser());
         
