@@ -10,13 +10,12 @@ CREATE TABLE users (
     email VARCHAR(180) UNIQUE NOT NULL,
     username VARCHAR(100) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    role ENUM('visitor', 'subscriber', 'author', 'editor', 'designer', 'data_provider', 'admin') DEFAULT 'visitor',
+    roles JSON NOT NULL,
     subscription_level ENUM('bronze', 'silver', 'gold') DEFAULT 'bronze',
     is_active BOOLEAN DEFAULT TRUE,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_email (email),
-    INDEX idx_role (role)
+    INDEX idx_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Table datasets pour les données CSV/JSON
@@ -48,10 +47,12 @@ CREATE TABLE articles (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     summary TEXT NOT NULL,
-    type ENUM('classic', 'dashboard') DEFAULT 'classic',
+    type VARCHAR(50) NOT NULL DEFAULT 'standard',
+    game VARCHAR(50) DEFAULT 'general',
     author_id INT NOT NULL,
+    theme_id INT NULL,
     status ENUM('draft', 'review', 'published', 'archived') DEFAULT 'draft',
-    blocks JSON NOT NULL, -- Structure: [{"type": "title|text|image|visualization", "content": {...}}]
+    blocks JSON NULL,
     view_count INT DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME ON UPDATE CURRENT_TIMESTAMP,
@@ -59,6 +60,7 @@ CREATE TABLE articles (
     FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE,
     INDEX idx_status (status),
     INDEX idx_type (type),
+    INDEX idx_game (game),
     INDEX idx_author (author_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -67,12 +69,27 @@ CREATE TABLE ratings (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     article_id INT NOT NULL,
-    block_index INT NOT NULL,
-    stars INT CHECK (stars >= 0 AND stars <= 5),
-    comment TEXT,
+    stars INT CHECK (stars >= 1 AND stars <= 5),
+    comment TEXT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE
+    FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_user_article (user_id, article_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Table comments (commentaires sur les articles)
+CREATE TABLE comments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    article_id INT NOT NULL,
+    user_id INT NOT NULL,
+    content TEXT NOT NULL,
+    is_edited BOOLEAN DEFAULT FALSE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_article (article_id),
+    INDEX idx_user (user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Données de démonstration
