@@ -27,6 +27,12 @@ function Header({ currentPage, setCurrentPage, user }) {
           Equipe
         </button>
         <button 
+          className={`nav-btn ${currentPage === 'joueurs' ? 'active' : ''}`}
+          onClick={() => setCurrentPage('joueurs')}
+        >
+          Joueurs
+        </button>
+        <button 
           className={`nav-btn ${currentPage === 'abonnement' ? 'active' : ''}`}
           onClick={() => setCurrentPage('abonnement')}
         >

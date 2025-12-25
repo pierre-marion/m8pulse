@@ -12,6 +12,7 @@ import DashboardPage from './components/DashboardPage';
 import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
 import ProfilePage from './components/ProfilePage';
+import PlayersPage from './components/PlayersPage';
 import { DarkModeProvider } from './contexts/DarkModeContext';
 
 function App() {
@@ -86,6 +87,8 @@ function App() {
         return <GamesPage currentGame={games[currentGame]} />;
       case 'equipe':
         return <TeamPage currentGame={games[currentGame]} onGameChange={setCurrentGame} />;
+      case 'joueurs':
+        return <PlayersPage />;
       case 'news':
         return <NewsPage onArticleClick={(id) => {
           setSelectedArticleId(id);
