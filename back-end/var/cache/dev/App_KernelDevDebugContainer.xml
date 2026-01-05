@@ -340,6 +340,19 @@
         <argument>Crée les 3 comptes administrateurs : Hugo, Pierre et Nathan</argument>
       </call>
     </service>
+    <service id="App\Command\CreateUserCommand" class="App\Command\CreateUserCommand" autowire="true" autoconfigure="true">
+      <tag name="console.command" command="app:create-user" description="Crée un utilisateur avec des rôles personnalisés" help=""/>
+      <tag name="console.command"/>
+      <tag name="container.no_preload"/>
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+      <argument type="service" id="security.user_password_hasher"/>
+      <call method="setName">
+        <argument>app:create-user</argument>
+      </call>
+      <call method="setDescription">
+        <argument>Crée un utilisateur avec des rôles personnalisés</argument>
+      </call>
+    </service>
     <service id="App\Controller\ArticleController" class="App\Controller\ArticleController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
       <tag name="container.service_subscriber"/>
@@ -5618,6 +5631,9 @@
     <service id=".instanceof.Symfony\Component\Console\Command\Command.0.App\Command\CreateAdminsCommand" class="App\Command\CreateAdminsCommand" autowire="true" abstract="true"/>
     <service id=".instanceof.App\Command\CreateAdminsCommand.0.App\Command\CreateAdminsCommand" class="App\Command\CreateAdminsCommand" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Command\CreateAdminsCommand" class="App\Command\CreateAdminsCommand" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Component\Console\Command\Command.0.App\Command\CreateUserCommand" class="App\Command\CreateUserCommand" autowire="true" abstract="true"/>
+    <service id=".instanceof.App\Command\CreateUserCommand.0.App\Command\CreateUserCommand" class="App\Command\CreateUserCommand" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Command\CreateUserCommand" class="App\Command\CreateUserCommand" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\ArticleController" class="App\Controller\ArticleController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\ArticleController" class="App\Controller\ArticleController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Controller\ArticleController" class="App\Controller\ArticleController" autowire="true" autoconfigure="true" abstract="true"/>
@@ -6686,6 +6702,13 @@
       <argument>false</argument>
       <argument type="service_closure" id="App\Command\CreateAdminsCommand"/>
     </service>
+    <service id=".App\Command\CreateUserCommand.lazy" class="Symfony\Component\Console\Command\LazyCommand">
+      <argument>app:create-user</argument>
+      <argument type="collection"/>
+      <argument>Crée un utilisateur avec des rôles personnalisés</argument>
+      <argument>false</argument>
+      <argument type="service_closure" id="App\Command\CreateUserCommand"/>
+    </service>
     <service id=".console.command.about.lazy" class="Symfony\Component\Console\Command\LazyCommand">
       <argument>about</argument>
       <argument type="collection"/>
@@ -7246,10 +7269,11 @@
     </service>
     <service id="console.command_loader" class="Symfony\Component\Console\CommandLoader\ContainerCommandLoader" public="true">
       <tag name="container.no_preload"/>
-      <argument type="service" id=".service_locator.6_VxXlM"/>
+      <argument type="service" id=".service_locator.uUVuvEp"/>
       <argument type="collection">
         <argument key="app:create-admin">App\Command\CreateAdminCommand</argument>
         <argument key="app:create-admins">App\Command\CreateAdminsCommand</argument>
+        <argument key="app:create-user">App\Command\CreateUserCommand</argument>
         <argument key="about">console.command.about</argument>
         <argument key="assets:install">console.command.assets_install</argument>
         <argument key="cache:clear">console.command.cache_clear</argument>
@@ -7352,11 +7376,12 @@
         <argument key="make:webhook">maker.auto_command.make_webhook</argument>
       </argument>
     </service>
-    <service id=".service_locator.6_VxXlM" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.uUVuvEp" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Command\CreateAdminCommand" type="service_closure" id=".App\Command\CreateAdminCommand.lazy"/>
         <argument key="App\Command\CreateAdminsCommand" type="service_closure" id=".App\Command\CreateAdminsCommand.lazy"/>
+        <argument key="App\Command\CreateUserCommand" type="service_closure" id=".App\Command\CreateUserCommand.lazy"/>
         <argument key="console.command.about" type="service_closure" id=".console.command.about.lazy"/>
         <argument key="console.command.assets_install" type="service_closure" id=".console.command.assets_install.lazy"/>
         <argument key="console.command.cache_clear" type="service_closure" id=".console.command.cache_clear.lazy"/>
