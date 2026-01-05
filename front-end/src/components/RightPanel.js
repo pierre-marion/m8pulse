@@ -59,58 +59,57 @@ function RightPanel({ currentGame, onDashboardClick, user, onLogout, onLoginClic
   return (
     <div className="right-panel">
       <div className="panel-section profils-section">
-        <div className="profile-container">
-          {/* Single Row: Avatar + Badge + Icons */}
-          <div className="profile-single-row">
-            <div className="profile-avatar">
-              <div className="avatar-circle" style={{ background: `linear-gradient(135deg, ${getGameColor()}, ${getGameColor()}dd)` }}>
-                <span className="avatar-initial">
-                  {user ? user.username.charAt(0).toUpperCase() : 'G'}
-                </span>
-              </div>
+        <div className="profile-header">
+          <div className="profile-avatar">
+            <div className="avatar-circle" style={{ background: `linear-gradient(135deg, ${getGameColor()}, ${getGameColor()}dd)` }}>
+              <span className="avatar-initial">
+                {user ? user.username.charAt(0).toUpperCase() : 'G'}
+              </span>
               {user && <div className="online-indicator"></div>}
             </div>
-            
-            {user ? (
-              <div className="user-info-compact">
-                <span className="username-text">{user.username}</span>
-                <button 
-                  className="logout-btn-compact"
-                  onClick={onLogout}
-                  title="Se déconnecter"
-                >
-                  🚪
-                </button>
-              </div>
-            ) : (
-              <button 
-                className="login-btn-compact"
-                onClick={onLoginClick}
-              >
-                Se connecter
-              </button>
-            )}
-            
-            <div className="profile-actions">
-              {user && user.roles?.includes('ROLE_ADMIN') && (
-                <button 
-                  className="dashboard-btn"
-                  onClick={onDashboardClick}
-                  title="Dashboard Admin"
-                >
-                  <span>📊</span>
-                </button>
-              )}
-              <button 
-                className={`action-icon-btn ${isDarkMode ? 'active' : ''}`}
-                onClick={toggleDarkMode}
-                title={isDarkMode ? "Mode clair" : "Mode sombre"}
-              >
-                <span>{isDarkMode ? '☀️' : '🌙'}</span>
-              </button>
-            </div>
           </div>
+          
+          <div className="profile-info">
+            <div className="username-text">{user ? user.username : 'Invité'}</div>
+          </div>
+          
+          <button 
+            className="action-btn-profile btn-theme"
+            onClick={toggleDarkMode}
+            title={isDarkMode ? "Mode clair" : "Mode sombre"}
+          >
+            {isDarkMode ? '☀️' : '🌙'}
+          </button>
+          
+          {user ? (
+            <button 
+              className="action-btn-profile btn-logout"
+              onClick={onLogout}
+              title="Déconnexion"
+            >
+              🚪
+            </button>
+          ) : (
+            <button 
+              className="action-btn-profile btn-login"
+              onClick={onLoginClick}
+              title="Connexion"
+            >
+              👤
+            </button>
+          )}
         </div>
+        
+        {user && user.roles?.includes('ROLE_ADMIN') && (
+          <div className="profile-actions-grid">
+            <button 
+              className="action-btn-profile btn-dashboard"
+              onClick={onDashboardClick}
+            >
+              📊 Admin
+            </button>
+          </div>
+        )}
       </div>
       
       <div className="panel-section stats-section">

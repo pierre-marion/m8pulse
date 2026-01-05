@@ -1,0 +1,64 @@
+.viz-builder {
+    background: var(--bg-secondary);
+    padding: 2rem;
+    border-radius: 12px;
+}
+
+.viz-builder h3 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+}
+
+.viz-builder h4 {
+    margin: 1.5rem 0 1rem 0;
+    color: var(--text-primary);
+}
+
+.config-section {
+    background: var(--bg-primary);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-top: 1.5rem;
+}
+
+.color-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+.color-picker-grid input[type="color"] {
+    width: 100%;
+    height: 50px;
+    border: 2px solid var(--border-color, #ddd);
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.builder-actions {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-save-viz {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: transform 0.2s;
+}
+
+.btn-save-viz:hover:not(:disabled) {
+    transform: translateY(-2px);
+}
+
+.btn-save-viz:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

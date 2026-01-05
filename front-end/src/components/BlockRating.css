@@ -1,0 +1,47 @@
+.block-rating {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-top: 1px solid var(--border-color, #e0e0e0);
+    margin-top: 1rem;
+}
+
+.stars-container {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.star {
+    font-size: 1.5rem;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
+    user-select: none;
+}
+
+.star.filled {
+    color: #f39c12;
+}
+
+.star:hover {
+    transform: scale(1.2);
+}
+
+.rating-info {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.rating-info .average {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.rating-info .count {
+    opacity: 0.7;
+}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './NewsPage.css';
 
-function NewsPage({ onArticleClick }) {
+function NewsPage({ onArticleClick, user, onNavigate }) {
   const [selectedCategory, setSelectedCategory] = useState('Tous');
   const [selectedGame, setSelectedGame] = useState('Tous');
   const [articles, setArticles] = useState([]);
@@ -25,8 +25,8 @@ function NewsPage({ onArticleClick }) {
     }
   };
 
-  const categories = ['Tous', 'standard', 'data-story', 'analysis', 'interview', 'news'];
-  const games = ['Tous', 'valorant', 'cs2', 'cod', 'fortnite', 'general'];
+  const categories = ['Tous', 'standard', 'news', 'analysis', 'interview', 'data-story'];
+  const games = ['Tous', 'valorant', 'cs2', 'cod', 'general'];
 
   const getTypeLabel = (type) => {
     const labels = {
@@ -99,6 +99,21 @@ function NewsPage({ onArticleClick }) {
 
   return (
     <div className="news-page">
+      <div className="news-page-header">
+        <div>
+          <h1 className="news-page-title">Blog & Actualités</h1>
+          <p className="news-page-subtitle">Découvrez les dernières actualités eSport</p>
+        </div>
+        {user && user.roles?.includes('ROLE_ADMIN') && (
+          <button 
+            className="btn-manage-articles"
+            onClick={() => onNavigate && onNavigate('blog-editor')}
+          >
+            ✏️ Gérer les Articles
+          </button>
+        )}
+      </div>
+
       {/* Filtres */}
       <div className="news-filters">
         <div className="filter-group">

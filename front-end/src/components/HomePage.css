@@ -606,14 +606,45 @@
 }
 
 /* Dark Mode Enhancements */
+body.dark-mode .home-page {
+  background: transparent;
+}
+
+body.dark-mode .home-hero {
+  background: linear-gradient(135deg, rgba(157, 108, 255, 0.12) 0%, rgba(157, 108, 255, 0.06) 50%, rgba(157, 108, 255, 0.12) 100%);
+  border-bottom-color: rgba(157, 108, 255, 0.3);
+}
+
+body.dark-mode .hero-overlay {
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 50px,
+    rgba(157, 108, 255, 0.08) 50px,
+    rgba(157, 108, 255, 0.08) 51px
+  );
+}
+
+body.dark-mode .hero-tag {
+  background: rgba(157, 108, 255, 0.2);
+  border-color: rgba(157, 108, 255, 0.4);
+}
+
+body.dark-mode .hero-tag:hover {
+  background: rgba(157, 108, 255, 0.3);
+  border-color: rgba(157, 108, 255, 0.6);
+}
+
 body.dark-mode .stat-card,
 body.dark-mode .content-section,
 body.dark-mode .news-card-home,
 body.dark-mode .result-card-home,
 body.dark-mode .match-card-home,
 body.dark-mode .featured-player {
-  background: rgba(30, 30, 45, 0.6);
-  border-color: rgba(125, 60, 255, 0.3);
+  background: linear-gradient(135deg, rgba(35, 35, 55, 0.85), rgba(30, 30, 50, 0.85));
+  backdrop-filter: blur(15px);
+  border-color: rgba(157, 108, 255, 0.25);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
 }
 
 body.dark-mode .stat-card:hover,
@@ -622,8 +653,9 @@ body.dark-mode .news-card-home:hover,
 body.dark-mode .result-card-home:hover,
 body.dark-mode .match-card-home:hover,
 body.dark-mode .featured-player:hover {
-  background: rgba(125, 60, 255, 0.15);
-  border-color: rgba(125, 60, 255, 0.5);
+  background: linear-gradient(135deg, rgba(157, 108, 255, 0.25), rgba(125, 60, 255, 0.25));
+  border-color: rgba(157, 108, 255, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 60px rgba(157, 108, 255, 0.25);
 }
 
 body.dark-mode .hero-subtitle,
@@ -642,7 +674,8 @@ body.dark-mode .section-title-home {
 body.dark-mode .stat-value,
 body.dark-mode .stat-value-home,
 body.dark-mode .result-score {
-  color: #9D5CFF;
+  color: #9D6CFF;
+  text-shadow: 0 0 10px rgba(157, 108, 255, 0.3);
 }
 
 @media (max-width: 1200px) {

@@ -9,10 +9,16 @@ import NewsPage from './components/NewsPage';
 import ArticleDetail from './components/ArticleDetail';
 import SubscriptionPage from './components/SubscriptionPage';
 import DashboardPage from './components/DashboardPage';
+import AdminDashboard from './components/AdminDashboard';
+import BlogEditorBlocks from './components/BlogEditorBlocks';
+import DatasetManager from './components/DatasetManager';
+import ThemeDesigner from './components/ThemeDesigner';
 import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
 import ProfilePage from './components/ProfilePage';
 import PlayersPage from './components/PlayersPage';
+import ThemeToggle from './components/ThemeToggle';
+import { ThemeProvider } from './contexts/ThemeContext';
 import { DarkModeProvider } from './contexts/DarkModeContext';
 
 function App() {
@@ -23,6 +29,19 @@ function App() {
   const [authMode, setAuthMode] = useState('login'); // 'login' ou 'register'
 
   const games = ['Valorant', 'Counter Strike', 'Call of Duty', 'Fortnite'];
+
+  // Gérer navigation par hash
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.substring(1);
+      if (hash) setCurrentPage(hash);
+    };
+    
+    window.addEventListener('hashchange', handleHashChange);
+    handleHashChange();
+    
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   // Vérifier si l'utilisateur est connecté au chargement
   useEffect(() => {
@@ -90,10 +109,14 @@ function App() {
       case 'joueurs':
         return <PlayersPage />;
       case 'news':
-        return <NewsPage onArticleClick={(id) => {
-          setSelectedArticleId(id);
-          setCurrentPage('article');
-        }} />;
+        return <NewsPage 
+          onArticleClick={(id) => {
+            setSelectedArticleId(id);
+            setCurrentPage('article');
+          }}
+          user={user}
+          onNavigate={setCurrentPage}
+        />;
       case 'article':
         return <ArticleDetail 
           articleId={selectedArticleId} 
@@ -102,39 +125,60 @@ function App() {
       case 'abonnement':
         return <SubscriptionPage />;
       case 'dashboard':
-        // Vérifier si l'utilisateur est admin
+      case 'admin':
         if (!user || !user.roles?.includes('ROLE_ADMIN')) {
           setCurrentPage('accueil');
           return <HomePage />;
         }
-        return <DashboardPage currentGame={games[currentGame]} />;
+        return <AdminDashboard user={user} onBack={() => setCurrentPage('accueil')} />;
+      case 'blog-editor':
+        if (!user || !user.roles?.includes('ROLE_AUTHOR')) {
+          setCurrentPage('accueil');
+          return <HomePage />;
+        }
+        return <BlogEditorBlocks onBack={() => setCurrentPage('news')} />;
+      case 'datasets':
+        if (!user || !user.roles?.includes('ROLE_DATA_PROVIDER')) {
+          setCurrentPage('accueil');
+          return <HomePage />;
+        }
+        return <DatasetManager />;
+      case 'theme-designer':
+        if (!user || !user.roles?.includes('ROLE_DESIGNER')) {
+          setCurrentPage('accueil');
+          return <HomePage />;
+        }
+        return <ThemeDesigner />;
       default:
         return <HomePage />;
     }
   };
 
   return (
-    <DarkModeProvider>
-      <div className="App">
-        <div className="app-body">
-          <div className="main-section">
-            <Header 
-              currentPage={currentPage} 
-              setCurrentPage={setCurrentPage}
+    <ThemeProvider>
+      <DarkModeProvider>
+        <div className="App">
+          <ThemeToggle />
+          <div className="app-body">
+            <div className="main-section">
+              <Header 
+                currentPage={currentPage} 
+                setCurrentPage={setCurrentPage}
+                user={user}
+              />
+              {renderPage()}
+            </div>
+            <RightPanel 
+              currentGame={games[currentGame]} 
+              onDashboardClick={() => setCurrentPage('dashboard')}
               user={user}
+              onLogout={handleLogout}
+              onLoginClick={() => setCurrentPage('login')}
             />
-            {renderPage()}
           </div>
-          <RightPanel 
-            currentGame={games[currentGame]} 
-            onDashboardClick={() => setCurrentPage('dashboard')}
-            user={user}
-            onLogout={handleLogout}
-            onLoginClick={() => setCurrentPage('login')}
-          />
         </div>
-      </div>
-    </DarkModeProvider>
+      </DarkModeProvider>
+    </ThemeProvider>
   );
 }
 
