@@ -70,13 +70,13 @@
   border-radius: 50%;
   font-size: 11px;
   font-weight: 600;
-  background: #fff;
-  color: var(--text-primary);
+  background: rgba(245, 245, 245, 0.9);
+  color: #333;
   cursor: pointer;
   transition: all 0.2s ease;
   width: 100%;
   height: auto;
-  border: 2px solid transparent;
+  border: 2px solid rgba(0, 0, 0, 0.05);
   font-family: var(--font-body);
 }
 
@@ -102,4 +102,41 @@
 .calendar-day:not(.empty):not(.today):hover {
   background: var(--background-main);
   transform: scale(1.05);
+}
+
+/* Dark Mode Support */
+body.dark-mode .calendar-day {
+  background: rgba(50, 50, 70, 0.5) !important;
+  color: #ffffff !important;
+  border-color: rgba(157, 108, 255, 0.2) !important;
+}
+
+body.dark-mode .calendar-day.empty {
+  background: transparent;
+  border: none;
+}
+
+body.dark-mode .calendar-day.has-match {
+  background: rgba(157, 108, 255, 0.3);
+  color: #ffffff;
+  border-color: rgba(157, 108, 255, 0.6);
+}
+
+body.dark-mode .calendar-day.today {
+  background: rgba(255, 70, 85, 0.8);
+  color: #ffffff;
+  border-color: #FF4655;
+}
+
+body.dark-mode .calendar-day:not(.empty):not(.today):hover {
+  background: rgba(157, 108, 255, 0.4);
+  border-color: rgba(157, 108, 255, 0.5);
+}
+
+body.dark-mode .calendar-month {
+  color: var(--text-primary);
+}
+
+body.dark-mode .calendar-day-name {
+  color: var(--text-secondary);
 }

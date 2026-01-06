@@ -7,7 +7,7 @@ security:
         app_user_provider:
             entity:
                 class: App\Entity\User
-                property: username
+                property: email
 
     firewalls:
         dev:
@@ -52,9 +52,9 @@ security:
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
     role_hierarchy:
-        ROLE_SUBSCRIBER: ROLE_VISITOR
+        ROLE_SUBSCRIBER: ROLE_USER
         ROLE_AUTHOR: ROLE_SUBSCRIBER
         ROLE_EDITOR: ROLE_AUTHOR
         ROLE_DESIGNER: ROLE_USER
-        ROLE_PROVIDER: ROLE_USER
-        ROLE_ADMIN: [ROLE_EDITOR, ROLE_DESIGNER, ROLE_PROVIDER]
+        ROLE_DATA_PROVIDER: ROLE_USER
+        ROLE_ADMIN: [ROLE_EDITOR, ROLE_DESIGNER, ROLE_DATA_PROVIDER]

@@ -51,15 +51,36 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
+body.dark-mode .nav-btn {
+  background: linear-gradient(135deg, rgba(40, 40, 60, 0.8), rgba(35, 35, 55, 0.8));
+  color: #b0b0b0;
+  border: 1px solid rgba(157, 108, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
 .nav-btn.active {
   background: var(--primary-color);
   color: #fff;
   box-shadow: 0 4px 12px rgba(125, 60, 255, 0.3);
 }
 
+body.dark-mode .nav-btn.active {
+  background: linear-gradient(135deg, rgba(157, 108, 255, 0.9), rgba(125, 60, 255, 0.9));
+  color: #ffffff;
+  border-color: rgba(157, 108, 255, 0.6);
+  box-shadow: 0 4px 16px rgba(157, 108, 255, 0.5);
+}
+
 .nav-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(125, 60, 255, 0.3);
+}
+
+body.dark-mode .nav-btn:hover {
+  background: linear-gradient(135deg, rgba(157, 108, 255, 0.35), rgba(125, 60, 255, 0.35));
+  color: #ffffff;
+  border-color: rgba(157, 108, 255, 0.5);
+  box-shadow: 0 4px 16px rgba(157, 108, 255, 0.4);
 }
 
 .header-user {

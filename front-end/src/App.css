@@ -5,6 +5,11 @@
   flex-direction: column;
   overflow: hidden;
   padding: 20px;
+  transition: background 0.5s ease;
+}
+
+body.dark-mode .App {
+  background: linear-gradient(135deg, #0a0a0f 0%, #15151f 50%, #1a1a2e 100%);
 }
 
 .app-body {
@@ -15,6 +20,10 @@
   min-height: 0;
 }
 
+body.dark-mode .app-body {
+  background: transparent;
+}
+
 .main-section {
   flex: 1;
   display: flex;
@@ -22,4 +31,8 @@
   gap: 15px;
   overflow-y: auto;
   min-height: 0;
+}
+
+body.dark-mode .main-section {
+  background: transparent;
 }
