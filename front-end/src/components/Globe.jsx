@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
+import React, { useEffect, useRef, forwardRef, useImperativeHandle, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import gsap from 'gsap';
@@ -16,6 +16,12 @@ const Globe = forwardRef(({ onPlayerSelect, selectedPlayer }, ref) => {
   const capitalMeshesRef = useRef([]);
   const allPointMeshesRef = useRef([]);
   const selectedPointRef = useRef(null);
+  const [isZoomed, setIsZoomed] = useState(false);
+  const setIsZoomedRef = useRef(setIsZoomed);
+
+  useEffect(() => {
+    setIsZoomedRef.current = setIsZoomed;
+  }, [setIsZoomed]);
 
   useEffect(() => {
     if (!canvasRef.current || !containerRef.current) return;
@@ -49,7 +55,7 @@ const Globe = forwardRef(({ onPlayerSelect, selectedPlayer }, ref) => {
     controls.enablePan = false;
     controls.enableRotate = true;
     controls.autoRotate = true;
-    controls.autoRotateSpeed = 0.3;
+    controls.autoRotateSpeed = 0.8;
     controlsRef.current = controls;
 
     const globeRadius = 100;
@@ -222,6 +228,33 @@ const Globe = forwardRef(({ onPlayerSelect, selectedPlayer }, ref) => {
         console.log(`Point cliqué - Coordonnées: x=${point.userData.coordinates.x}, y=${point.userData.coordinates.y}`);
         
         if (point.userData.isCapital && point.userData.name && onPlayerSelect) {
+          // Arrêter l'auto-rotation
+          controls.autoRotate = false;
+          
+          // Calculer la position de la caméra pour faire face à la ville
+          const pointPosition = point.position.clone();
+          const distance = 150; // Distance du zoom
+          
+          // Calculer la direction de la caméra vers le point
+          const direction = pointPosition.clone().normalize();
+          const newCameraPosition = direction.multiplyScalar(distance);
+          
+          // Animer la caméra vers la nouvelle position
+          gsap.to(camera.position, {
+            x: newCameraPosition.x,
+            y: newCameraPosition.y,
+            z: newCameraPosition.z,
+            duration: 1.5,
+            ease: "power2.inOut",
+            onUpdate: () => {
+              camera.lookAt(0, 0, 0);
+              controls.update();
+            },
+            onComplete: () => {
+              setIsZoomedRef.current(true);
+            }
+          });
+          
           onPlayerSelect(point.userData.name);
         }
       }
@@ -282,6 +315,7 @@ const Globe = forwardRef(({ onPlayerSelect, selectedPlayer }, ref) => {
         const camera = cameraRef.current;
         
         controls.autoRotate = true;
+        setIsZoomed(false);
         
         if (selectedPointRef.current) {
           selectedPointRef.current.material.color.setHex(selectedPointRef.current.userData.originalColor);
@@ -291,8 +325,8 @@ const Globe = forwardRef(({ onPlayerSelect, selectedPlayer }, ref) => {
         gsap.to(camera.position, {
           x: 0,
           y: 0,
-          z: -350,
-          duration: 2,
+          z: -300,
+          duration: 1.5,
           ease: "power2.inOut",
           onUpdate: () => {
             camera.lookAt(0, 0, 0);
@@ -303,9 +337,47 @@ const Globe = forwardRef(({ onPlayerSelect, selectedPlayer }, ref) => {
     }
   }));
 
+  const handleResetZoom = () => {
+    if (cameraRef.current && controlsRef.current) {
+      const controls = controlsRef.current;
+      const camera = cameraRef.current;
+      
+      controls.autoRotate = true;
+      setIsZoomed(false);
+      
+      if (selectedPointRef.current) {
+        selectedPointRef.current.material.color.setHex(selectedPointRef.current.userData.originalColor);
+        selectedPointRef.current = null;
+      }
+      
+      gsap.to(camera.position, {
+        x: 0,
+        y: 0,
+        z: -300,
+        duration: 1.5,
+        ease: "power2.inOut",
+        onUpdate: () => {
+          camera.lookAt(0, 0, 0);
+          controls.update();
+        }
+      });
+
+      // Réinitialiser la ville sélectionnée
+      if (onPlayerSelect) {
+        onPlayerSelect(null);
+      }
+    }
+  };
+
   return (
     <div className="globe-container" ref={containerRef}>
       <canvas ref={canvasRef}></canvas>
+      {isZoomed && (
+        <button className="reset-zoom-btn" onClick={handleResetZoom} title="Retour à la vue globale">
+          <span className="reset-icon">↺</span>
+          <span className="reset-text">Vue Globale</span>
+        </button>
+      )}
     </div>
   );
 });

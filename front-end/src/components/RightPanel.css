@@ -974,3 +974,181 @@ body.dark-mode .panel-title-center {
   text-shadow: 0 2px 8px rgba(157, 108, 255, 0.3);
 }
 
+/* Styles spécifiques pour la page joueurs */
+.no-city-selected {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+}
+
+body.dark-mode .no-city-selected {
+  color: #aaa;
+}
+
+.globe-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+  opacity: 0.5;
+}
+
+.no-city-selected h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #333;
+  font-weight: 700;
+}
+
+body.dark-mode .no-city-selected h3 {
+  color: #fff;
+}
+
+.no-city-selected p {
+  font-size: 14px;
+  opacity: 0.7;
+  line-height: 1.6;
+}
+
+.player-name-hex {
+  font-size: 10px;
+  font-weight: 600;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 5px;
+}
+
+body.dark-mode .player-name-hex {
+  color: #fff;
+}
+
+.player-fullname-text {
+  font-size: 12px;
+  font-weight: 400;
+  color: #888;
+  margin-bottom: 8px;
+  font-style: italic;
+}
+
+body.dark-mode .player-fullname-text {
+  color: #999;
+}
+
+.player-game-text {
+  font-size: 11px;
+  font-weight: 600;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+body.dark-mode .player-game-text {
+  color: #888;
+}
+
+.details-section-players {
+  padding: 15px !important;
+}
+
+.player-description-panel {
+  padding: 15px;
+  background: rgba(125, 60, 255, 0.05);
+  border-radius: 12px;
+  border-left: 4px solid #7D3CFF;
+  margin-bottom: 15px;
+}
+
+body.dark-mode .player-description-panel {
+  background: rgba(157, 108, 255, 0.1);
+  border-left-color: #9D6CFF;
+}
+
+.player-description-panel p {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #555;
+  margin: 0;
+}
+
+body.dark-mode .player-description-panel p {
+  color: #ccc;
+}
+
+.player-stats-highlight {
+  background: linear-gradient(135deg, rgba(125, 60, 255, 0.1), rgba(125, 60, 255, 0.05));
+  border-radius: 12px;
+  padding: 15px;
+  border: 2px solid rgba(125, 60, 255, 0.2);
+}
+
+body.dark-mode .player-stats-highlight {
+  background: linear-gradient(135deg, rgba(157, 108, 255, 0.15), rgba(157, 108, 255, 0.08));
+  border-color: rgba(157, 108, 255, 0.3);
+}
+
+.stat-highlight-row {
+  display: flex;
+  gap: 10px;
+  justify-content: space-around;
+}
+
+.stat-highlight-item {
+  flex: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.stat-highlight-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+body.dark-mode .stat-highlight-label {
+  color: #aaa;
+}
+
+.stat-highlight-value {
+  font-size: 28px;
+  font-weight: 900;
+  text-shadow: 0 2px 15px currentColor;
+}
+
+/* Style pour le message dans la section planning */
+.no-city-selected-planning {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+}
+
+body.dark-mode .no-city-selected-planning {
+  color: #aaa;
+}
+
+.no-city-selected-planning .globe-icon {
+  font-size: 48px;
+  margin-bottom: 15px;
+  opacity: 0.5;
+}
+
+.no-city-selected-planning h3 {
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: 700;
+}
+
+body.dark-mode .no-city-selected-planning h3 {
+  color: #fff;
+}
+
+.no-city-selected-planning p {
+  font-size: 13px;
+  opacity: 0.7;
+  line-height: 1.6;
+}
+

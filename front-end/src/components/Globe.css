@@ -13,3 +13,85 @@
   width: 100%;
   height: 100%;
 }
+/* Bouton de reset du zoom */
+.reset-zoom-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #7D3CFF, #9D6CFF);
+  border: none;
+  border-radius: 25px;
+  color: white;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 20px rgba(125, 60, 255, 0.4);
+  transition: all 0.3s ease;
+  z-index: 100;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.reset-zoom-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(125, 60, 255, 0.6);
+  background: linear-gradient(135deg, #8D4CFF, #AD7CFF);
+}
+
+.reset-zoom-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 15px rgba(125, 60, 255, 0.4);
+}
+
+.reset-icon {
+  font-size: 20px;
+  font-weight: 900;
+  animation: rotateIcon 2s ease-in-out infinite;
+}
+
+@keyframes rotateIcon {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-15deg);
+  }
+  75% {
+    transform: rotate(15deg);
+  }
+}
+
+.reset-text {
+  font-size: 12px;
+}
+
+body.dark-mode .reset-zoom-btn {
+  background: linear-gradient(135deg, #9D6CFF, #BD8CFF);
+  box-shadow: 0 4px 20px rgba(157, 108, 255, 0.5);
+}
+
+body.dark-mode .reset-zoom-btn:hover {
+  background: linear-gradient(135deg, #AD7CFF, #CD9CFF);
+  box-shadow: 0 6px 25px rgba(157, 108, 255, 0.7);
+}
+
+@media (max-width: 768px) {
+  .reset-zoom-btn {
+    top: 10px;
+    right: 10px;
+    padding: 10px 16px;
+    font-size: 12px;
+  }
+  
+  .reset-icon {
+    font-size: 18px;
+  }
+  
+  .reset-text {
+    display: none;
+  }
+}

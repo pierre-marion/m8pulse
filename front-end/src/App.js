@@ -27,6 +27,7 @@ function App() {
   const [currentGame, setCurrentGame] = useState(0); // 0: Valorant, 1: CS, 2: COD, 3: Fortnite
   const [user, setUser] = useState(null);
   const [authMode, setAuthMode] = useState('login'); // 'login' ou 'register'
+  const [selectedCity, setSelectedCity] = useState(null);
 
   const games = ['Valorant', 'Counter Strike', 'Call of Duty', 'Fortnite'];
 
@@ -107,7 +108,14 @@ function App() {
       case 'equipe':
         return <TeamPage currentGame={games[currentGame]} onGameChange={setCurrentGame} />;
       case 'joueurs':
-        return <PlayersPage />;
+        return <PlayersPage 
+          user={user}
+          onLogout={handleLogout}
+          onLoginClick={() => setCurrentPage('login')}
+          onDashboardClick={() => setCurrentPage('dashboard')}
+          onCitySelect={setSelectedCity}
+          onPlayerSelectFromPanel={setSelectedCity}
+        />;
       case 'news':
         return <NewsPage 
           onArticleClick={(id) => {
@@ -174,6 +182,9 @@ function App() {
               user={user}
               onLogout={handleLogout}
               onLoginClick={() => setCurrentPage('login')}
+              currentPage={currentPage}
+              selectedCity={selectedCity}
+              onPlayerClick={currentPage === 'joueurs' ? setSelectedCity : null}
             />
           </div>
         </div>
