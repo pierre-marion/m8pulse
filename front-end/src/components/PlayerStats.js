@@ -20,9 +20,9 @@ const PlayerStats = ({ game = 'valorant', spreadsheetId, autoRefresh = false }) 
   useEffect(() => {
     fetchStats();
 
-    // Auto-refresh toutes les 5 minutes si activé
+    // Auto-refresh toutes les 15 minutes si activé (optimisé pour réduire la charge)
     if (autoRefresh) {
-      const interval = setInterval(fetchStats, 5 * 60 * 1000);
+      const interval = setInterval(fetchStats, 15 * 60 * 1000); // 15min au lieu de 5min
       return () => clearInterval(interval);
     }
   }, [game, spreadsheetId, autoRefresh]);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './ArticleDetail.css';
 
 function ArticleDetail({ articleId, onBack }) {
@@ -10,15 +10,8 @@ function ArticleDetail({ articleId, onBack }) {
   const [submittingComment, setSubmittingComment] = useState(false);
   const [hoveredStar, setHoveredStar] = useState(0);
 
-  useEffect(() => {
-    if (articleId) {
-      fetchArticle();
-      fetchComments();
-      fetchUserRating();
-    }
-  }, [articleId]);
-
-  const fetchArticle = async () => {
+  // Mémoriser les fonctions de fetch pour éviter les re-renders
+  const fetchArticle = useCallback(async () => {
     try {
       const response = await fetch(`http://localhost:8000/api/articles/${articleId}`);
       if (response.ok) {
@@ -32,9 +25,9 @@ function ArticleDetail({ articleId, onBack }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [articleId, onBack]);
 
-  const fetchComments = async () => {
+  const fetchComments = useCallback(async () => {
     try {
       const response = await fetch(`http://localhost:8000/api/comments/article/${articleId}`);
       if (response.ok) {
@@ -44,9 +37,9 @@ function ArticleDetail({ articleId, onBack }) {
     } catch (error) {
       console.error('Erreur lors du chargement des commentaires:', error);
     }
-  };
+  }, [articleId]);
 
-  const fetchUserRating = async () => {
+  const fetchUserRating = useCallback(async () => {
     const token = localStorage.getItem('token');
     if (!token) return;
 
@@ -63,7 +56,15 @@ function ArticleDetail({ articleId, onBack }) {
     } catch (error) {
       console.error('Erreur lors du chargement de la note:', error);
     }
-  };
+  }, [articleId]);
+
+  useEffect(() => {
+    if (articleId) {
+      fetchArticle();
+      fetchComments();
+      fetchUserRating();
+    }
+  }, [articleId, fetchArticle, fetchComments, fetchUserRating]);
 
   const handleRating = async (stars) => {
     const token = localStorage.getItem('token');

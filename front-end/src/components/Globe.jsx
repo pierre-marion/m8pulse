@@ -263,8 +263,9 @@ const Globe = forwardRef(({ onPlayerSelect, selectedPlayer }, ref) => {
     canvas.addEventListener('mousemove', onMouseMove);
     canvas.addEventListener('click', onClick);
 
+    let animationFrameId; // Pour pouvoir cancel l'animation
     function animate() {
-      requestAnimationFrame(animate);
+      animationFrameId = requestAnimationFrame(animate);
       controls.update();
       renderer.render(scene, camera);
     }
@@ -286,14 +287,62 @@ const Globe = forwardRef(({ onPlayerSelect, selectedPlayer }, ref) => {
 
     animate();
 
+    // CLEANUP COMPLET pour libérer toute la mémoire quand le composant est démonté
     return () => {
+      console.log('🧹 Nettoyage du Globe 3D...');
+      
+      // Arrêter l'animation
+      cancelAnimationFrame(animationFrameId);
+      
+      // Retirer les event listeners
       window.removeEventListener('resize', handleResize);
       resizeObserver.disconnect();
       canvas.removeEventListener('mousemove', onMouseMove);
       canvas.removeEventListener('click', onClick);
+      
+      // Nettoyer TOUS les meshes
+      allPointMeshesRef.current.forEach(mesh => {
+        if (mesh.geometry) mesh.geometry.dispose();
+        if (mesh.material) mesh.material.dispose();
+        scene.remove(mesh);
+      });
+      
+      capitalMeshesRef.current.forEach(mesh => {
+        if (mesh.geometry) mesh.geometry.dispose();
+        if (mesh.material) mesh.material.dispose();
+        scene.remove(mesh);
+      });
+      
+      // Nettoyer la scène complètement
+      while(scene.children.length > 0) { 
+        const object = scene.children[0];
+        if (object.geometry) object.geometry.dispose();
+        if (object.material) {
+          if (Array.isArray(object.material)) {
+            object.material.forEach(mat => mat.dispose());
+          } else {
+            object.material.dispose();
+          }
+        }
+        scene.remove(object);
+      }
+      
+      // Dispose du renderer
       renderer.dispose();
+      
+      // Nettoyer les controls
+      if (controls) controls.dispose();
+      
+      // Vider les refs
+      allPointMeshesRef.current = [];
+      capitalMeshesRef.current = [];
+      selectedPointRef.current = null;
+      
+      console.log('✅ Globe 3D nettoyé et mémoire libérée');
     };
   }, [onPlayerSelect, isDarkMode]);
+
+  let animationFrameId; // Déclarer pour pouvoir cancel dans cleanup
 
   useEffect(() => {
     if (!selectedPlayer && cameraRef.current && controlsRef.current) {

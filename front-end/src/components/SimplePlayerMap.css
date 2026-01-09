@@ -1,0 +1,158 @@
+.simple-player-map {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.map-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.map-header h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.map-subtitle {
+  color: #888;
+  font-size: 0.95rem;
+}
+
+.cities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.city-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.city-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--city-color, #667eea);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.city-card:hover::before,
+.city-card.selected::before {
+  transform: scaleX(1);
+}
+
+.city-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--city-color, #667eea);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.city-card.selected {
+  border-color: var(--city-color, #667eea);
+  background: rgba(102, 126, 234, 0.1);
+}
+
+.city-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.city-name {
+  font-size: 1.3rem;
+  margin-bottom: 0.3rem;
+  color: var(--city-color, #667eea);
+}
+
+.city-region {
+  color: #999;
+  font-size: 0.9rem;
+  margin-bottom: 0.8rem;
+}
+
+.city-stats {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #ccc;
+  font-size: 0.95rem;
+}
+
+.stat-icon {
+  font-size: 1.2rem;
+}
+
+.selected-city-info {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+  border: 2px solid rgba(102, 126, 234, 0.3);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  animation: slideIn 0.3s ease;
+}
+
+.selected-city-info h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #667eea;
+}
+
+.selected-city-info p {
+  color: #ccc;
+  margin-bottom: 1.5rem;
+}
+
+.reset-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.reset-btn:hover {
+  transform: scale(1.05);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Dark mode */
+body.dark-mode .city-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .city-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+}

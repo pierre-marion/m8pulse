@@ -1,5 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import './NewsPage.css';
+
+// Cache simple pour les articles (évite de refetch à chaque rendu)
+let articlesCache = null;
+let cacheTimestamp = null;
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 function NewsPage({ onArticleClick, user, onNavigate }) {
   const [selectedCategory, setSelectedCategory] = useState('Tous');
@@ -12,11 +17,22 @@ function NewsPage({ onArticleClick, user, onNavigate }) {
   }, []);
 
   const fetchArticles = async () => {
+    // Vérifier si on a un cache valide
+    const now = Date.now();
+    if (articlesCache && cacheTimestamp && (now - cacheTimestamp) < CACHE_DURATION) {
+      setArticles(articlesCache);
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await fetch('http://localhost:8000/api/articles?status=published');
       if (response.ok) {
         const data = await response.json();
         setArticles(data);
+        // Mettre en cache
+        articlesCache = data;
+        cacheTimestamp = now;
       }
     } catch (error) {
       console.error('Erreur lors du chargement des articles:', error);
@@ -50,11 +66,14 @@ function NewsPage({ onArticleClick, user, onNavigate }) {
     return labels[game] || 'Général';
   };
 
-  const filteredArticles = articles.filter(article => {
-    const categoryMatch = selectedCategory === 'Tous' || article.type === selectedCategory;
-    const gameMatch = selectedGame === 'Tous' || article.game === selectedGame;
-    return categoryMatch && gameMatch;
-  });
+  // Mémoriser le filtrage pour éviter de recalculer à chaque render
+  const filteredArticles = useMemo(() => {
+    return articles.filter(article => {
+      const categoryMatch = selectedCategory === 'Tous' || article.type === selectedCategory;
+      const gameMatch = selectedGame === 'Tous' || article.game === selectedGame;
+      return categoryMatch && gameMatch;
+    });
+  }, [articles, selectedCategory, selectedGame]);
 
   const getCategoryColor = (type) => {
     const colors = {

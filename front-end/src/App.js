@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import './App.css';
 import Header from './components/Header';
 import HomePage from './components/HomePage';
@@ -9,10 +9,6 @@ import NewsPage from './components/NewsPage';
 import ArticleDetail from './components/ArticleDetail';
 import SubscriptionPage from './components/SubscriptionPage';
 import DashboardPage from './components/DashboardPage';
-import AdminDashboard from './components/AdminDashboard';
-import BlogEditorBlocks from './components/BlogEditorBlocks';
-import DatasetManager from './components/DatasetManager';
-import ThemeDesigner from './components/ThemeDesigner';
 import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
 import ProfilePage from './components/ProfilePage';
@@ -20,6 +16,12 @@ import PlayersPage from './components/PlayersPage';
 import ThemeToggle from './components/ThemeToggle';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { DarkModeProvider } from './contexts/DarkModeContext';
+
+// Lazy loading pour les composants lourds (admin, editor...)
+const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
+const BlogEditorBlocks = lazy(() => import('./components/BlogEditorBlocks'));
+const DatasetManager = lazy(() => import('./components/DatasetManager'));
+const ThemeDesigner = lazy(() => import('./components/ThemeDesigner'));
 
 function App() {
   const [currentPage, setCurrentPage] = useState('accueil');
@@ -108,14 +110,19 @@ function App() {
       case 'equipe':
         return <TeamPage currentGame={games[currentGame]} onGameChange={setCurrentGame} />;
       case 'joueurs':
-        return <PlayersPage 
-          user={user}
-          onLogout={handleLogout}
-          onLoginClick={() => setCurrentPage('login')}
-          onDashboardClick={() => setCurrentPage('dashboard')}
-          onCitySelect={setSelectedCity}
-          onPlayerSelectFromPanel={setSelectedCity}
-        />;
+        // Utiliser Suspense pour la page Joueurs qui contient le Globe 3D lourd
+        return (
+          <Suspense fallback={<div className="loading-lazy">Chargement de la carte 3D...</div>}>
+            <PlayersPage 
+              user={user}
+              onLogout={handleLogout}
+              onLoginClick={() => setCurrentPage('login')}
+              onDashboardClick={() => setCurrentPage('dashboard')}
+              onCitySelect={setSelectedCity}
+              onPlayerSelectFromPanel={setSelectedCity}
+            />
+          </Suspense>
+        );
       case 'news':
         return <NewsPage 
           onArticleClick={(id) => {
@@ -138,25 +145,41 @@ function App() {
           setCurrentPage('accueil');
           return <HomePage />;
         }
-        return <AdminDashboard user={user} onBack={() => setCurrentPage('accueil')} />;
+        return (
+          <Suspense fallback={<div className="loading-lazy">Chargement...</div>}>
+            <AdminDashboard user={user} onBack={() => setCurrentPage('accueil')} />
+          </Suspense>
+        );
       case 'blog-editor':
         if (!user || !user.roles?.includes('ROLE_AUTHOR')) {
           setCurrentPage('accueil');
           return <HomePage />;
         }
-        return <BlogEditorBlocks onBack={() => setCurrentPage('news')} />;
+        return (
+          <Suspense fallback={<div className="loading-lazy">Chargement de l'éditeur...</div>}>
+            <BlogEditorBlocks onBack={() => setCurrentPage('news')} />
+          </Suspense>
+        );
       case 'datasets':
         if (!user || !user.roles?.includes('ROLE_DATA_PROVIDER')) {
           setCurrentPage('accueil');
           return <HomePage />;
         }
-        return <DatasetManager />;
+        return (
+          <Suspense fallback={<div className="loading-lazy">Chargement...</div>}>
+            <DatasetManager />
+          </Suspense>
+        );
       case 'theme-designer':
         if (!user || !user.roles?.includes('ROLE_DESIGNER')) {
           setCurrentPage('accueil');
           return <HomePage />;
         }
-        return <ThemeDesigner />;
+        return (
+          <Suspense fallback={<div className="loading-lazy">Chargement du designer...</div>}>
+            <ThemeDesigner />
+          </Suspense>
+        );
       default:
         return <HomePage />;
     }
@@ -166,7 +189,6 @@ function App() {
     <ThemeProvider>
       <DarkModeProvider>
         <div className="App">
-          <ThemeToggle />
           <div className="app-body">
             <div className="main-section">
               <Header 
@@ -176,16 +198,19 @@ function App() {
               />
               {renderPage()}
             </div>
-            <RightPanel 
-              currentGame={games[currentGame]} 
-              onDashboardClick={() => setCurrentPage('dashboard')}
-              user={user}
-              onLogout={handleLogout}
-              onLoginClick={() => setCurrentPage('login')}
-              currentPage={currentPage}
-              selectedCity={selectedCity}
-              onPlayerClick={currentPage === 'joueurs' ? setSelectedCity : null}
-            />
+            {/* Cacher le RightPanel sur la page Joueurs pour laisser le Globe en plein écran */}
+            {currentPage !== 'joueurs' && (
+              <RightPanel 
+                currentGame={games[currentGame]} 
+                onDashboardClick={() => setCurrentPage('dashboard')}
+                user={user}
+                onLogout={handleLogout}
+                onLoginClick={() => setCurrentPage('login')}
+                currentPage={currentPage}
+                selectedCity={selectedCity}
+                onPlayerClick={currentPage === 'joueurs' ? setSelectedCity : null}
+              />
+            )}
           </div>
         </div>
       </DarkModeProvider>

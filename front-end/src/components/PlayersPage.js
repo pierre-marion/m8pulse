@@ -1,6 +1,8 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, Suspense, lazy } from 'react';
 import './PlayersPage.css';
-import Globe from './Globe';
+
+// Lazy load du Globe - ne charge que quand nécessaire
+const Globe = lazy(() => import('./Globe'));
 
 function PlayersPage({ user, onLogout, onLoginClick, onDashboardClick, onCitySelect, onPlayerSelectFromPanel }) {
   const globeRef = useRef(null);
@@ -23,7 +25,14 @@ function PlayersPage({ user, onLogout, onLoginClick, onDashboardClick, onCitySel
 
   return (
     <div className="players-page">
-      <Globe ref={globeRef} onPlayerSelect={handleCitySelect} />
+      <Suspense fallback={
+        <div className="globe-loading">
+          <div className="spinner"></div>
+          <p>Chargement du globe 3D...</p>
+        </div>
+      }>
+        <Globe ref={globeRef} onPlayerSelect={handleCitySelect} />
+      </Suspense>
     </div>
   );
 }

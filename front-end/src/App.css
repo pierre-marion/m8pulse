@@ -36,3 +36,23 @@ body.dark-mode .app-body {
 body.dark-mode .main-section {
   background: transparent;
 }
+
+/* Style pour le lazy loading */
+.loading-lazy {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  font-size: 1.2rem;
+  color: #666;
+  animation: fadeIn 0.3s ease-in;
+}
+
+body.dark-mode .loading-lazy {
+  color: #999;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
