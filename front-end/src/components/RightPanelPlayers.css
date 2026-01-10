@@ -555,6 +555,67 @@ body.dark-mode .stats-subtitle {
 }
 
 /* Responsive */
+/* Pour grands écrans (1600px+) : réduction agressive */
+@media (min-width: 1600px) {
+  .right-panel-players {
+    width: 240px !important;
+    gap: 8px !important;
+    font-size: 0.82em !important;
+  }
+  
+  .panel-section {
+    padding: 5px !important;
+  }
+  
+  .players-tabs {
+    gap: 5px !important;
+    padding: 0 5px !important;
+  }
+  
+  .tab-btn {
+    padding: 5px 9px !important;
+    font-size: 9px !important;
+  }
+  
+  .player-card-vertical {
+    padding: 6px !important;
+    gap: 4px !important;
+  }
+  
+  .hexagon {
+    width: 45px !important;
+    height: 52px !important;
+  }
+  
+  .hexagon-content {
+    font-size: 19px !important;
+  }
+  
+  .player-name {
+    font-size: 11px !important;
+  }
+  
+  .player-city {
+    font-size: 8px !important;
+  }
+  
+  .player-stats {
+    gap: 3px !important;
+  }
+  
+  .stat-item {
+    padding: 4px !important;
+  }
+  
+  .stat-label {
+    font-size: 7px !important;
+  }
+  
+  .stat-value {
+    font-size: 14px !important;
+  }
+}
+
 @media (max-width: 1200px) {
   .right-panel-players {
     width: 240px;

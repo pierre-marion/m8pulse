@@ -34,14 +34,14 @@ class CreateTestUsersCommand extends Command
                 'email' => 'admin@m8pulse.com',
                 'password' => 'password',
                 'roles' => ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_EDITOR', 'ROLE_DESIGNER', 'ROLE_DATA_PROVIDER'],
-                'subscription' => 'platinum'
+                'subscription' => 'gold'
             ],
             [
                 'username' => 'superadmin',
                 'email' => 'superadmin@m8pulse.com',
                 'password' => 'super123',
                 'roles' => ['ROLE_USER', 'ROLE_ADMIN'],
-                'subscription' => 'platinum'
+                'subscription' => 'gold'
             ],
             [
                 'username' => 'editor',
@@ -83,21 +83,21 @@ class CreateTestUsersCommand extends Command
                 'email' => 'subscriber1@m8pulse.com',
                 'password' => 'sub123',
                 'roles' => ['ROLE_USER', 'ROLE_SUBSCRIBER'],
-                'subscription' => 'free'
+                'subscription' => 'bronze'
             ],
             [
                 'username' => 'subscriber2',
                 'email' => 'subscriber2@m8pulse.com',
                 'password' => 'sub123',
                 'roles' => ['ROLE_USER', 'ROLE_SUBSCRIBER'],
-                'subscription' => 'free'
+                'subscription' => 'bronze'
             ],
             [
                 'username' => 'testuser',
                 'email' => 'test@m8pulse.com',
                 'password' => 'test123',
                 'roles' => ['ROLE_USER'],
-                'subscription' => 'free'
+                'subscription' => 'bronze'
             ]
         ];
 

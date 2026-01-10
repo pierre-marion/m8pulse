@@ -1,0 +1,84 @@
+/* Remplacements globaux pour les couleurs personnalisables */
+
+/* Boutons actifs du header */
+body.dark-mode .nav-btn.active,
+.action-mini.admin,
+.tab-btn.active,
+.bg-option.active,
+.save-btn {
+  background: linear-gradient(135deg, var(--designer-primary, #667eea), var(--designer-secondary, #764ba2)) !important;
+}
+
+/* Badges et éléments accentués */
+.admin-badge,
+.role-badge.active,
+.premium-badge {
+  background: linear-gradient(135deg, var(--designer-primary, #667eea), var(--designer-secondary, #764ba2)) !important;
+}
+
+/* Boutons du RightPanel */  
+.action-mini.admin:hover,
+.action-mini.logout:hover {
+  background: linear-gradient(135deg, var(--designer-primary, #667eea), var(--designer-secondary, #764ba2)) !important;
+}
+
+/* Scrollbar personnalisée */
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--designer-primary, #667eea), var(--designer-secondary, #764ba2)) !important;
+}
+
+/* Range sliders */
+input[type="range"]::-webkit-slider-thumb {
+  background: linear-gradient(135deg, var(--designer-primary, #667eea), var(--designer-secondary, #764ba2)) !important;
+}
+
+/* Bouton d'édition des articles */
+.edit-btn {
+  background: linear-gradient(135deg, var(--designer-primary, #667eea), var(--designer-secondary, #764ba2)) !important;
+}
+
+/* Titres avec gradient */
+.design-panel-header h2,
+h1, h2, .gradient-text {
+  background: linear-gradient(135deg, var(--designer-primary, #667eea), var(--designer-secondary, #764ba2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Bordures avec la couleur primaire */
+.design-section,
+.design-card,
+.navbar-item:hover {
+  border-color: var(--designer-primary, #667eea) !important;
+}
+
+/* Ombres avec la couleur primaire */
+.save-btn:hover,
+.edit-btn:hover {
+  box-shadow: 0 10px 30px rgba(var(--designer-primary, 102, 126, 234), 0.4) !important;
+}
+
+/* Application de la couleur d'accent */
+.accent-element {
+  background: var(--designer-accent, #f093fb) !important;
+}
+
+/* Appliquer la police personnalisée */
+body {
+  font-family: var(--font-family, 'Inter', sans-serif) !important;
+  font-size: var(--font-size, 16px) !important;
+}
+
+/* Appliquer les bordures arrondies */
+.nav-btn,
+.action-mini,
+.stat-card,
+.design-card,
+.design-section,
+button,
+input,
+select,
+textarea {
+  border-radius: var(--border-radius, 12px) !important;
+}

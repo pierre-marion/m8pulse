@@ -114,6 +114,23 @@ class ArticleController extends AbstractController
         $article->setStatus($data['status'] ?? 'draft');
         $article->setAuthor($this->getUser());
         
+        // Gérer les blocs si présents
+        if (isset($data['blocks']) && is_array($data['blocks'])) {
+            foreach ($data['blocks'] as $index => $blockData) {
+                $block = new \App\Entity\Block();
+                $block->setType($blockData['type'] ?? 'text');
+                $block->setContent($blockData['content'] ?? '');
+                $block->setPosition($index);
+                $block->setArticle($article);
+                
+                if (isset($blockData['config'])) {
+                    $block->setConfig($blockData['config']);
+                }
+                
+                $this->entityManager->persist($block);
+            }
+        }
+        
         $this->entityManager->persist($article);
         $this->entityManager->flush();
         

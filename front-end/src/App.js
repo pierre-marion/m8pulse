@@ -16,12 +16,14 @@ import PlayersPage from './components/PlayersPage';
 import ThemeToggle from './components/ThemeToggle';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { DarkModeProvider } from './contexts/DarkModeContext';
+import { applyDesignSettings } from './utils/applyDesignSettings';
 
 // Lazy loading pour les composants lourds (admin, editor...)
 const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
 const BlogEditorBlocks = lazy(() => import('./components/BlogEditorBlocks'));
 const DatasetManager = lazy(() => import('./components/DatasetManager'));
 const ThemeDesigner = lazy(() => import('./components/ThemeDesigner'));
+const DesignPanel = lazy(() => import('./components/DesignPanel'));
 
 function App() {
   const [currentPage, setCurrentPage] = useState('accueil');
@@ -30,6 +32,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [authMode, setAuthMode] = useState('login'); // 'login' ou 'register'
   const [selectedCity, setSelectedCity] = useState(null);
+  const [showDesignPanel, setShowDesignPanel] = useState(false);
 
   const games = ['Valorant', 'Counter Strike', 'Call of Duty', 'Fortnite'];
 
@@ -60,6 +63,9 @@ function App() {
         localStorage.removeItem('user');
       }
     }
+
+    // Appliquer les paramètres de design sauvegardés
+    applyDesignSettings();
   }, []);
 
   const handleLogin = (userData) => {
@@ -73,6 +79,8 @@ function App() {
   };
 
   const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setUser(null);
     setCurrentPage('accueil');
   };
@@ -118,6 +126,7 @@ function App() {
               onLogout={handleLogout}
               onLoginClick={() => setCurrentPage('login')}
               onDashboardClick={() => setCurrentPage('dashboard')}
+              onDesignClick={() => setShowDesignPanel(true)}
               onCitySelect={setSelectedCity}
               onPlayerSelectFromPanel={setSelectedCity}
             />
@@ -134,14 +143,23 @@ function App() {
         />;
       case 'article':
         return <ArticleDetail 
-          articleId={selectedArticleId} 
-          onBack={() => setCurrentPage('news')} 
+          articleId={selectedArticleId}
+          user={user}
+          onBack={() => setCurrentPage('news')}
+          onEdit={(id) => {
+            setSelectedArticleId(id);
+            setCurrentPage('edit-article');
+          }}
         />;
       case 'abonnement':
         return <SubscriptionPage />;
       case 'dashboard':
       case 'admin':
-        if (!user || !user.roles?.includes('ROLE_ADMIN')) {
+        if (!user || (!user.roles?.includes('ROLE_ADMIN') && 
+                      !user.roles?.includes('ROLE_EDITOR') && 
+                      !user.roles?.includes('ROLE_AUTHOR') && 
+                      !user.roles?.includes('ROLE_DESIGNER') && 
+                      !user.roles?.includes('ROLE_DATA_PROVIDER'))) {
           setCurrentPage('accueil');
           return <HomePage />;
         }
@@ -151,13 +169,13 @@ function App() {
           </Suspense>
         );
       case 'blog-editor':
-        if (!user || !user.roles?.includes('ROLE_AUTHOR')) {
+        if (!user || (!user.roles?.includes('ROLE_ADMIN') && !user.roles?.includes('ROLE_EDITOR'))) {
           setCurrentPage('accueil');
           return <HomePage />;
         }
         return (
           <Suspense fallback={<div className="loading-lazy">Chargement de l'éditeur...</div>}>
-            <BlogEditorBlocks onBack={() => setCurrentPage('news')} />
+            <BlogEditorBlocks user={user} onBack={() => setCurrentPage('news')} />
           </Suspense>
         );
       case 'datasets':
@@ -203,6 +221,7 @@ function App() {
               <RightPanel 
                 currentGame={games[currentGame]} 
                 onDashboardClick={() => setCurrentPage('dashboard')}
+                onDesignClick={() => setShowDesignPanel(true)}
                 user={user}
                 onLogout={handleLogout}
                 onLoginClick={() => setCurrentPage('login')}
@@ -213,6 +232,13 @@ function App() {
             )}
           </div>
         </div>
+
+        {/* Popup Design pour les designers */}
+        {showDesignPanel && (
+          <Suspense fallback={null}>
+            <DesignPanel onClose={() => setShowDesignPanel(false)} />
+          </Suspense>
+        )}
       </DarkModeProvider>
     </ThemeProvider>
   );

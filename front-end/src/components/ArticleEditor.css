@@ -1,0 +1,239 @@
+.article-editor-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.editor-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.editor-header h1 {
+  margin: 0;
+  color: #7D3CFF;
+}
+
+.btn-back {
+  background: rgba(125, 60, 255, 0.1);
+  border: 2px solid #7D3CFF;
+  padding: 10px 20px;
+  border-radius: 8px;
+  color: #7D3CFF;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-back:hover {
+  background: #7D3CFF;
+  color: white;
+}
+
+.no-permission {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.no-permission h2 {
+  color: #FF4655;
+  margin-bottom: 10px;
+}
+
+.error-message {
+  background: #FF4655;
+  color: white;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.article-form {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 30px;
+  border-radius: 16px;
+  border: 1px solid rgba(125, 60, 255, 0.2);
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #7D3CFF;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 2px solid rgba(125, 60, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+  color: inherit;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #7D3CFF;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.blocks-section {
+  margin-top: 30px;
+  padding-top: 30px;
+  border-top: 2px solid rgba(125, 60, 255, 0.2);
+}
+
+.blocks-section h3 {
+  color: #7D3CFF;
+  margin-bottom: 20px;
+}
+
+.add-block-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.btn-add-block {
+  background: rgba(125, 60, 255, 0.1);
+  border: 2px solid #7D3CFF;
+  padding: 10px 15px;
+  border-radius: 8px;
+  color: #7D3CFF;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-add-block:hover {
+  background: #7D3CFF;
+  color: white;
+}
+
+.blocks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.block-item {
+  background: rgba(125, 60, 255, 0.05);
+  border: 2px solid rgba(125, 60, 255, 0.2);
+  border-radius: 12px;
+  padding: 15px;
+}
+
+.block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.block-type {
+  font-weight: 600;
+  color: #7D3CFF;
+}
+
+.block-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.block-actions button {
+  background: rgba(125, 60, 255, 0.1);
+  border: 1px solid #7D3CFF;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.block-actions button:hover:not(:disabled) {
+  background: #7D3CFF;
+  color: white;
+}
+
+.block-actions button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.btn-delete {
+  background: rgba(255, 70, 85, 0.1) !important;
+  border-color: #FF4655 !important;
+  color: #FF4655 !important;
+}
+
+.btn-delete:hover {
+  background: #FF4655 !important;
+  color: white !important;
+}
+
+.form-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 2px solid rgba(125, 60, 255, 0.2);
+}
+
+.btn-cancel {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  padding: 12px 30px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.btn-save {
+  background: linear-gradient(135deg, #7D3CFF, #9D6CFF);
+  border: none;
+  padding: 12px 30px;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-save:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(125, 60, 255, 0.4);
+}
+
+.btn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+body.dark-mode .form-group input,
+body.dark-mode .form-group textarea,
+body.dark-mode .form-group select {
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+}

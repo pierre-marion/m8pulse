@@ -3,7 +3,7 @@ import Calendar from './Calendar';
 import './RightPanel.css';
 import { useDarkMode } from '../contexts/DarkModeContext';
 
-function RightPanel({ currentGame, onDashboardClick, user, onLogout, onLoginClick, currentPage }) {
+function RightPanel({ currentGame, onDashboardClick, onDesignClick, user, onLogout, onLoginClick, currentPage }) {
   const [selectedPlayer, setSelectedPlayer] = useState(0);
   const { isDarkMode, toggleDarkMode } = useDarkMode();
 
@@ -100,9 +100,20 @@ function RightPanel({ currentGame, onDashboardClick, user, onLogout, onLoginClic
         <div className="quick-actions">
           {user ? (
             <>
-              {user.roles?.includes('ROLE_ADMIN') && (
+              {(user.roles?.includes('ROLE_ADMIN') || 
+                user.roles?.includes('ROLE_EDITOR') || 
+                user.roles?.includes('ROLE_AUTHOR') || 
+                user.roles?.includes('ROLE_DATA_PROVIDER')) && (
                 <button className="action-mini admin" onClick={onDashboardClick}>
-                  📊 Dashboard
+                  {user.roles?.includes('ROLE_EDITOR') ? '📝 Éditeur' :
+                   user.roles?.includes('ROLE_AUTHOR') ? '✍️ Articles' :
+                   user.roles?.includes('ROLE_DATA_PROVIDER') ? '📊 Stats' :
+                   '📊 Dashboard'}
+                </button>
+              )}
+              {user.roles?.includes('ROLE_DESIGNER') && (
+                <button className="action-mini admin" onClick={onDesignClick}>
+                  🎨 Design
                 </button>
               )}
               <button className="action-mini logout" onClick={onLogout}>

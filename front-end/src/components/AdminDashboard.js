@@ -2,7 +2,17 @@ import React, { useState, useEffect } from 'react';
 import './AdminDashboard.css';
 
 function AdminDashboard({ user, onBack }) {
-  const [activeTab, setActiveTab] = useState('stats');
+  // Déterminer l'onglet par défaut selon le rôle
+  const getDefaultTab = () => {
+    if (user.roles?.includes('ROLE_ADMIN')) return 'stats';
+    if (user.roles?.includes('ROLE_DATA_PROVIDER')) return 'stats';
+    if (user.roles?.includes('ROLE_EDITOR')) return 'articles';
+    if (user.roles?.includes('ROLE_AUTHOR')) return 'articles';
+    if (user.roles?.includes('ROLE_DESIGNER')) return 'design';
+    return 'stats';
+  };
+
+  const [activeTab, setActiveTab] = useState(getDefaultTab());
   const [stats, setStats] = useState({
     totalUsers: 0,
     admins: 0,
@@ -15,6 +25,16 @@ function AdminDashboard({ user, onBack }) {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Vérifier si l'utilisateur a accès à un onglet
+  const hasAccess = (tab) => {
+    if (user.roles?.includes('ROLE_ADMIN')) return true;
+    if (tab === 'stats' && user.roles?.includes('ROLE_DATA_PROVIDER')) return true;
+    if (tab === 'articles' && (user.roles?.includes('ROLE_EDITOR') || user.roles?.includes('ROLE_AUTHOR'))) return true;
+    if (tab === 'design' && user.roles?.includes('ROLE_DESIGNER')) return true;
+    if (tab === 'users' && user.roles?.includes('ROLE_ADMIN')) return true;
+    return false;
+  };
+
   useEffect(() => {
     fetchDashboardData();
   }, []);
@@ -23,6 +43,13 @@ function AdminDashboard({ user, onBack }) {
     try {
       const token = localStorage.getItem('token');
       console.log('Token récupéré:', token ? token.substring(0, 50) + '...' : 'ABSENT !');
+      
+      if (!token) {
+        alert('Session expirée, veuillez vous reconnecter');
+        localStorage.clear();
+        window.location.reload();
+        return;
+      }
       
       // Vérifier l'utilisateur connecté
       const userStr = localStorage.getItem('user');
@@ -44,6 +71,14 @@ function AdminDashboard({ user, onBack }) {
       } else {
         const errorText = await statsRes.text();
         console.error('Stats error:', statsRes.status, errorText);
+        
+        // Si token expiré, déconnecter
+        if (statsRes.status === 401) {
+          alert('Session expirée, veuillez vous reconnecter');
+          localStorage.clear();
+          window.location.reload();
+          return;
+        }
         alert(`Erreur stats: ${statsRes.status} - ${errorText}`);
       }
 
@@ -57,6 +92,14 @@ function AdminDashboard({ user, onBack }) {
       } else {
         const errorText = await usersRes.text();
         console.error('Users error:', usersRes.status, errorText);
+        
+        // Si token expiré, déconnecter
+        if (usersRes.status === 401) {
+          alert('Session expirée, veuillez vous reconnecter');
+          localStorage.clear();
+          window.location.reload();
+          return;
+        }
         alert(`Erreur users: ${usersRes.status} - ${errorText}`);
       }
 
@@ -175,216 +218,390 @@ function AdminDashboard({ user, onBack }) {
 
   return (
     <div className="admin-dashboard">
-      <div className="admin-header">
-        <div className="header-content">
-          <button className="back-btn" onClick={onBack}>← Retour</button>
-          <h1>🎛️ Dashboard Administration</h1>
-          <div className="admin-user-info">
-            <span className="admin-badge">ADMIN</span>
-            <span>{user?.username}</span>
-          </div>
+      {/* Header */}
+      <div className="dashboard-header">
+        <button onClick={onBack} className="back-btn">← Retour</button>
+        <h1>🎛️ Dashboard {
+          user.roles?.includes('ROLE_ADMIN') ? 'Administration' :
+          user.roles?.includes('ROLE_EDITOR') ? 'Éditeur' :
+          user.roles?.includes('ROLE_AUTHOR') ? 'Auteur' :
+          user.roles?.includes('ROLE_DESIGNER') ? 'Designer' :
+          user.roles?.includes('ROLE_DATA_PROVIDER') ? 'Statistiques' : ''
+        }</h1>
+        <div className="header-user">
+          <span className="admin-badge">
+            {user.roles?.includes('ROLE_ADMIN') ? 'ADMIN' :
+             user.roles?.includes('ROLE_EDITOR') ? 'EDITOR' :
+             user.roles?.includes('ROLE_AUTHOR') ? 'AUTHOR' :
+             user.roles?.includes('ROLE_DESIGNER') ? 'DESIGNER' :
+             user.roles?.includes('ROLE_DATA_PROVIDER') ? 'PROVIDER' : 'USER'}
+          </span>
+          <span>{user.email}</span>
         </div>
       </div>
 
-      <div className="admin-tabs">
-        <button 
-          className={`tab-btn ${activeTab === 'stats' ? 'active' : ''}`}
-          onClick={() => setActiveTab('stats')}
-        >
-          📊 Statistiques
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'users' ? 'active' : ''}`}
-          onClick={() => setActiveTab('users')}
-        >
-          👥 Utilisateurs ({users.length})
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'articles' ? 'active' : ''}`}
-          onClick={() => setActiveTab('articles')}
-        >
-          📝 Articles ({articles.length})
-        </button>
+      {/* Tabs */}
+      <div className="dashboard-tabs">
+        {hasAccess('stats') && (
+          <button 
+            className={`tab-btn ${activeTab === 'stats' ? 'active' : ''}`}
+            onClick={() => setActiveTab('stats')}
+          >
+            📊 Statistiques
+          </button>
+        )}
+        {hasAccess('users') && (
+          <button 
+            className={`tab-btn ${activeTab === 'users' ? 'active' : ''}`}
+            onClick={() => setActiveTab('users')}
+          >
+            👥 Utilisateurs ({users.length})
+          </button>
+        )}
+        {hasAccess('articles') && (
+          <button 
+            className={`tab-btn ${activeTab === 'articles' ? 'active' : ''}`}
+            onClick={() => setActiveTab('articles')}
+          >
+            📝 Articles ({articles.length})
+          </button>
+        )}
+        {hasAccess('design') && (
+          <button 
+            className={`tab-btn ${activeTab === 'design' ? 'active' : ''}`}
+            onClick={() => setActiveTab('design')}
+          >
+            🎨 Design
+          </button>
+        )}
       </div>
 
-      <div className="admin-content">
-        {activeTab === 'stats' && (
-          <div className="stats-section">
-            <div className="stats-grid-admin">
-              <div className="stat-card-admin">
-                <div className="stat-icon-admin">👥</div>
-                <div className="stat-info">
-                  <div className="stat-value-admin">{stats.totalUsers}</div>
-                  <div className="stat-label-admin">Utilisateurs Total</div>
-                </div>
-              </div>
-              <div className="stat-card-admin">
-                <div className="stat-icon-admin">⭐</div>
-                <div className="stat-info">
-                  <div className="stat-value-admin">{stats.premium}</div>
-                  <div className="stat-label-admin">Abonnés Premium</div>
-                </div>
-              </div>
-              <div className="stat-card-admin">
-                <div className="stat-icon-admin">📝</div>
-                <div className="stat-info">
-                  <div className="stat-value-admin">{stats.totalArticles}</div>
-                  <div className="stat-label-admin">Articles Total</div>
-                </div>
-              </div>
-              <div className="stat-card-admin">
-                <div className="stat-icon-admin">✅</div>
-                <div className="stat-info">
-                  <div className="stat-value-admin">{stats.publishedArticles}</div>
-                  <div className="stat-label-admin">Articles Publiés</div>
-                </div>
-              </div>
-              <div className="stat-card-admin">
-                <div className="stat-icon-admin">🛡️</div>
-                <div className="stat-info">
-                  <div className="stat-value-admin">{stats.admins}</div>
-                  <div className="stat-label-admin">Administrateurs</div>
-                </div>
-              </div>
-              <div className="stat-card-admin">
-                <div className="stat-icon-admin">✍️</div>
-                <div className="stat-info">
-                  <div className="stat-value-admin">{stats.authors}</div>
-                  <div className="stat-label-admin">Auteurs</div>
-                </div>
-              </div>
+      {/* Content */}
+      {activeTab === 'stats' && (
+        <div className="stats-overview">
+          <div className="stat-card">
+            <div className="stat-icon">👥</div>
+            <div className="stat-content">
+              <h3>{stats.totalUsers}</h3>
+              <p>Utilisateurs</p>
             </div>
           </div>
-        )}
-
-        {activeTab === 'users' && (
-          <div className="users-section">
-            <div className="section-header-admin">
-              <h2>Gestion des Utilisateurs</h2>
-              <button className="refresh-btn" onClick={fetchDashboardData}>🔄 Rafraîchir</button>
-            </div>
-            <div className="users-table">
-              <table>
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Nom</th>
-                    <th>Email</th>
-                    <th>Rôles</th>
-                    <th>Abonnement</th>
-                    <th>Date Création</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.map(u => (
-                    <tr key={u.id}>
-                      <td>{u.id}</td>
-                      <td>{u.username}</td>
-                      <td>{u.email}</td>
-                      <td>
-                        <div className="roles-cell">
-                          {['ROLE_ADMIN', 'ROLE_AUTHOR', 'ROLE_EDITOR', 'ROLE_DESIGNER', 'ROLE_DATA_PROVIDER'].map(role => (
-                            <button
-                              key={role}
-                              className={`role-badge ${u.roles?.includes(role) ? 'active' : ''}`}
-                              onClick={() => toggleRole(u.id, role)}
-                              title={`${u.roles?.includes(role) ? 'Retirer' : 'Ajouter'} ${role}`}
-                            >
-                              {role.replace('ROLE_', '')}
-                            </button>
-                          ))}
-                        </div>
-                      </td>
-                      <td>
-                        <select 
-                          className="subscription-select"
-                          value={u.subscriptionLevel || 'free'}
-                          onChange={(e) => handleUpdateUser(u.id, { subscriptionLevel: e.target.value })}
-                        >
-                          <option value="free">Free</option>
-                          <option value="silver">Silver</option>
-                          <option value="gold">Gold</option>
-                          <option value="platinum">Platinum</option>
-                        </select>
-                      </td>
-                      <td>{new Date(u.createdAt).toLocaleDateString('fr-FR')}</td>
-                      <td>
-                        <button 
-                          className="delete-btn-admin"
-                          onClick={() => handleDeleteUser(u.id)}
-                          disabled={u.id === user?.id}
-                        >
-                          🗑️
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          <div className="stat-card">
+            <div className="stat-icon">📝</div>
+            <div className="stat-content">
+              <h3>{stats.totalArticles}</h3>
+              <p>Articles</p>
             </div>
           </div>
-        )}
-
-        {activeTab === 'articles' && (
-          <div className="articles-section">
-            <div className="section-header-admin">
-              <h2>Gestion des Articles</h2>
-              <button className="refresh-btn" onClick={fetchDashboardData}>🔄 Rafraîchir</button>
+          <div className="stat-card">
+            <div className="stat-icon">✅</div>
+            <div className="stat-content">
+              <h3>{stats.publishedArticles}</h3>
+              <p>Publiés</p>
             </div>
-            <div className="articles-grid-admin">
-              {articles.map(article => (
-                <div key={article.id} className="article-card-admin">
-                  <div className="article-header-admin">
-                    <h3>{article.title}</h3>
-                    <span className={`status-badge ${article.published ? 'published' : 'draft'}`}>
-                      {article.published ? '✅ Publié' : '📝 Brouillon'}
-                    </span>
-                  </div>
-                  <div className="article-meta-admin">
-                    <span className="game-badge">{article.game}</span>
-                    <span className="category-badge">{article.category}</span>
-                  </div>
-                  <div className="article-excerpt-admin">{article.summary || 'Pas de résumé'}</div>
-                  <div className="article-stats-admin">
-                    <div className="stat-item-small">
-                      <span>👁️</span>
-                      <span>{article.viewCount || 0} vues</span>
-                    </div>
-                    <div className="stat-item-small">
-                      <span>⭐</span>
-                      <span>{article.rating || 0}/5</span>
-                    </div>
-                    <div className="stat-item-small">
-                      <span>💬</span>
-                      <span>{article.commentCount || 0} com.</span>
-                    </div>
-                  </div>
-                  <div className="article-footer-admin">
-                    <span className="date-admin">
-                      {new Date(article.createdAt).toLocaleDateString('fr-FR')}
-                    </span>
-                    <div className="article-actions">
-                      <button 
-                        className="edit-btn-admin"
-                        onClick={() => window.location.hash = `#article/${article.id}`}
+          </div>
+          <div className="stat-card">
+            <div className="stat-icon">⭐</div>
+            <div className="stat-content">
+              <h3>{stats.premium}</h3>
+              <p>Premium</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'users' && (
+        <div className="dashboard-section full-width">
+          <div className="section-title">
+            <h2>Gestion des Utilisateurs</h2>
+            <button onClick={fetchDashboardData} className="refresh-btn">🔄 Rafraîchir</button>
+          </div>
+          <div className="users-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Email</th>
+                  <th>Rôles</th>
+                  <th>Abonnement</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map(u => (
+                  <tr key={u.id}>
+                    <td><strong>{u.email}</strong></td>
+                    <td>
+                      <div className="roles-cell">
+                        {['ROLE_ADMIN', 'ROLE_AUTHOR', 'ROLE_EDITOR', 'ROLE_DESIGNER'].map(role => (
+                          <button
+                            key={role}
+                            className={`role-badge ${u.roles?.includes(role) ? 'active' : ''}`}
+                            onClick={() => toggleRole(u.id, role)}
+                          >
+                            {role.replace('ROLE_', '')}
+                          </button>
+                        ))}
+                      </div>
+                    </td>
+                    <td>
+                      <select 
+                        className="subscription-select"
+                        value={u.subscriptionLevel || 'free'}
+                        onChange={(e) => handleUpdateUser(u.id, { subscriptionLevel: e.target.value })}
                       >
-                        ✏️ Voir
-                      </button>
+                        <option value="free">Free</option>
+                        <option value="silver">Silver</option>
+                        <option value="gold">Gold</option>
+                      </select>
+                    </td>
+                    <td>
                       <button 
-                        className="delete-btn-admin"
-                        onClick={() => handleDeleteArticle(article.id)}
+                        onClick={() => handleDeleteUser(u.id)} 
+                        className="delete-btn"
+                        disabled={u.roles?.includes('ROLE_ADMIN')}
                       >
                         🗑️
                       </button>
-                    </div>
-                  </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'articles' && (
+        <div className="dashboard-section full-width">
+          <div className="section-title">
+            <h2>Gestion des Articles</h2>
+            <button onClick={fetchDashboardData} className="refresh-btn">🔄 Rafraîchir</button>
+          </div>
+          <div className="articles-grid">
+            {articles.map(article => (
+              <div key={article.id} className="article-card">
+                <div className="article-header">
+                  <h4>{article.title}</h4>
+                  <span className={`status ${article.published ? 'published' : 'draft'}`}>
+                    {article.published ? '✅ Publié' : '📝 Brouillon'}
+                  </span>
                 </div>
-              ))}
+                <div className="article-meta">
+                  <span>👁️ {article.views || 0} vues</span>
+                  <span>⭐ {article.rating || 0}/5</span>
+                </div>
+                <div className="article-actions">
+                  <button 
+                    className="edit-btn"
+                    onClick={() => window.location.href = `#/editor/${article.id}`}
+                  >
+                    ✏️ Modifier
+                  </button>
+                  {user.roles?.includes('ROLE_ADMIN') && (
+                    <button 
+                      className="delete-btn"
+                      onClick={() => handleDeleteArticle(article.id)}
+                    >
+                      🗑️ Supprimer
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'design' && (
+        <div className="dashboard-section full-width">
+          <div className="section-title">
+            <h2>🎨 Design System</h2>
+            <button onClick={() => {
+              if (window.confirm('Réinitialiser tous les paramètres de design ?')) {
+                localStorage.removeItem('designSettings');
+                window.location.reload();
+              }
+            }} className="refresh-btn">🔄 Reset</button>
+          </div>
+          
+          <div className="design-grid">
+            {/* Couleurs du site */}
+            <div className="design-card">
+              <h3>🎨 Couleurs principales</h3>
+              <div className="color-controls">
+                <div className="color-input-group">
+                  <label>Couleur primaire</label>
+                  <input type="color" defaultValue="#667eea" 
+                    onChange={(e) => {
+                      document.documentElement.style.setProperty('--primary-color', e.target.value);
+                      localStorage.setItem('primaryColor', e.target.value);
+                    }}
+                  />
+                </div>
+                <div className="color-input-group">
+                  <label>Couleur secondaire</label>
+                  <input type="color" defaultValue="#764ba2" 
+                    onChange={(e) => {
+                      document.documentElement.style.setProperty('--secondary-color', e.target.value);
+                      localStorage.setItem('secondaryColor', e.target.value);
+                    }}
+                  />
+                </div>
+                <div className="color-input-group">
+                  <label>Couleur accent</label>
+                  <input type="color" defaultValue="#ff4655" 
+                    onChange={(e) => {
+                      document.documentElement.style.setProperty('--accent-color', e.target.value);
+                      localStorage.setItem('accentColor', e.target.value);
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Background */}
+            <div className="design-card">
+              <h3>🌈 Arrière-plan</h3>
+              <div className="bg-controls">
+                <label>Style de fond</label>
+                <select className="design-select" onChange={(e) => {
+                  const value = e.target.value;
+                  localStorage.setItem('bgStyle', value);
+                  document.body.className = value;
+                }}>
+                  <option value="gradient-dark">Gradient sombre (défaut)</option>
+                  <option value="gradient-purple">Gradient violet</option>
+                  <option value="gradient-blue">Gradient bleu</option>
+                  <option value="solid-dark">Uni sombre</option>
+                  <option value="solid-black">Uni noir</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Navbar */}
+            <div className="design-card full-span">
+              <h3>📋 Configuration Navbar</h3>
+              <div className="navbar-config">
+                <div className="navbar-items">
+                  <p><strong>Ordre des éléments :</strong></p>
+                  <div className="sortable-list">
+                    <div className="sortable-item" draggable>📱 Accueil</div>
+                    <div className="sortable-item" draggable>🎮 Jeux</div>
+                    <div className="sortable-item" draggable>👥 Équipe</div>
+                    <div className="sortable-item" draggable>🎯 Joueurs</div>
+                    <div className="sortable-item" draggable>💳 Abonnement</div>
+                    <div className="sortable-item" draggable>📰 News</div>
+                  </div>
+                  <p style={{ marginTop: '1rem', fontSize: '0.85rem', opacity: 0.7 }}>
+                    ⚠️ Glissez-déposez pour réorganiser (fonctionnalité en développement)
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Typography */}
+            <div className="design-card">
+              <h3>✍️ Typographie</h3>
+              <div className="typo-controls">
+                <div className="input-group">
+                  <label>Police principale</label>
+                  <select className="design-select" onChange={(e) => {
+                    document.documentElement.style.setProperty('--font-family', e.target.value);
+                    localStorage.setItem('fontFamily', e.target.value);
+                  }}>
+                    <option value="'Inter', sans-serif">Inter (défaut)</option>
+                    <option value="'Roboto', sans-serif">Roboto</option>
+                    <option value="'Poppins', sans-serif">Poppins</option>
+                    <option value="'Montserrat', sans-serif">Montserrat</option>
+                  </select>
+                </div>
+                <div className="input-group">
+                  <label>Taille de base</label>
+                  <input type="range" min="12" max="20" defaultValue="16" 
+                    onChange={(e) => {
+                      document.documentElement.style.fontSize = e.target.value + 'px';
+                      localStorage.setItem('fontSize', e.target.value);
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Bordures */}
+            <div className="design-card">
+              <h3>📐 Bordures et espacement</h3>
+              <div className="spacing-controls">
+                <div className="input-group">
+                  <label>Arrondi des bordures</label>
+                  <input type="range" min="0" max="24" defaultValue="12" 
+                    onChange={(e) => {
+                      document.documentElement.style.setProperty('--border-radius', e.target.value + 'px');
+                      localStorage.setItem('borderRadius', e.target.value);
+                    }}
+                  />
+                  <span className="range-value" id="borderRadiusValue">12px</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Header */}
+            <div className="design-card full-span">
+              <h3>🎯 Header & Logo</h3>
+              <div className="header-controls">
+                <div className="input-group">
+                  <label>Position du logo</label>
+                  <select className="design-select" onChange={(e) => {
+                    localStorage.setItem('logoPosition', e.target.value);
+                  }}>
+                    <option value="left">Gauche (défaut)</option>
+                    <option value="center">Centre</option>
+                    <option value="right">Droite</option>
+                  </select>
+                </div>
+                <div className="input-group">
+                  <label>Hauteur du header</label>
+                  <select className="design-select">
+                    <option value="60">Compact (60px)</option>
+                    <option value="80" selected>Normal (80px)</option>
+                    <option value="100">Large (100px)</option>
+                  </select>
+                </div>
+                <div className="input-group">
+                  <label>Transparence</label>
+                  <input type="checkbox" /> Header transparent
+                </div>
+              </div>
+            </div>
+
+            {/* Aperçu */}
+            <div className="design-card full-span preview-card">
+              <h3>👁️ Aperçu en direct</h3>
+              <div className="preview-box">
+                <div className="preview-header" style={{
+                  background: 'linear-gradient(135deg, var(--primary-color, #667eea), var(--secondary-color, #764ba2))',
+                  padding: '1rem',
+                  borderRadius: 'var(--border-radius, 12px)',
+                  color: 'white',
+                  marginBottom: '1rem'
+                }}>
+                  <strong>M8 PULSE</strong> - Header Example
+                </div>
+                <button style={{
+                  background: 'linear-gradient(135deg, var(--primary-color, #667eea), var(--secondary-color, #764ba2))',
+                  border: 'none',
+                  color: 'white',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: 'var(--border-radius, 12px)',
+                  fontWeight: 'bold',
+                  cursor: 'pointer'
+                }}>
+                  Bouton exemple
+                </button>
+              </div>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

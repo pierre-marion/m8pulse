@@ -43,6 +43,8 @@ security:
         - { path: ^/api/google-sheets/players, roles: PUBLIC_ACCESS }
         - { path: ^/api/google-sheets/matches, roles: PUBLIC_ACCESS }
         - { path: ^/api/articles, roles: PUBLIC_ACCESS, methods: [GET] }
+        - { path: ^/api/comments, roles: PUBLIC_ACCESS, methods: [GET] }
+        - { path: ^/api/ratings, roles: PUBLIC_ACCESS, methods: [GET] }
         - { path: ^/api/blocks, roles: PUBLIC_ACCESS, methods: [GET] }
         - { path: ^/api/welcome, roles: PUBLIC_ACCESS, methods: [GET] }
         - { path: ^/api/themes, roles: PUBLIC_ACCESS, methods: [GET] }

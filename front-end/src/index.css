@@ -18,6 +18,14 @@
   --cs-color: #FF9F1C;
   --cod-color: #8A2BE2;
   --fortnite-color: #00AEEF;
+  
+  /* Personnalisation Designer (valeurs par défaut) */
+  --designer-primary: #667eea;
+  --designer-secondary: #764ba2;
+  --designer-accent: #f093fb;
+  --border-radius: 12px;
+  --font-family: 'Inter', sans-serif;
+  --font-size: 16px;
 }
 
 /* Light Theme (default) */

@@ -16,6 +16,8 @@ function ArticleDetail({ articleId, onBack }) {
       const response = await fetch(`http://localhost:8000/api/articles/${articleId}`);
       if (response.ok) {
         const data = await response.json();
+        console.log('📄 Article chargé:', data);
+        console.log('🎨 Blocs de l\'article:', data.blocks);
         setArticle(data);
       } else {
         if (onBack) onBack();
@@ -89,8 +91,7 @@ function ArticleDetail({ articleId, onBack }) {
         // Mettre à jour les stats de l'article
         setArticle(prev => ({
           ...prev,
-          averageRating: data.rating.average,
-          ratingCount: data.rating.count
+          averageRating: data.average_rating || 0
         }));
       }
     } catch (error) {
@@ -211,18 +212,18 @@ function ArticleDetail({ articleId, onBack }) {
       <article className="article-content-wrapper">
         <header className="article-header">
           <div className="article-badges">
-            <span 
-              className="badge badge-game" 
-              style={{ backgroundColor: getGameColor(article.game) }}
-            >
-              {getGameEmoji(article.game)} {article.game?.toUpperCase() || 'GÉNÉRAL'}
-            </span>
             <span className={`badge badge-type badge-${article.type}`}>
               {article.type === 'standard' && '📄 Standard'}
               {article.type === 'data-story' && '📊 Data Story'}
               {article.type === 'analysis' && '🔍 Analyse'}
               {article.type === 'interview' && '🎤 Interview'}
               {article.type === 'news' && '📰 News'}
+            </span>
+            <span 
+              className="badge badge-game" 
+              style={{ backgroundColor: getGameColor(article.game) }}
+            >
+              {getGameEmoji(article.game)} {article.game?.toUpperCase() || 'GÉNÉRAL'}
             </span>
           </div>
           
@@ -231,27 +232,63 @@ function ArticleDetail({ articleId, onBack }) {
           {article.summary && (
             <p className="article-summary">{article.summary}</p>
           )}
-          
-          <div className="article-meta">
-            <span className="meta-item">
-              👤 {article.author?.username || 'Anonyme'}
-            </span>
-            <span className="meta-item">
-              📅 {new Date(article.publishedAt || article.createdAt).toLocaleDateString('fr-FR', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-              })}
-            </span>
-            <span className="meta-item">
-              👁️ {article.viewCount || 0} vues
-            </span>
-          </div>
         </header>
 
-        {/* Section de notation */}
-        <div className="article-rating-section">
-          <div className="rating-container">
+        {/* Contenu de l'article */}
+        <div className="article-main-content">
+          {article.blocks && article.blocks.length > 0 ? (
+            article.blocks.map((block, index) => {
+              if (block.type === 'title') {
+                const TitleTag = block.titleLevel || 'h2';
+                return (
+                  <TitleTag key={index} className={`article-block-title ${TitleTag}`}>
+                    {block.content}
+                  </TitleTag>
+                );
+              } else if (block.type === 'image') {
+                return (
+                  <div key={index} className="article-block-image">
+                    <img src={block.content} alt="" />
+                  </div>
+                );
+              } else if (block.type === 'text') {
+                return (
+                  <div key={index} className="article-block-text">
+                    {block.content}
+                  </div>
+                );
+              }
+              return null;
+            })
+          ) : (
+            <div className="article-placeholder">
+              <p>Contenu de l'article en construction...</p>
+            </div>
+          )}
+        </div>
+
+        {/* Infos article */}
+        <div className="article-meta">
+          <span className="meta-item">
+            {article.author?.username || 'Anonyme'}
+          </span>
+          <span className="meta-item">
+            {new Date(article.publishedAt || article.createdAt).toLocaleDateString('fr-FR', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric'
+            })}
+          </span>
+          <span className="meta-item">
+            {article.viewCount || 0} vues
+          </span>
+        </div>
+
+        {/* Section notes et commentaires côte à côte */}
+        <div className="bottom-section">
+          {/* Section de notation */}
+          <div className="rating-section">
+            <h2 className="section-title">Notes</h2>
             <div className="rating-stats">
               <div className="average-rating">
                 {article.averageRating ? article.averageRating.toFixed(1) : '0.0'}
@@ -272,7 +309,7 @@ function ArticleDetail({ articleId, onBack }) {
             </div>
             
             <div className="rating-input">
-              <p>Notez cet article :</p>
+              <p>Notez cet article</p>
               <div className="rating-stars">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
@@ -291,87 +328,66 @@ function ArticleDetail({ articleId, onBack }) {
               )}
             </div>
           </div>
-        </div>
 
-        {/* Contenu de l'article */}
-        <div className="article-main-content">
-          {article.blocks && article.blocks.length > 0 ? (
-            article.blocks.map((block, index) => (
-              <div key={index} className="article-block">
-                {block.content}
-              </div>
-            ))
-          ) : (
-            <div className="article-placeholder">
-              <p>Contenu de l'article en construction...</p>
-            </div>
-          )}
-        </div>
+          {/* Section des commentaires */}
+          <div className="comments-section">
+            <h2 className="section-title">
+              Commentaires ({article.commentCount || comments.length})
+            </h2>
 
-        {/* Section des commentaires */}
-        <div className="comments-section">
-          <h2 className="comments-title">
-            💬 Commentaires ({article.commentCount || comments.length})
-          </h2>
+            {/* Formulaire de nouveau commentaire */}
+            <form onSubmit={handleSubmitComment} className="comment-form">
+              <textarea
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="Votre avis..."
+                rows="3"
+                disabled={submittingComment}
+              />
+              <button 
+                type="submit" 
+                className="btn-submit-comment"
+                disabled={submittingComment || newComment.trim() === ''}
+              >
+                {submittingComment ? 'Envoi...' : 'Publier'}
+              </button>
+            </form>
 
-          {/* Formulaire de nouveau commentaire */}
-          <form onSubmit={handleSubmitComment} className="comment-form">
-            <textarea
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              placeholder="Partagez votre avis sur cet article..."
-              rows="4"
-              disabled={submittingComment}
-            />
-            <button 
-              type="submit" 
-              className="btn-submit-comment"
-              disabled={submittingComment || newComment.trim() === ''}
-            >
-              {submittingComment ? 'Envoi...' : '📤 Publier le commentaire'}
-            </button>
-          </form>
-
-          {/* Liste des commentaires */}
-          <div className="comments-list">
-            {comments.length === 0 ? (
-              <div className="no-comments">
-                Soyez le premier à commenter cet article ! 🎉
-              </div>
-            ) : (
-              comments.map((comment) => (
-                <div key={comment.id} className="comment-card">
-                  <div className="comment-header">
-                    <span className="comment-author">
-                      👤 {comment.authorName || 'Anonyme'}
-                    </span>
-                    <span className="comment-date">
-                      {new Date(comment.createdAt).toLocaleDateString('fr-FR', {
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
-                      {comment.isEdited && ' (modifié)'}
-                    </span>
-                  </div>
-                  <div className="comment-content">
-                    {comment.content}
-                  </div>
-                  {/* Bouton de suppression pour l'auteur ou admin */}
-                  {localStorage.getItem('token') && (
-                    <button
-                      className="btn-delete-comment"
-                      onClick={() => handleDeleteComment(comment.id)}
-                      title="Supprimer"
-                    >
-                      🗑️
-                    </button>
-                  )}
+            {/* Liste des commentaires */}
+            <div className="comments-list">
+              {comments.length === 0 ? (
+                <div className="no-comments">
+                  Aucun commentaire
                 </div>
-              ))
-            )}
+              ) : (
+                comments.map((comment) => (
+                  <div key={comment.id} className="comment-card">
+                    <div className="comment-header">
+                      <span className="comment-author">
+                        {comment.authorName || 'Anonyme'}
+                      </span>
+                      <span className="comment-date">
+                        {new Date(comment.createdAt).toLocaleDateString('fr-FR', {
+                          day: 'numeric',
+                          month: 'short'
+                        })}
+                      </span>
+                    </div>
+                    <div className="comment-content">
+                      {comment.content}
+                    </div>
+                    {localStorage.getItem('token') && (
+                      <button
+                        className="btn-delete-comment"
+                        onClick={() => handleDeleteComment(comment.id)}
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>
       </article>

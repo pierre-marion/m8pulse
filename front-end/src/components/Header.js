@@ -1,69 +1,55 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './Header.css';
 
 function Header({ currentPage, setCurrentPage, user }) {
+  const [navItems, setNavItems] = useState([
+    { id: 'accueil', label: 'Acceuil' },
+    { id: 'jeux', label: 'Jeux' },
+    { id: 'equipe', label: 'Equipe' },
+    { id: 'joueurs', label: 'Joueurs' },
+    { id: 'abonnement', label: 'Abonnement' },
+    { id: 'news', label: 'News' }
+  ]);
+
+  // Charger l'ordre personnalisé depuis localStorage
+  useEffect(() => {
+    const loadNavOrder = () => {
+      const savedOrder = localStorage.getItem('navOrder');
+      if (savedOrder) {
+        try {
+          setNavItems(JSON.parse(savedOrder));
+        } catch (error) {
+          console.error('Erreur lors du chargement de l\'ordre du navbar:', error);
+        }
+      }
+    };
+
+    loadNavOrder();
+
+    // Écouter les changements d'ordre
+    window.addEventListener('navOrderChanged', loadNavOrder);
+    
+    return () => {
+      window.removeEventListener('navOrderChanged', loadNavOrder);
+    };
+  }, []);
+
   return (
     <header className="header">
       <div className="logo">
         <img src="/m8logo.png" alt="M8 Logo" className="header-logo-image" />
       </div>
       <nav className="nav">
-        <button 
-          className={`nav-btn ${currentPage === 'accueil' ? 'active' : ''}`}
-          onClick={() => setCurrentPage('accueil')}
-        >
-          Acceuil
-        </button>
-        <button 
-          className={`nav-btn ${currentPage === 'jeux' ? 'active' : ''}`}
-          onClick={() => setCurrentPage('jeux')}
-        >
-          Jeux
-        </button>
-        <button 
-          className={`nav-btn ${currentPage === 'equipe' ? 'active' : ''}`}
-          onClick={() => setCurrentPage('equipe')}
-        >
-          Equipe
-        </button>
-        <button 
-          className={`nav-btn ${currentPage === 'joueurs' ? 'active' : ''}`}
-          onClick={() => setCurrentPage('joueurs')}
-        >
-          Joueurs
-        </button>
-        <button 
-          className={`nav-btn ${currentPage === 'abonnement' ? 'active' : ''}`}
-          onClick={() => setCurrentPage('abonnement')}
-        >
-          Abonnement
-        </button>
-        <button 
-          className={`nav-btn ${currentPage === 'news' ? 'active' : ''}`}
-          onClick={() => setCurrentPage('news')}
-        >
-          News
-        </button>
+        {navItems.map((item) => (
+          <button
+            key={item.id}
+            className={`nav-btn ${currentPage === item.id ? 'active' : ''}`}
+            onClick={() => setCurrentPage(item.id)}
+          >
+            {item.label}
+          </button>
+        ))}
       </nav>
-      <div className="header-user">
-        {user ? (
-          <button 
-            className="user-button"
-            onClick={() => setCurrentPage('profile')}
-          >
-            <span className="user-avatar">{user.username.charAt(0).toUpperCase()}</span>
-            <span className="user-name">{user.username}</span>
-            {user.roles?.includes('ROLE_ADMIN') && <span className="admin-crown">👑</span>}
-          </button>
-        ) : (
-          <button 
-            className="login-button"
-            onClick={() => setCurrentPage('login')}
-          >
-            Se connecter
-          </button>
-        )}
-      </div>
     </header>
   );
 }

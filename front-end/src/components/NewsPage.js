@@ -13,13 +13,14 @@ function NewsPage({ onArticleClick, user, onNavigate }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchArticles();
+    // Toujours recharger les articles quand on arrive sur la page
+    fetchArticles(true);
   }, []);
 
-  const fetchArticles = async () => {
-    // Vérifier si on a un cache valide
+  const fetchArticles = async (forceRefresh = false) => {
+    // Vérifier si on a un cache valide (sauf si forceRefresh)
     const now = Date.now();
-    if (articlesCache && cacheTimestamp && (now - cacheTimestamp) < CACHE_DURATION) {
+    if (!forceRefresh && articlesCache && cacheTimestamp && (now - cacheTimestamp) < CACHE_DURATION) {
       setArticles(articlesCache);
       setLoading(false);
       return;

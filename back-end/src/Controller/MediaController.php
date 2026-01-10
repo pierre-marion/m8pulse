@@ -87,6 +87,11 @@ class MediaController extends AbstractController
             return $this->json(['error' => 'No file uploaded'], Response::HTTP_BAD_REQUEST);
         }
         
+        // Récupérer les infos AVANT le move
+        $originalName = $file->getClientOriginalName();
+        $mimeType = $file->getMimeType();
+        $fileSize = $file->getSize();
+        
         // Créer le répertoire s'il n'existe pas
         if (!is_dir($this->uploadDirectory)) {
             mkdir($this->uploadDirectory, 0777, true);
@@ -96,10 +101,13 @@ class MediaController extends AbstractController
         $filename = uniqid() . '.' . $file->guessExtension();
         
         // Déplacer le fichier
-        $file->move($this->uploadDirectory, $filename);
+        try {
+            $file->move($this->uploadDirectory, $filename);
+        } catch (\Exception $e) {
+            return $this->json(['error' => 'File upload failed: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
         
         // Déterminer le type
-        $mimeType = $file->getMimeType();
         $type = 'document';
         if (str_starts_with($mimeType, 'image/')) {
             $type = 'image';
@@ -108,11 +116,11 @@ class MediaController extends AbstractController
         }
         
         $media = new Media();
-        $media->setName($request->request->get('name') ?? $file->getClientOriginalName());
+        $media->setName($request->request->get('name') ?? $originalName);
         $media->setFilename($filename);
         $media->setPath('/uploads/media/' . $filename);
         $media->setMimeType($mimeType);
-        $media->setSize($file->getSize());
+        $media->setSize($fileSize);
         $media->setType($type);
         $media->setUploadedBy($this->getUser());
         
@@ -128,7 +136,8 @@ class MediaController extends AbstractController
         return $this->json([
             'message' => 'Media uploaded successfully',
             'id' => $media->getId(),
-            'path' => $media->getPath()
+            'path' => $media->getPath(),
+            'url' => 'http://localhost:8000' . $media->getPath()
         ], Response::HTTP_CREATED);
     }
 

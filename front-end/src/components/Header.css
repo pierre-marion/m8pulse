@@ -1,7 +1,7 @@
 .header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 20px;
   flex-shrink: 0;
   padding-bottom: 10px;
@@ -59,13 +59,13 @@ body.dark-mode .nav-btn {
 }
 
 .nav-btn.active {
-  background: var(--primary-color);
+  background: var(--designer-primary, var(--primary-color));
   color: #fff;
   box-shadow: 0 4px 12px rgba(125, 60, 255, 0.3);
 }
 
 body.dark-mode .nav-btn.active {
-  background: linear-gradient(135deg, rgba(157, 108, 255, 0.9), rgba(125, 60, 255, 0.9));
+  background: linear-gradient(135deg, var(--designer-primary, #9D6CFF), var(--designer-secondary, #7D3CFF));
   color: #ffffff;
   border-color: rgba(157, 108, 255, 0.6);
   box-shadow: 0 4px 16px rgba(157, 108, 255, 0.5);
@@ -74,10 +74,11 @@ body.dark-mode .nav-btn.active {
 .nav-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(125, 60, 255, 0.3);
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
 }
 
 body.dark-mode .nav-btn:hover {
-  background: linear-gradient(135deg, rgba(157, 108, 255, 0.35), rgba(125, 60, 255, 0.35));
+  background: linear-gradient(135deg, var(--designer-primary, rgba(157, 108, 255, 0.35)), var(--designer-secondary, rgba(125, 60, 255, 0.35)));
   color: #ffffff;
   border-color: rgba(157, 108, 255, 0.5);
   box-shadow: 0 4px 16px rgba(157, 108, 255, 0.4);

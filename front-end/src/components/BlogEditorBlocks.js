@@ -25,7 +25,11 @@ const BlogEditorBlocks = ({ onBack }) => {
 
     const fetchMedia = async () => {
         try {
-            const response = await fetch('http://localhost:8000/api/media');
+            const response = await fetch('http://localhost:8000/api/media', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             if (response.ok) {
                 const data = await response.json();
                 setMedia(data);
@@ -88,21 +92,106 @@ const BlogEditorBlocks = ({ onBack }) => {
 
     const handleSave = async () => {
         try {
+            console.log('🚀 Début de la sauvegarde, blocs:', article.blocks);
+            
+            // Upload des images d'abord
+            const processedBlocks = await Promise.all(article.blocks.map(async (block) => {
+                if (block.type === 'image' && block.imageFile) {
+                    console.log('📤 Upload image:', block.imageFile.name);
+                    // Uploader l'image
+                    const formData = new FormData();
+                    formData.append('file', block.imageFile);
+                    
+                    const uploadResponse = await fetch('http://localhost:8000/api/media/upload', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        },
+                        body: formData
+                    });
+                    
+                    if (uploadResponse.ok) {
+                        const mediaData = await uploadResponse.json();
+                        console.log('✅ Image uploadée:', mediaData);
+                        // Utiliser l'URL retournée par le backend
+                        return { ...block, content: mediaData.url, imageFile: undefined };
+                    } else {
+                        const errorText = await uploadResponse.text();
+                        console.error('❌ Erreur upload image:', uploadResponse.status, errorText);
+                        return block;
+                    }
+                } else if (block.type === 'image') {
+                    console.log('ℹ️ Bloc image sans fichier (déjà uploadé?):', block.content);
+                }
+                return block;
+            }));
+            
+            console.log('📦 Blocs traités:', processedBlocks);
+            
+            // S'assurer que le status est "published" quand on publie
+            const articleToSave = {
+                ...article,
+                blocks: processedBlocks,
+                status: 'published'
+            };
+            
             const response = await fetch('http://localhost:8000/api/articles', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
-                body: JSON.stringify(article)
+                body: JSON.stringify(articleToSave)
             });
 
             if (response.ok) {
-                alert('Article publié!');
-                if (onBack) onBack();
+                const data = await response.json();
+                console.log('Article créé avec succès:', data);
+                // Retourner à la liste des articles
+                if (onBack) {
+                    onBack();
+                }
+            } else {
+                const errorData = await response.json();
+                console.error('Erreur serveur:', errorData);
+                alert('Erreur lors de la publication: ' + (errorData.message || 'Erreur inconnue'));
             }
         } catch (error) {
             console.error('Erreur publication:', error);
+            alert('Erreur de connexion au serveur');
+        }
+    };
+
+    const handleSaveDraft = async () => {
+        try {
+            const articleToSave = {
+                ...article,
+                status: 'draft'
+            };
+            
+            const response = await fetch('http://localhost:8000/api/articles', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify(articleToSave)
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Brouillon sauvegardé:', data);
+                if (onBack) {
+                    onBack();
+                }
+            } else {
+                const errorData = await response.json();
+                console.error('Erreur serveur:', errorData);
+                alert('Erreur lors de la sauvegarde: ' + (errorData.message || 'Erreur inconnue'));
+            }
+        } catch (error) {
+            console.error('Erreur sauvegarde:', error);
+            alert('Erreur de connexion au serveur');
         }
     };
 
@@ -167,15 +256,49 @@ const BlogEditorBlocks = ({ onBack }) => {
             case 'image':
                 return (
                     <div className="block-editor image-block">
-                        {block.mediaId ? (
+                        {block.imageFile || block.content ? (
                             <div className="image-preview">
-                                <img src={`http://localhost:8000${media.find(m => m.id === block.mediaId)?.path}`} alt="" />
-                                <button onClick={() => updateBlock(index, { mediaId: null })}>Changer</button>
+                                {block.imageFile ? (
+                                    <>
+                                        <img src={URL.createObjectURL(block.imageFile)} alt="Preview" />
+                                        <p style={{ color: '#4CAF50', fontWeight: 'bold', marginTop: '10px' }}>
+                                            ✅ Image choisie: {block.imageFile.name}
+                                        </p>
+                                        <button onClick={() => updateBlock(index, { imageFile: null, content: '' })}>Changer l'image</button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <img src={block.content} alt="Preview" />
+                                        <button onClick={() => updateBlock(index, { content: '' })}>Changer l'image</button>
+                                    </>
+                                )}
                             </div>
                         ) : (
-                            <button onClick={() => { setSelectedBlockIndex(index); setShowMediaLibrary(true); }}>
-                                Choisir une image
-                            </button>
+                            <div>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => {
+                                        const file = e.target.files[0];
+                                        if (file) {
+                                            updateBlock(index, { imageFile: file });
+                                        }
+                                    }}
+                                    style={{ 
+                                        width: '100%', 
+                                        padding: '12px', 
+                                        fontSize: '14px',
+                                        background: 'rgba(255, 70, 85, 0.1)',
+                                        border: '2px dashed rgba(255, 70, 85, 0.5)',
+                                        borderRadius: '6px',
+                                        color: 'white',
+                                        cursor: 'pointer'
+                                    }}
+                                />
+                                <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', marginTop: '10px' }}>
+                                    📸 Clique pour choisir une image depuis ton PC
+                                </p>
+                            </div>
                         )}
                     </div>
                 );
@@ -209,8 +332,8 @@ const BlogEditorBlocks = ({ onBack }) => {
             <div className="editor-header">
                 <h2>Nouvel Article (Blocs)</h2>
                 <div className="header-actions">
-                    <button onClick={() => setArticle({ ...article, status: 'draft' })} className="btn-draft">
-                        Brouillon
+                    <button onClick={handleSaveDraft} className="btn-draft">
+                        Sauvegarder Brouillon
                     </button>
                     <button onClick={handleSave} className="btn-publish">
                         Publier
