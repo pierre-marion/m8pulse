@@ -3,7 +3,7 @@
   width: 280px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 18px;
   flex-shrink: 0;
   overflow-y: auto;
   height: calc(100vh - 40px);
@@ -36,7 +36,7 @@ body.dark-mode .right-panel::-webkit-scrollbar-thumb {
 .panel-section {
   background: rgba(255, 255, 255, 0.98);
   border-radius: 16px;
-  padding: 12px;
+  padding: 14px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   flex-shrink: 0;
   transition: all 0.3s ease;
@@ -53,6 +53,7 @@ body.dark-mode .panel-section {
 /* ===== PROFIL MODERNE ===== */
 .profile-modern {
   padding: 10px !important;
+  margin-bottom: 8px;
 }
 
 .profile-compact {
@@ -227,6 +228,7 @@ body.dark-mode .theme-toggle-mini {
   padding: 10px !important;
   overflow-x: hidden;
   max-width: 100%;
+  margin-bottom: 8px;
 }
 
 .section-header {
@@ -275,7 +277,175 @@ body.dark-mode .section-badge-small {
   color: #9D6CFF;
 }
 
-/* ===== GRILLE JOUEURS ===== */
+/* ===== LISTE COMPACTE JOUEURS ===== */
+.players-compact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 8px;
+}
+
+.player-compact-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 10px;
+  background: rgba(125, 60, 255, 0.04);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+body.dark-mode .player-compact-card {
+  background: rgba(157, 108, 255, 0.06);
+}
+
+.player-compact-card:hover {
+  background: rgba(125, 60, 255, 0.08);
+  transform: translateX(3px);
+}
+
+body.dark-mode .player-compact-card:hover {
+  background: rgba(157, 108, 255, 0.12);
+}
+
+.player-compact-card.active {
+  background: rgba(125, 60, 255, 0.12);
+  border-color: rgba(125, 60, 255, 0.3);
+  box-shadow: 0 4px 15px rgba(125, 60, 255, 0.2);
+}
+
+body.dark-mode .player-compact-card.active {
+  background: rgba(157, 108, 255, 0.15);
+  border-color: rgba(157, 108, 255, 0.4);
+  box-shadow: 0 4px 15px rgba(157, 108, 255, 0.3);
+}
+
+.player-avatar-compact {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 800;
+  color: white;
+  flex-shrink: 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+}
+
+.player-info-compact {
+  flex: 1;
+  min-width: 0;
+}
+
+.player-name-compact {
+  font-size: 13px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 2px;
+}
+
+body.dark-mode .player-name-compact {
+  color: #fff;
+}
+
+.player-role-compact {
+  font-size: 9px;
+  color: #7D3CFF;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
+body.dark-mode .player-role-compact {
+  color: #9D6CFF;
+}
+
+.player-game-compact {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.player-rating-compact {
+  text-align: center;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.rating-label {
+  font-size: 8px;
+  color: #95a5a6;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.rating-value {
+  font-size: 16px;
+  font-weight: 900;
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+}
+
+/* ===== DÉTAILS JOUEUR ===== */
+.player-detail-box {
+  background: rgba(125, 60, 255, 0.05);
+  border-left: 3px solid #667eea;
+  border-radius: 8px;
+  padding: 8px;
+  animation: fadeInUp 0.4s ease;
+}
+
+body.dark-mode .player-detail-box {
+  background: rgba(157, 108, 255, 0.08);
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(125, 60, 255, 0.1);
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+body.dark-mode .detail-row {
+  border-bottom-color: rgba(157, 108, 255, 0.15);
+}
+
+.detail-label {
+  font-size: 10px;
+  color: #7D3CFF;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+body.dark-mode .detail-label {
+  color: #9D6CFF;
+}
+
+.detail-value {
+  font-size: 12px;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+body.dark-mode .detail-value {
+  color: #fff;
+}
+
+/* ===== GRILLE JOUEURS (OLD - À SUPPRIMER) ===== */
 .players-grid {
   display: flex;
   flex-direction: row;
@@ -499,6 +669,16 @@ body.dark-mode .stat-val {
 /* ===== PLANNING MODERNE ===== */
 .planning-modern {
   padding: 10px !important;
+}
+
+/* Sur grands écrans (1920px+), étirer le calendrier pour remplir l'espace */
+@media (min-width: 1920px) and (min-height: 1000px) {
+  .planning-modern {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 500px;
+  }
 }
 
 /* ===== RESPONSIVE ===== */

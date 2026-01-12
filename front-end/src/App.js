@@ -102,7 +102,7 @@ function App() {
     // Pages normales
     switch(currentPage) {
       case 'accueil':
-        return <HomePage />;
+        return <HomePage user={user} />;
       case 'jeux':
         return <GamesPage currentGame={games[currentGame]} />;
       case 'equipe':

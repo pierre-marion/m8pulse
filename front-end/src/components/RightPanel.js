@@ -140,57 +140,48 @@ function RightPanel({ currentGame, onDashboardClick, onDesignClick, onDatasetsCl
           <span className="section-badge">M8 Global</span>
         </div>
         
-        <div className="players-grid">
+        <div className="players-compact-list">
           {topPlayers.slice(0, 3).map((player, index) => (
             <div 
               key={player.id}
-              className={`player-card ${selectedPlayer === index ? 'active' : ''}`}
+              className={`player-compact-card ${selectedPlayer === index ? 'active' : ''}`}
               onClick={() => setSelectedPlayer(index)}
-              style={{
-                borderColor: selectedPlayer === index ? getGameColor(player.game) : 'transparent'
-              }}
             >
-              <div className="player-hex" style={{
-                background: selectedPlayer === index 
-                  ? `linear-gradient(135deg, ${getGameColor(player.game)}, ${getGameColor(player.game)}dd)`
-                  : 'linear-gradient(135deg, #f8f8f8, #e8e8e8)'
+              <div className="player-avatar-compact" style={{
+                background: getGameColor(player.game)
               }}>
                 {player.name.charAt(0)}
               </div>
-              <div className="player-mini-info">
-                <div className="player-mini-name">{player.name}</div>
-                <div className="player-mini-city">{player.city}</div>
+              <div className="player-info-compact">
+                <div className="player-name-compact">{player.name}</div>
+                <div className="player-game-compact" style={{ color: getGameColor(player.game) }}>
+                  {player.game.replace('Counter Strike', 'CS2').replace('Call of Duty', 'CoD')}
+                </div>
+              </div>
+              <div className="player-rating-compact">
+                <div className="rating-value" style={{ color: getGameColor(player.game) }}>
+                  {player.rating}
+                </div>
               </div>
             </div>
           ))}
         </div>
         
         {selectedPlayer !== null && topPlayers[selectedPlayer] && (
-          <div className="player-spotlight" style={{
+          <div className="player-detail-box" style={{
             borderLeftColor: getGameColor(topPlayers[selectedPlayer].game)
           }}>
-            <div className="spotlight-header">
-              <div className="spotlight-name">{topPlayers[selectedPlayer].name.toUpperCase()}</div>
-              <div className="spotlight-role">{topPlayers[selectedPlayer].role}</div>
+            <div className="detail-row">
+              <span className="detail-label">
+                <Icon name="award" size={12} /> WR
+              </span>
+              <span className="detail-value">{topPlayers[selectedPlayer].wr}</span>
             </div>
-            <div className="spotlight-game" style={{
-              color: getGameColor(topPlayers[selectedPlayer].game)
-            }}>
-              {topPlayers[selectedPlayer].game}
-            </div>
-            <div className="spotlight-stats">
-              <div className="stat-quick">
-                <span className="stat-label">WR</span>
-                <span className="stat-val">{topPlayers[selectedPlayer].wr}</span>
-              </div>
-              <div className="stat-quick">
-                <span className="stat-label">Games</span>
-                <span className="stat-val">{topPlayers[selectedPlayer].gamesPlayed}</span>
-              </div>
-              <div className="stat-quick">
-                <span className="stat-label">Rating</span>
-                <span className="stat-val">{topPlayers[selectedPlayer].rating}</span>
-              </div>
+            <div className="detail-row">
+              <span className="detail-label">
+                <Icon name="gamepad" size={12} /> Games
+              </span>
+              <span className="detail-value">{topPlayers[selectedPlayer].gamesPlayed}</span>
             </div>
           </div>
         )}

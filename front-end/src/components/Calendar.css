@@ -65,6 +65,7 @@
 .calendar-day {
   aspect-ratio: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
@@ -72,12 +73,30 @@
   font-weight: 600;
   background: rgba(245, 245, 245, 0.9);
   color: #333;
-  cursor: pointer;
   transition: all 0.2s ease;
   width: 100%;
   height: auto;
   border: 2px solid rgba(0, 0, 0, 0.05);
   font-family: var(--font-body);
+  position: relative;
+  gap: 2px;
+}
+
+.calendar-day[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 10px;
+  white-space: nowrap;
+  z-index: 1000;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .calendar-day.empty {
@@ -86,17 +105,47 @@
   border: none;
 }
 
-.calendar-day.has-match {
-  background: #fff;
+.calendar-day.has-matches {
+  background: linear-gradient(135deg, #fff 0%, #f8f8f8 100%);
   color: var(--text-primary);
   font-weight: 700;
-  border-width: 3px;
+  border-color: rgba(125, 60, 255, 0.3);
+  box-shadow: 0 2px 8px rgba(125, 60, 255, 0.15);
+}
+
+.calendar-day.has-matches:hover {
+  background: linear-gradient(135deg, #fff 0%, #f0f0ff 100%);
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 12px rgba(125, 60, 255, 0.3);
+  transform: scale(1.08);
 }
 
 .calendar-day.today {
   background: var(--error-color);
   color: #fff;
   font-weight: 700;
+}
+
+.match-dots {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  justify-content: center;
+  margin-top: -1px;
+}
+
+.match-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: transform 0.2s ease;
+}
+
+.calendar-day:hover .match-dot {
+  transform: scale(1.2);
 }
 
 .calendar-day:not(.empty):not(.today):hover {
@@ -106,9 +155,9 @@
 
 /* Dark Mode Support */
 body.dark-mode .calendar-day {
-  background: rgba(50, 50, 70, 0.5) !important;
-  color: #ffffff !important;
-  border-color: rgba(157, 108, 255, 0.2) !important;
+  background: rgba(50, 50, 70, 0.5);
+  color: #ffffff;
+  border-color: rgba(157, 108, 255, 0.2);
 }
 
 body.dark-mode .calendar-day.empty {
@@ -116,10 +165,23 @@ body.dark-mode .calendar-day.empty {
   border: none;
 }
 
-body.dark-mode .calendar-day.has-match {
-  background: rgba(157, 108, 255, 0.3);
+body.dark-mode .calendar-day.has-matches {
+  background: linear-gradient(135deg, rgba(157, 108, 255, 0.25) 0%, rgba(125, 60, 255, 0.15) 100%);
   color: #ffffff;
-  border-color: rgba(157, 108, 255, 0.6);
+  border-color: rgba(157, 108, 255, 0.5);
+  box-shadow: 0 2px 8px rgba(157, 108, 255, 0.3);
+}
+
+body.dark-mode .calendar-day.has-matches:hover {
+  background: linear-gradient(135deg, rgba(157, 108, 255, 0.4) 0%, rgba(125, 60, 255, 0.25) 100%);
+  border-color: rgba(157, 108, 255, 0.8);
+  box-shadow: 0 4px 12px rgba(157, 108, 255, 0.5);
+  transform: scale(1.08);
+}
+
+body.dark-mode .calendar-day[title]:hover::after {
+  background: rgba(157, 108, 255, 0.95);
+  color: white;
 }
 
 body.dark-mode .calendar-day.today {
