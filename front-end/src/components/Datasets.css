@@ -1,0 +1,355 @@
+.datasets-container {
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.datasets-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.datasets-header h1 {
+  font-size: 32px;
+  font-weight: 900;
+  color: #1a1a2e;
+  margin: 0;
+}
+
+.btn-upload {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-upload:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+/* Upload Form */
+.upload-form-container {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(102, 126, 234, 0.2);
+}
+
+.upload-form h3 {
+  margin: 0 0 20px 0;
+  color: #667eea;
+  font-size: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #495057;
+  font-size: 14px;
+}
+
+.form-group input[type="text"],
+.form-group textarea,
+.form-group input[type="file"] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-group small {
+  display: block;
+  margin-top: 6px;
+  color: #6c757d;
+  font-size: 12px;
+}
+
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Datasets List */
+.datasets-list h3 {
+  font-size: 20px;
+  color: #495057;
+  margin-bottom: 20px;
+}
+
+.no-datasets {
+  text-align: center;
+  padding: 60px 20px;
+  color: #adb5bd;
+  font-size: 16px;
+}
+
+.dataset-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.dataset-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  border-color: rgba(102, 126, 234, 0.3);
+}
+
+.dataset-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.dataset-header h4 {
+  margin: 0 0 6px 0;
+  font-size: 18px;
+  color: #1a1a2e;
+}
+
+.dataset-description {
+  margin: 0;
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.dataset-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-details,
+.btn-delete {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+}
+
+.btn-details {
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+}
+
+.btn-details:hover {
+  background: rgba(102, 126, 234, 0.2);
+}
+
+.btn-delete {
+  background: rgba(255, 70, 85, 0.1);
+  color: #ff4655;
+}
+
+.btn-delete:hover {
+  background: rgba(255, 70, 85, 0.2);
+}
+
+.dataset-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.info-badge {
+  padding: 6px 12px;
+  background: rgba(102, 126, 234, 0.08);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #667eea;
+}
+
+/* Dataset Columns */
+.dataset-columns {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.dataset-columns h5 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  color: #495057;
+}
+
+.columns-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 12px;
+}
+
+.column-item {
+  background: rgba(102, 126, 234, 0.05);
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(102, 126, 234, 0.15);
+}
+
+.column-name {
+  font-weight: 600;
+  color: #1a1a2e;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.column-type-select {
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 6px;
+  background: white;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.column-type-select:hover {
+  border-color: #667eea;
+}
+
+.column-type-select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.no-permission {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.no-permission h2 {
+  color: #ff4655;
+  font-size: 28px;
+  margin-bottom: 12px;
+}
+
+.no-permission p {
+  color: #6c757d;
+  font-size: 16px;
+}
+
+.loading {
+  text-align: center;
+  padding: 60px;
+  font-size: 18px;
+  color: #6c757d;
+}
+
+/* Dark Mode */
+body.dark-mode .datasets-container {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+body.dark-mode .datasets-header h1 {
+  color: white;
+}
+
+body.dark-mode .upload-form-container,
+body.dark-mode .dataset-card {
+  background: rgba(20, 25, 35, 0.8);
+  border-color: rgba(157, 108, 255, 0.3);
+}
+
+body.dark-mode .upload-form h3,
+body.dark-mode .datasets-list h3,
+body.dark-mode .dataset-columns h5 {
+  color: #9d6cff;
+}
+
+body.dark-mode .form-group label,
+body.dark-mode .dataset-header h4,
+body.dark-mode .column-name {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+body.dark-mode .form-group input,
+body.dark-mode .form-group textarea,
+body.dark-mode .column-type-select {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(157, 108, 255, 0.3);
+  color: white;
+}
+
+body.dark-mode .info-badge,
+body.dark-mode .column-item {
+  background: rgba(157, 108, 255, 0.15);
+  color: #9d6cff;
+  border-color: rgba(157, 108, 255, 0.3);
+}
+
+body.dark-mode .dataset-description,
+body.dark-mode .form-group small {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+body.dark-mode .btn-details {
+  background: rgba(157, 108, 255, 0.2);
+  color: #9d6cff;
+}
+
+body.dark-mode .btn-details:hover {
+  background: rgba(157, 108, 255, 0.3);
+}

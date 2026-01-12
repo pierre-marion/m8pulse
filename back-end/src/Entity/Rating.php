@@ -32,9 +32,10 @@ class Rating
     #[ORM\JoinColumn(nullable: true)]
     private ?Article $article = null;
 
-    #[ORM\ManyToOne(targetEntity: Block::class, inversedBy: 'ratings')]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?Block $block = null;
+    // Block relation commented - table doesn't have block_id column
+    // #[ORM\ManyToOne(targetEntity: Block::class, inversedBy: 'ratings')]
+    // #[ORM\JoinColumn(nullable: true)]
+    // private ?Block $block = null;
 
     #[ORM\Column(type: 'datetime')]
     #[Groups(['rating:read'])]
@@ -94,17 +95,6 @@ class Rating
     public function setArticle(?Article $article): self
     {
         $this->article = $article;
-        return $this;
-    }
-
-    public function getBlock(): ?Block
-    {
-        return $this->block;
-    }
-
-    public function setBlock(?Block $block): self
-    {
-        $this->block = $block;
         return $this;
     }
 

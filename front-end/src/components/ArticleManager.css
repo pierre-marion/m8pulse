@@ -343,3 +343,75 @@
     gap: 15px;
   }
 }
+
+/* Dark Mode Support */
+body.dark-mode .article-manager {
+  background: #0a0e27;
+  color: #ffffff;
+}
+
+body.dark-mode .manager-header {
+  border-bottom-color: rgba(157, 108, 255, 0.3);
+}
+
+body.dark-mode .manager-header h2 {
+  color: #9d6cff;
+}
+
+body.dark-mode .article-form-container {
+  background: linear-gradient(135deg, rgba(35, 35, 55, 0.98), rgba(30, 30, 50, 0.98));
+  border-color: rgba(157, 108, 255, 0.3);
+}
+
+body.dark-mode .article-form-container h3 {
+  color: #ffffff;
+}
+
+body.dark-mode .form-group label {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+body.dark-mode .form-input,
+body.dark-mode .form-textarea,
+body.dark-mode .form-select {
+  background: rgba(20, 25, 35, 0.8);
+  border-color: rgba(157, 108, 255, 0.3);
+  color: #ffffff;
+}
+
+body.dark-mode .form-input:focus,
+body.dark-mode .form-textarea:focus,
+body.dark-mode .form-select:focus {
+  border-color: #9d6cff;
+  background: rgba(20, 25, 35, 0.9);
+}
+
+body.dark-mode .article-card {
+  background: linear-gradient(135deg, rgba(35, 35, 55, 0.98), rgba(30, 30, 50, 0.98));
+  border-color: rgba(157, 108, 255, 0.3);
+}
+
+body.dark-mode .article-card:hover {
+  box-shadow: 0 8px 30px rgba(157, 108, 255, 0.3);
+}
+
+body.dark-mode .article-title {
+  color: #ffffff;
+}
+
+body.dark-mode .article-excerpt {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+body.dark-mode .article-meta {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+body.dark-mode .article-status {
+  background: rgba(157, 108, 255, 0.2);
+  color: #9d6cff;
+}
+
+body.dark-mode .no-articles {
+  color: rgba(255, 255, 255, 0.6);
+}

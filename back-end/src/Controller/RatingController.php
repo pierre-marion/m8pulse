@@ -40,6 +40,30 @@ class RatingController extends AbstractController
         return new JsonResponse($data, Response::HTTP_OK, [], true);
     }
 
+    #[Route('/article/{articleId}/user', name: 'article_user_rating', methods: ['GET'])]
+    #[IsGranted('ROLE_SUBSCRIBER')]
+    public function getUserArticleRating(int $articleId): JsonResponse
+    {
+        $article = $this->entityManager->getRepository(Article::class)->find($articleId);
+        
+        if (!$article) {
+            return $this->json(['error' => 'Article not found'], Response::HTTP_NOT_FOUND);
+        }
+        
+        $rating = $this->entityManager->getRepository(Rating::class)->findOneBy([
+            'user' => $this->getUser(),
+            'article' => $article
+        ]);
+        
+        if (!$rating) {
+            return $this->json(['rating' => null]);
+        }
+        
+        $data = $this->serializer->serialize($rating, 'json', ['groups' => 'rating:read']);
+        
+        return new JsonResponse($data, Response::HTTP_OK, [], true);
+    }
+
     #[Route('/block/{blockId}', name: 'block_ratings', methods: ['GET'])]
     public function getBlockRatings(int $blockId): JsonResponse
     {

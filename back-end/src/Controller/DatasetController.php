@@ -358,18 +358,25 @@ class DatasetController extends AbstractController
             return null;
         }
         
+        // Détecter le séparateur (priorité au point-virgule selon le brief)
+        $content = file_get_contents($filepath);
+        $separator = strpos($content, ';') !== false ? ';' : ',';
+        
         $data = [];
         $variables = [];
         $headers = [];
         
         if (($handle = fopen($filepath, 'r')) !== false) {
-            // Lire les en-têtes
-            $headers = fgetcsv($handle);
+            // Lire les en-têtes avec le bon séparateur
+            $headers = fgetcsv($handle, 0, $separator);
             
             if (!$headers) {
                 fclose($handle);
                 return null;
             }
+            
+            // Nettoyer les en-têtes (trim whitespace)
+            $headers = array_map('trim', $headers);
             
             // Initialiser les variables
             foreach ($headers as $header) {
@@ -381,7 +388,8 @@ class DatasetController extends AbstractController
             
             // Lire les données
             $rowIndex = 0;
-            while (($row = fgetcsv($handle)) !== false && $rowIndex < 1000) { // Limiter à 1000 lignes
+            while (($row = fgetcsv($handle, 0, $separator)) !== false && $rowIndex < 1000) { // Limiter à 1000 lignes
+                $row = array_map('trim', $row); // Nettoyer les valeurs
                 $rowData = [];
                 foreach ($row as $index => $value) {
                     $rowData[$headers[$index]] = $value;
@@ -400,7 +408,8 @@ class DatasetController extends AbstractController
         
         return [
             'variables' => $variables,
-            'data' => $data
+            'data' => $data,
+            'separator' => $separator
         ];
     }
 }

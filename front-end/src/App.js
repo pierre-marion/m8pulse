@@ -13,6 +13,8 @@ import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
 import ProfilePage from './components/ProfilePage';
 import PlayersPage from './components/PlayersPage';
+import ArticleManager from './components/ArticleManager';
+import Datasets from './components/Datasets';
 import ThemeToggle from './components/ThemeToggle';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { DarkModeProvider } from './contexts/DarkModeContext';
@@ -173,21 +175,13 @@ function App() {
           setCurrentPage('accueil');
           return <HomePage />;
         }
-        return (
-          <Suspense fallback={<div className="loading-lazy">Chargement de l'éditeur...</div>}>
-            <BlogEditorBlocks user={user} onBack={() => setCurrentPage('news')} />
-          </Suspense>
-        );
+        return <ArticleManager user={user} />;
       case 'datasets':
-        if (!user || !user.roles?.includes('ROLE_DATA_PROVIDER')) {
+        if (!user || (!user.roles?.includes('ROLE_PROVIDER') && !user.roles?.includes('ROLE_ADMIN'))) {
           setCurrentPage('accueil');
           return <HomePage />;
         }
-        return (
-          <Suspense fallback={<div className="loading-lazy">Chargement...</div>}>
-            <DatasetManager />
-          </Suspense>
-        );
+        return <Datasets user={user} />;
       case 'theme-designer':
         if (!user || !user.roles?.includes('ROLE_DESIGNER')) {
           setCurrentPage('accueil');
@@ -222,6 +216,7 @@ function App() {
                 currentGame={games[currentGame]} 
                 onDashboardClick={() => setCurrentPage('dashboard')}
                 onDesignClick={() => setShowDesignPanel(true)}
+                onDatasetsClick={() => setCurrentPage('datasets')}
                 user={user}
                 onLogout={handleLogout}
                 onLoginClick={() => setCurrentPage('login')}

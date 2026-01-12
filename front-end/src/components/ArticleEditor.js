@@ -7,7 +7,7 @@ function ArticleEditor({ user, articleId, onBack, onSave }) {
     summary: '',
     type: 'news',
     game: 'general',
-    status: 'draft',
+    status: 'published',
     blocks: []
   });
   const [loading, setLoading] = useState(false);
@@ -77,9 +77,20 @@ function ArticleEditor({ user, articleId, onBack, onSave }) {
   };
 
   const addBlock = (type) => {
+    const newBlock = { 
+      type, 
+      content: '', 
+      position: article.blocks.length 
+    };
+    
+    // Ajouter le type de visualisation par défaut pour les stats
+    if (type === 'stats') {
+      newBlock.vizType = 'table'; // table, radar, bar, line
+    }
+    
     setArticle({
       ...article,
-      blocks: [...article.blocks, { type, content: '', position: article.blocks.length }]
+      blocks: [...article.blocks, newBlock]
     });
   };
 
@@ -87,6 +98,39 @@ function ArticleEditor({ user, articleId, onBack, onSave }) {
     const newBlocks = [...article.blocks];
     newBlocks[index].content = content;
     setArticle({ ...article, blocks: newBlocks });
+  };
+
+  const updateBlockData = (index, data) => {
+    const newBlocks = [...article.blocks];
+    newBlocks[index] = { ...newBlocks[index], ...data };
+    setArticle({ ...article, blocks: newBlocks });
+  };
+
+  const handleImageUpload = async (index, file) => {
+    if (!file) return;
+    
+    // Pour l'instant, on convertit l'image en base64
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      updateBlock(index, reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleStatsUpload = async (index, file) => {
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const text = e.target.result;
+      // Parser CSV
+      const rows = text.split('\n').map(row => row.split(',').map(cell => cell.trim()));
+      updateBlockData(index, { 
+        content: JSON.stringify(rows),
+        fileName: file.name 
+      });
+    };
+    reader.readAsText(file);
   };
 
   const removeBlock = (index) => {
@@ -116,25 +160,28 @@ function ArticleEditor({ user, articleId, onBack, onSave }) {
   }
 
   return (
-    <div className="article-editor-container">
-      <div className="editor-header">
-        <button onClick={onBack} className="btn-back">← Retour</button>
-        <h1>{articleId ? 'Modifier l\'article' : 'Nouvel article'}</h1>
-      </div>
-
-      {error && <div className="error-message">{error}</div>}
-
-      <form onSubmit={handleSubmit} className="article-form">
-        <div className="form-group">
-          <label>Titre *</label>
-          <input
-            type="text"
-            value={article.title}
-            onChange={(e) => setArticle({ ...article, title: e.target.value })}
-            placeholder="Titre de l'article"
-            required
-          />
+    <div className="article-editor-overlay" onClick={onBack}>
+      <div className="article-editor-popup" onClick={(e) => e.stopPropagation()}>
+        <div className="editor-header">
+          <h1>
+            {articleId ? 'Modifier l\'article' : 'Nouvel article'} <span>(BLOCS)</span>
+          </h1>
+          <button onClick={onBack} className="btn-close">✕</button>
         </div>
+
+        {error && <div className="error-message">{error}</div>}
+
+        <form onSubmit={handleSubmit} className="article-form">
+          <div className="form-group">
+            <label>Titre *</label>
+            <input
+              type="text"
+              value={article.title}
+              onChange={(e) => setArticle({ ...article, title: e.target.value })}
+              placeholder="Titre de l'article"
+              required
+            />
+          </div>
 
         <div className="form-group">
           <label>Résumé</label>
@@ -181,9 +228,9 @@ function ArticleEditor({ user, articleId, onBack, onSave }) {
               value={article.status}
               onChange={(e) => setArticle({ ...article, status: e.target.value })}
             >
-              <option value="draft">Brouillon</option>
-              <option value="published">Publié</option>
-              <option value="archived">Archivé</option>
+              <option value="draft">📝 Brouillon</option>
+              <option value="published">✅ Publié</option>
+              <option value="archived">📦 Archivé</option>
             </select>
           </div>
         </div>
@@ -201,6 +248,9 @@ function ArticleEditor({ user, articleId, onBack, onSave }) {
             <button type="button" onClick={() => addBlock('image')} className="btn-add-block">
               🖼️ Ajouter une image
             </button>
+            <button type="button" onClick={() => addBlock('stats')} className="btn-add-block">
+              📊 Ajouter des stats
+            </button>
           </div>
 
           <div className="blocks-list">
@@ -211,6 +261,7 @@ function ArticleEditor({ user, articleId, onBack, onSave }) {
                     {block.type === 'text' && '📝 Texte'}
                     {block.type === 'title' && '📌 Titre'}
                     {block.type === 'image' && '🖼️ Image'}
+                    {block.type === 'stats' && '📊 Stats'}
                   </span>
                   <div className="block-actions">
                     <button type="button" onClick={() => moveBlock(index, 'up')} disabled={index === 0}>↑</button>
@@ -238,12 +289,61 @@ function ArticleEditor({ user, articleId, onBack, onSave }) {
                 )}
 
                 {block.type === 'image' && (
-                  <input
-                    type="url"
-                    value={block.content}
-                    onChange={(e) => updateBlock(index, e.target.value)}
-                    placeholder="URL de l'image..."
-                  />
+                  <div className="image-block-content">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleImageUpload(index, e.target.files[0])}
+                      className="file-input"
+                    />
+                    {block.content && (
+                      <div className="image-preview">
+                        <img src={block.content} alt="Aperçu" style={{maxWidth: '100%', maxHeight: '200px'}} />
+                      </div>
+                    )}
+                    <small>ou</small>
+                    <input
+                      type="url"
+                      value={block.content && !block.content.startsWith('data:') ? block.content : ''}
+                      onChange={(e) => updateBlock(index, e.target.value)}
+                      placeholder="URL de l'image..."
+                    />
+                  </div>
+                )}
+
+                {block.type === 'stats' && (
+                  <div className="stats-block-content">
+                    <div className="stats-viz-selector">
+                      <label>Type de visualisation :</label>
+                      <select 
+                        value={block.vizType || 'table'}
+                        onChange={(e) => updateBlockData(index, { vizType: e.target.value })}
+                        className="viz-type-select"
+                      >
+                        <option value="table">📊 Tableau</option>
+                        <option value="radar">🔺 Radar (Triangle)</option>
+                        <option value="bar">📊 Barres</option>
+                        <option value="line">📈 Ligne</option>
+                      </select>
+                    </div>
+                    
+                    <input
+                      type="file"
+                      accept=".csv,.xlsx,.xls"
+                      onChange={(e) => handleStatsUpload(index, e.target.files[0])}
+                      className="file-input"
+                    />
+                    {block.fileName && (
+                      <div className="file-info">
+                        📄 {block.fileName}
+                      </div>
+                    )}
+                    {block.content && (
+                      <div className="stats-preview">
+                        <small>Données chargées ({JSON.parse(block.content).length} lignes)</small>
+                      </div>
+                    )}
+                  </div>
                 )}
               </div>
             ))}
@@ -257,6 +357,7 @@ function ArticleEditor({ user, articleId, onBack, onSave }) {
           </button>
         </div>
       </form>
+      </div>
     </div>
   );
 }

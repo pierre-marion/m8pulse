@@ -244,3 +244,63 @@
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+/* Dark Mode Support */
+body.dark-mode .dataset-manager {
+    background: #0a0e27;
+    color: #ffffff;
+}
+
+body.dark-mode .manager-header h2 {
+    color: #9d6cff;
+}
+
+body.dark-mode .upload-section,
+body.dark-mode .datasets-list,
+body.dark-mode .preview-section {
+    background: linear-gradient(135deg, rgba(35, 35, 55, 0.98), rgba(30, 30, 50, 0.98));
+    border-color: rgba(157, 108, 255, 0.3);
+}
+
+body.dark-mode .upload-area {
+    background: rgba(20, 25, 35, 0.6);
+    border-color: rgba(157, 108, 255, 0.4);
+}
+
+body.dark-mode .upload-area.dragover {
+    background: rgba(157, 108, 255, 0.2);
+    border-color: #9d6cff;
+}
+
+body.dark-mode .dataset-card {
+    background: rgba(20, 25, 35, 0.8);
+    border-color: rgba(157, 108, 255, 0.3);
+}
+
+body.dark-mode .dataset-card:hover {
+    box-shadow: 0 4px 20px rgba(157, 108, 255, 0.3);
+}
+
+body.dark-mode .dataset-name,
+body.dark-mode .dataset-info {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+body.dark-mode .data-table {
+    background: rgba(20, 25, 35, 0.6);
+    border-color: rgba(157, 108, 255, 0.3);
+}
+
+body.dark-mode .data-table th {
+    background: rgba(157, 108, 255, 0.2);
+    color: #ffffff;
+}
+
+body.dark-mode .data-table td {
+    border-color: rgba(157, 108, 255, 0.2);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+body.dark-mode .data-table tr:hover {
+    background: rgba(157, 108, 255, 0.1);
+}

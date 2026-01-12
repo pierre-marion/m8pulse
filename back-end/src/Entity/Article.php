@@ -66,10 +66,15 @@ class Article
     #[Groups(['article:read'])]
     private ?User $author = null;
 
-    #[ORM\OneToMany(mappedBy: 'article', targetEntity: Block::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
-    #[ORM\OrderBy(['position' => 'ASC'])]
-    #[Groups(['article:read'])]
-    private Collection $blocks;
+    // Blocks relation commented - table doesn't exist, using JSON column instead
+    // #[ORM\OneToMany(mappedBy: 'article', targetEntity: Block::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    // #[ORM\OrderBy(['position' => 'ASC'])]
+    // #[Groups(['article:read'])]
+    // private Collection $blocks;
+
+    #[ORM\Column(type: 'json', nullable: true)]
+    #[Groups(['article:read', 'article:write'])]
+    private ?array $blocks = [];
 
     #[ORM\Column(type: 'integer', options: ['default' => 0])]
     #[Groups(['article:read'])]
@@ -101,7 +106,7 @@ class Article
 
     public function __construct()
     {
-        $this->blocks = new ArrayCollection();
+        // $this->blocks = new ArrayCollection(); // Commented - table doesn't exist
         $this->ratings = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->createdAt = new \DateTime();
@@ -185,29 +190,41 @@ class Article
         return $this;
     }
 
-    public function getBlocks(): Collection
+    // Block methods commented - table doesn't exist
+    // public function getBlocks(): Collection
+    // {
+    //     return $this->blocks;
+    // }
+
+    // public function addBlock(Block $block): self
+    // {
+    //     if (!$this->blocks->contains($block)) {
+    //         $this->blocks[] = $block;
+    //         $block->setArticle($this);
+    //     }
+    //     $this->updatedAt = new \DateTime();
+    //     return $this;
+    // }
+
+    // public function removeBlock(Block $block): self
+    // {
+    //     if ($this->blocks->removeElement($block)) {
+    //         if ($block->getArticle() === $this) {
+    //             $block->setArticle(null);
+    //         }
+    //     }
+    //     $this->updatedAt = new \DateTime();
+    //     return $this;
+    // }
+
+    public function getBlocks(): ?array
     {
-        return $this->blocks;
+        return $this->blocks ?? [];
     }
 
-    public function addBlock(Block $block): self
+    public function setBlocks(?array $blocks): self
     {
-        if (!$this->blocks->contains($block)) {
-            $this->blocks[] = $block;
-            $block->setArticle($this);
-        }
-        $this->updatedAt = new \DateTime();
-        return $this;
-    }
-
-    public function removeBlock(Block $block): self
-    {
-        if ($this->blocks->removeElement($block)) {
-            if ($block->getArticle() === $this) {
-                $block->setArticle(null);
-            }
-        }
-        $this->updatedAt = new \DateTime();
+        $this->blocks = $blocks;
         return $this;
     }
 

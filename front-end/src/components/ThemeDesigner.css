@@ -141,3 +141,41 @@
 .btn-apply:hover {
     transform: translateY(-2px);
 }
+
+/* Dark Mode Support */
+body.dark-mode .theme-designer {
+    background: #0a0e27;
+    color: #ffffff;
+}
+
+body.dark-mode .designer-header h2 {
+    color: #9d6cff;
+}
+
+body.dark-mode .designer-section {
+    background: linear-gradient(135deg, rgba(35, 35, 55, 0.98), rgba(30, 30, 50, 0.98));
+    border-color: rgba(157, 108, 255, 0.3);
+}
+
+body.dark-mode .designer-section h3 {
+    color: #ffffff;
+}
+
+body.dark-mode .color-input-wrapper label,
+body.dark-mode .font-selector label,
+body.dark-mode .spacing-input label {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+body.dark-mode .color-input,
+body.dark-mode .font-select,
+body.dark-mode .spacing-input input {
+    background: rgba(20, 25, 35, 0.8);
+    border-color: rgba(157, 108, 255, 0.3);
+    color: #ffffff;
+}
+
+body.dark-mode .preview-section {
+    background: rgba(20, 25, 35, 0.6);
+    border-color: rgba(157, 108, 255, 0.3);
+}

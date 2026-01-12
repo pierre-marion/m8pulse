@@ -140,3 +140,119 @@ body.dark-mode .calendar-month {
 body.dark-mode .calendar-day-name {
   color: var(--text-secondary);
 }
+
+/* Responsive pour petits écrans en hauteur */
+@media (max-height: 900px) {
+  .calendar-header {
+    margin-bottom: 4px !important;
+  }
+  
+  .calendar-nav-btn {
+    width: 20px !important;
+    height: 20px !important;
+    font-size: 12px !important;
+  }
+  
+  .calendar-month {
+    font-size: 10px !important;
+  }
+  
+  .calendar-days-header {
+    gap: 2px !important;
+    margin-bottom: 3px !important;
+  }
+  
+  .calendar-day-name {
+    font-size: 6px !important;
+  }
+  
+  .calendar-grid {
+    gap: 2px !important;
+  }
+  
+  .calendar-day {
+    font-size: 9px !important;
+    border-width: 1px !important;
+  }
+  
+  .calendar-day.has-match {
+    border-width: 2px !important;
+  }
+}
+
+@media (max-height: 800px) {
+  .calendar-header {
+    margin-bottom: 3px !important;
+  }
+  
+  .calendar-nav-btn {
+    width: 18px !important;
+    height: 18px !important;
+    font-size: 11px !important;
+  }
+  
+  .calendar-month {
+    font-size: 9px !important;
+  }
+  
+  .calendar-days-header {
+    gap: 2px !important;
+    margin-bottom: 2px !important;
+  }
+  
+  .calendar-day-name {
+    font-size: 6px !important;
+  }
+  
+  .calendar-grid {
+    gap: 2px !important;
+  }
+  
+  .calendar-day {
+    font-size: 8px !important;
+    border-width: 1px !important;
+  }
+  
+  .calendar-day.has-match {
+    border-width: 1.5px !important;
+  }
+}
+
+@media (max-height: 750px) {
+  .calendar-header {
+    margin-bottom: 2px !important;
+    padding: 0 2px !important;
+  }
+  
+  .calendar-nav-btn {
+    width: 16px !important;
+    height: 16px !important;
+    font-size: 10px !important;
+  }
+  
+  .calendar-month {
+    font-size: 8px !important;
+  }
+  
+  .calendar-days-header {
+    gap: 1px !important;
+    margin-bottom: 1px !important;
+  }
+  
+  .calendar-day-name {
+    font-size: 5px !important;
+  }
+  
+  .calendar-grid {
+    gap: 1px !important;
+  }
+  
+  .calendar-day {
+    font-size: 7px !important;
+    border-width: 0.5px !important;
+  }
+  
+  .calendar-day.has-match {
+    border-width: 1px !important;
+  }
+}

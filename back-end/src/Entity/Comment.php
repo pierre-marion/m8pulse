@@ -21,7 +21,7 @@ class Comment
     private ?Article $article = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'user_id', nullable: false, onDelete: 'CASCADE')]
     #[Groups(['comment:read'])]
     private ?User $author = null;
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './ArticleDetail.css';
+import StatsChart from './StatsChart';
 
 function ArticleDetail({ articleId, onBack }) {
   const [article, setArticle] = useState(null);
@@ -257,6 +258,17 @@ function ArticleDetail({ articleId, onBack }) {
                     {block.content}
                   </div>
                 );
+              } else if (block.type === 'stats') {
+                try {
+                  const statsData = JSON.parse(block.content);
+                  return (
+                    <div key={index} className="article-block-stats">
+                      <StatsChart data={statsData} vizType={block.vizType || 'table'} />
+                    </div>
+                  );
+                } catch (e) {
+                  return null;
+                }
               }
               return null;
             })

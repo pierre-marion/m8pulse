@@ -1,0 +1,89 @@
+.radar-chart-container,
+.bar-chart-container,
+.line-chart-container {
+  margin: 40px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background: rgba(102, 126, 234, 0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.chart-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #667eea;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.radar-chart,
+.bar-chart,
+.line-chart {
+  max-width: 100%;
+  height: auto;
+}
+
+.radar-label {
+  fill: #495057;
+  font-weight: 600;
+}
+
+.bar-label {
+  fill: #495057;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.bar-value {
+  fill: #667eea;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.line-label {
+  fill: #495057;
+  font-weight: 600;
+}
+
+/* Dark mode */
+body.dark-mode .radar-chart-container,
+body.dark-mode .bar-chart-container,
+body.dark-mode .line-chart-container {
+  background: rgba(157, 108, 255, 0.05);
+  border-color: rgba(157, 108, 255, 0.2);
+}
+
+body.dark-mode .chart-title {
+  color: #9d6cff;
+}
+
+body.dark-mode .radar-label,
+body.dark-mode .bar-label,
+body.dark-mode .line-label {
+  fill: rgba(255, 255, 255, 0.8);
+}
+
+body.dark-mode .bar-value {
+  fill: #9d6cff;
+}
+
+body.dark-mode polygon {
+  stroke: rgba(157, 108, 255, 0.3) !important;
+}
+
+body.dark-mode line {
+  stroke: rgba(157, 108, 255, 0.3) !important;
+}
+
+body.dark-mode .radar-chart polygon[fill*="rgba(102"] {
+  fill: rgba(157, 108, 255, 0.3) !important;
+  stroke: #9d6cff !important;
+}
+
+body.dark-mode circle[fill="#667eea"] {
+  fill: #9d6cff !important;
+}

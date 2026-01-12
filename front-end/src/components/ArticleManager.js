@@ -1,42 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import './ArticleManager.css';
+import ArticleEditor from './ArticleEditor';
 
-function ArticleManager() {
+function ArticleManager({ user }) {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false);
-  const [editingArticle, setEditingArticle] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [formData, setFormData] = useState({
-    title: '',
-    summary: '',
-    type: 'standard',
-    status: 'published',
-    game: 'valorant'
-  });
+  const [showEditor, setShowEditor] = useState(false);
+  const [editingArticleId, setEditingArticleId] = useState(null);
 
   useEffect(() => {
     fetchArticles();
-    checkAuthentication();
   }, []);
-
-  const checkAuthentication = () => {
-    const token = localStorage.getItem('token');
-    const user = localStorage.getItem('user');
-    setIsAuthenticated(!!token && !!user);
-    
-    if (!token) {
-      console.warn('⚠️ Aucun token JWT trouvé. Vous devez vous connecter pour créer des articles.');
-    } else {
-      console.log('✅ Utilisateur authentifié');
-      try {
-        const userData = JSON.parse(user);
-        console.log('👤 Utilisateur:', userData.username, '- Rôles:', userData.roles);
-      } catch (e) {
-        console.error('Erreur parsing user data');
-      }
-    }
-  };
 
   const fetchArticles = async () => {
     try {
@@ -50,101 +24,30 @@ function ArticleManager() {
     }
   };
 
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value
-    });
+  const handleCreateArticle = () => {
+    setEditingArticleId(null);
+    setShowEditor(true);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const token = localStorage.getItem('token');
-    
-    if (!token) {
-      alert('❌ Vous devez être connecté pour créer un article.\n\nConnectez-vous avec :\nEmail: admin@m8pulse.com\nMot de passe: admin123');
-      return;
-    }
-
-    console.log('🔑 Token présent:', token ? 'Oui' : 'Non');
-    console.log('📝 Données envoyées:', formData);
-
-    try {
-      const url = editingArticle 
-        ? `http://localhost:8000/api/articles/${editingArticle.id}`
-        : 'http://localhost:8000/api/articles';
-      
-      const method = editingArticle ? 'PUT' : 'POST';
-
-      console.log(`🌐 Requête ${method} vers:`, url);
-
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(formData)
-      });
-
-      console.log('📊 Status de la réponse:', response.status);
-
-      if (response.ok) {
-        alert(editingArticle ? '✅ Article modifié avec succès !' : '✅ Article créé avec succès !');
-        setShowForm(false);
-        setEditingArticle(null);
-        setFormData({
-          title: '',
-          summary: '',
-          type: 'standard',
-          status: 'published',
-          game: 'valorant'
-        });
-        fetchArticles();
-      } else {
-        const error = await response.json();
-        console.error('❌ Erreur API:', error);
-        console.error('Status:', response.status);
-        
-        let errorMessage = 'Erreur lors de la sauvegarde';
-        if (response.status === 401) {
-          errorMessage = '🔒 Non autorisé. Veuillez vous reconnecter.\n\nEmail: admin@m8pulse.com\nMot de passe: admin123';
-        } else if (error.message) {
-          errorMessage = error.message;
-        } else if (error.error) {
-          errorMessage = error.error;
-        }
-        
-        alert(errorMessage);
-      }
-    } catch (error) {
-      console.error('❌ Erreur:', error);
-      alert('⚠️ Erreur de connexion au serveur. Vérifiez que le backend est bien démarré.');
-    }
+  const handleEditArticle = (articleId) => {
+    setEditingArticleId(articleId);
+    setShowEditor(true);
   };
 
-  const handleEdit = (article) => {
-    setEditingArticle(article);
-    setFormData({
-      title: article.title,
-      summary: article.summary || '',
-      type: article.type || 'standard',
-      status: article.status || 'published',
-      game: article.game || 'valorant'
-    });
-    setShowForm(true);
+  const handleCloseEditor = () => {
+    setShowEditor(false);
+    setEditingArticleId(null);
+    fetchArticles(); // Recharger la liste
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Êtes-vous sûr de vouloir supprimer cet article ?')) {
+  const handleDeleteArticle = async (articleId) => {
+    if (!window.confirm('Voulez-vous vraiment supprimer cet article ?')) {
       return;
     }
 
     const token = localStorage.getItem('token');
-    
     try {
-      const response = await fetch(`http://localhost:8000/api/articles/${id}`, {
+      const response = await fetch(`http://localhost:8000/api/articles/${articleId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -152,28 +55,18 @@ function ArticleManager() {
       });
 
       if (response.ok) {
-        alert('Article supprimé avec succès !');
+        alert('✅ Article supprimé avec succès !');
         fetchArticles();
       } else {
-        alert('Erreur lors de la suppression');
+        alert('❌ Erreur lors de la suppression');
       }
     } catch (error) {
       console.error('Erreur:', error);
-      alert('Erreur lors de la suppression de l\'article');
+      alert('❌ Erreur lors de la suppression');
     }
   };
 
-  const cancelEdit = () => {
-    setShowForm(false);
-    setEditingArticle(null);
-    setFormData({
-      title: '',
-      summary: '',
-      type: 'standard',
-      status: 'published',
-      game: 'valorant'
-    });
-  };
+  const isAuthenticated = user && (user.roles?.includes('ROLE_ADMIN') || user.roles?.includes('ROLE_EDITOR'));
 
   return (
     <div className="article-manager">
@@ -203,91 +96,19 @@ function ArticleManager() {
               borderRadius: '8px',
               border: '2px solid rgba(74, 222, 128, 0.3)'
             }}>
-              ✅ Connecté en tant qu'Admin
+              ✅ Connecté en tant qu'{user.roles?.includes('ROLE_ADMIN') ? 'Admin' : 'Éditeur'}
             </div>
           )}
           <button 
             className="btn-create-article"
-            onClick={() => setShowForm(!showForm)}
+            onClick={handleCreateArticle}
             disabled={!isAuthenticated}
             style={!isAuthenticated ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
           >
-            {showForm ? '❌ Annuler' : '✏️ Nouvel Article'}
+            ✏️ Nouvel Article
           </button>
         </div>
       </div>
-
-      {showForm && (
-        <div className="article-form-container">
-          <h3>{editingArticle ? '✏️ Modifier l\'article' : '➕ Créer un nouvel article'}</h3>
-          <form onSubmit={handleSubmit} className="article-form">
-            <div className="form-row">
-              <div className="form-group">
-                <label>Titre *</label>
-                <input
-                  type="text"
-                  name="title"
-                  value={formData.title}
-                  onChange={handleInputChange}
-                  placeholder="Titre de l'article"
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Jeu</label>
-                <select name="game" value={formData.game} onChange={handleInputChange}>
-                  <option value="valorant">🎯 Valorant</option>
-                  <option value="cs2">🔫 CS2</option>
-                  <option value="cod">🎮 COD</option>
-                  <option value="fortnite">🏗️ Fortnite</option>
-                  <option value="general">⭐ Général</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label>Type</label>
-                <select name="type" value={formData.type} onChange={handleInputChange}>
-                  <option value="standard">Standard</option>
-                  <option value="data-story">Data Story</option>
-                  <option value="analysis">Analyse</option>
-                  <option value="interview">Interview</option>
-                  <option value="announcement">Annonce</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label>Statut</label>
-                <select name="status" value={formData.status} onChange={handleInputChange}>
-                  <option value="draft">Brouillon</option>
-                  <option value="review">En relecture</option>
-                  <option value="published">Publié</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="form-group">
-              <label>Résumé</label>
-              <textarea
-                name="summary"
-                value={formData.summary}
-                onChange={handleInputChange}
-                placeholder="Résumé de l'article (optionnel)..."
-                rows="4"
-              />
-            </div>
-
-            <div className="form-actions">
-              <button type="button" onClick={cancelEdit} className="btn-cancel">
-                Annuler
-              </button>
-              <button type="submit" className="btn-submit">
-                {editingArticle ? '💾 Modifier' : '✨ Créer l\'article'}
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
 
       <div className="articles-list">
         <h3>📋 Articles existants ({articles.length})</h3>
@@ -310,7 +131,7 @@ function ArticleManager() {
                       {article.type === 'data-story' && '📊 Data Story'}
                       {article.type === 'analysis' && '🔍 Analyse'}
                       {article.type === 'interview' && '🎤 Interview'}
-                      {article.type === 'announcement' && '📢 Annonce'}
+                      {article.type === 'news' && '📰 News'}
                     </span>
                     <span className={`badge badge-status badge-${article.status}`}>
                       {article.status === 'draft' && '✏️ Brouillon'}
@@ -335,13 +156,13 @@ function ArticleManager() {
                   </div>
                   <div className="article-actions">
                     <button 
-                      onClick={() => handleEdit(article)}
+                      onClick={() => handleEditArticle(article.id)}
                       className="btn-edit"
                     >
                       ✏️ Modifier
                     </button>
                     <button 
-                      onClick={() => handleDelete(article.id)}
+                      onClick={() => handleDeleteArticle(article.id)}
                       className="btn-delete"
                     >
                       🗑️ Supprimer
@@ -353,6 +174,15 @@ function ArticleManager() {
           </div>
         )}
       </div>
+
+      {showEditor && (
+        <ArticleEditor 
+          user={user}
+          articleId={editingArticleId}
+          onBack={handleCloseEditor}
+          onSave={handleCloseEditor}
+        />
+      )}
     </div>
   );
 }

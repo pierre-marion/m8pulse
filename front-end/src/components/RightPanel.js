@@ -3,7 +3,7 @@ import Calendar from './Calendar';
 import './RightPanel.css';
 import { useDarkMode } from '../contexts/DarkModeContext';
 
-function RightPanel({ currentGame, onDashboardClick, onDesignClick, user, onLogout, onLoginClick, currentPage }) {
+function RightPanel({ currentGame, onDashboardClick, onDesignClick, onDatasetsClick, user, onLogout, onLoginClick, currentPage }) {
   const [selectedPlayer, setSelectedPlayer] = useState(0);
   const { isDarkMode, toggleDarkMode } = useDarkMode();
 
@@ -100,18 +100,22 @@ function RightPanel({ currentGame, onDashboardClick, onDesignClick, user, onLogo
         <div className="quick-actions">
           {user ? (
             <>
-              {(user.roles?.includes('ROLE_ADMIN') || 
-                user.roles?.includes('ROLE_EDITOR') || 
-                user.roles?.includes('ROLE_AUTHOR') || 
-                user.roles?.includes('ROLE_DATA_PROVIDER')) && (
+              {user.roles?.includes('ROLE_ADMIN') && (
                 <button className="action-mini admin" onClick={onDashboardClick}>
-                  {user.roles?.includes('ROLE_EDITOR') ? '📝 Éditeur' :
-                   user.roles?.includes('ROLE_AUTHOR') ? '✍️ Articles' :
-                   user.roles?.includes('ROLE_DATA_PROVIDER') ? '📊 Stats' :
-                   '📊 Dashboard'}
+                  📊 Dashboard
                 </button>
               )}
-              {user.roles?.includes('ROLE_DESIGNER') && (
+              {(user.roles?.includes('ROLE_PROVIDER') || user.roles?.includes('ROLE_ADMIN')) && (
+                <button className="action-mini provider" onClick={onDatasetsClick}>
+                  📁 Datasets
+                </button>
+              )}
+              {user.roles?.includes('ROLE_EDITOR') && !user.roles?.includes('ROLE_ADMIN') && (
+                <button className="action-mini admin" onClick={onDashboardClick}>
+                  📝 Éditeur
+                </button>
+              )}
+              {user.roles?.includes('ROLE_DESIGNER') && !user.roles?.includes('ROLE_ADMIN') && !user.roles?.includes('ROLE_EDITOR') && (
                 <button className="action-mini admin" onClick={onDesignClick}>
                   🎨 Design
                 </button>

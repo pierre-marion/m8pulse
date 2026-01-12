@@ -114,21 +114,9 @@ class ArticleController extends AbstractController
         $article->setStatus($data['status'] ?? 'draft');
         $article->setAuthor($this->getUser());
         
-        // Gérer les blocs si présents
+        // Sauvegarder les blocs en JSON
         if (isset($data['blocks']) && is_array($data['blocks'])) {
-            foreach ($data['blocks'] as $index => $blockData) {
-                $block = new \App\Entity\Block();
-                $block->setType($blockData['type'] ?? 'text');
-                $block->setContent($blockData['content'] ?? '');
-                $block->setPosition($index);
-                $block->setArticle($article);
-                
-                if (isset($blockData['config'])) {
-                    $block->setConfig($blockData['config']);
-                }
-                
-                $this->entityManager->persist($block);
-            }
+            $article->setBlocks($data['blocks']);
         }
         
         $this->entityManager->persist($article);
@@ -164,6 +152,11 @@ class ArticleController extends AbstractController
         
         if (isset($data['type'])) {
             $article->setType($data['type']);
+        }
+        
+        // Mettre à jour les blocs si présents
+        if (isset($data['blocks']) && is_array($data['blocks'])) {
+            $article->setBlocks($data['blocks']);
         }
         
         // Seuls les éditeurs et admins peuvent changer le statut

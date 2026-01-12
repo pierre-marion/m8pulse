@@ -125,19 +125,27 @@ function LoginPage({ onLogin, onSwitchToRegister }) {
         </div>
 
         <div className="admin-info">
-          <h3>👑 Comptes Admin</h3>
+          <h3>👑 Comptes de test disponibles</h3>
           <div className="admin-accounts">
             <div className="admin-account">
-              <strong>Hugo</strong>
-              <span>hugo@m8pulse.com</span>
+              <strong>Admin</strong>
+              <span>admin@m8pulse.com</span>
+              <code>password</code>
             </div>
             <div className="admin-account">
-              <strong>Pierre</strong>
-              <span>pierre@m8pulse.com</span>
+              <strong>Super Admin</strong>
+              <span>superadmin@m8pulse.com</span>
+              <code>super123</code>
             </div>
             <div className="admin-account">
-              <strong>Nathan</strong>
-              <span>nathan@m8pulse.com</span>
+              <strong>Éditeur</strong>
+              <span>editor@m8pulse.com</span>
+              <code>editor123</code>
+            </div>
+            <div className="admin-account">
+              <strong>Designer</strong>
+              <span>designer@m8pulse.com</span>
+              <code>design123</code>
             </div>
           </div>
         </div>
