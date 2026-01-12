@@ -106,7 +106,7 @@ function App() {
       case 'jeux':
         return <GamesPage currentGame={games[currentGame]} />;
       case 'equipe':
-        return <TeamPage currentGame={games[currentGame]} onGameChange={setCurrentGame} />;
+        return <TeamPage currentGame={games[currentGame]} onGameChange={setCurrentGame} user={user} />;
       case 'joueurs':
         // Utiliser Suspense pour la page Joueurs qui contient le Globe 3D lourd
         return (

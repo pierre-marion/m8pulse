@@ -3,15 +3,19 @@ import './TeamPage.css';
 import MatchDetailPage from './MatchDetailPage';
 import Icon from './Icon';
 
-function TeamPage({ currentGame, onGameChange }) {
+function TeamPage({ currentGame, onGameChange, user }) {
   const [showAllMatches, setShowAllMatches] = useState(false);
-  const [userSubscription] = useState('basic'); // basic, pro, elite
   const [selectedMatch, setSelectedMatch] = useState(null);
   const [livePlayersData, setLivePlayersData] = useState(null);
   const [liveMatchesData, setLiveMatchesData] = useState(null);
   const [loadingPlayers, setLoadingPlayers] = useState(false);
   const [loadingMatches, setLoadingMatches] = useState(false);
   const gameIndex = ['Valorant', 'Counter Strike', 'Call of Duty', 'Fortnite'].indexOf(currentGame);
+
+  // Vérifier le niveau d'abonnement
+  const hasGoldAccess = user && (user.subscriptionLevel === 'gold' || user.roles?.includes('ROLE_ADMIN'));
+  const hasSilverAccess = user && (user.subscriptionLevel === 'silver' || user.subscriptionLevel === 'gold' || user.roles?.includes('ROLE_ADMIN'));
+  const isFreeUser = !user || user.subscriptionLevel === 'free';
 
   // IDs des Google Sheets
   const VALORANT_SHEET_ID = '1d6b3E3KEy1TwPRJgjvbgcrDrUbawUkHl9ckpNESyzeg';
@@ -68,17 +72,23 @@ function TeamPage({ currentGame, onGameChange }) {
   const gameData = {
     'Valorant': {
       title: 'Valorant - VCT',
-      players: livePlayersData ? livePlayersData.map(player => ({
-        name: player.id, // ID = pseudo du joueur
-        role: player.roleSpecific,
-        kd: player.kda?.toFixed(2) || '0.00',
-        acs: player.acs?.toString() || '0',
-        rating: player.rating?.toFixed(2) || '0.00',
-        gamesPlayed: player.gamesPlayed,
-        wins: player.wins,
-        losses: player.losses,
-        nationality: player.nationality
-      })) : [],
+      players: livePlayersData ? (() => {
+        const filtered = livePlayersData.filter(player => player.id && player.id.trim() !== '');
+        console.log('[TeamPage] Valorant - Total joueurs:', livePlayersData.length);
+        console.log('[TeamPage] Valorant - Joueurs après filtre:', filtered.length);
+        console.log('[TeamPage] Valorant - IDs:', livePlayersData.map(p => p.id));
+        return filtered.map(player => ({
+          name: player.id, // ID = pseudo du joueur
+          role: player.roleSpecific,
+          kd: player.kda?.toFixed(2) || '0.00',
+          acs: player.acs?.toString() || '0',
+          rating: player.rating?.toFixed(2) || '0.00',
+          gamesPlayed: player.gamesPlayed,
+          wins: player.wins,
+          losses: player.losses,
+          nationality: player.nationality
+        }));
+      })() : [],
       region: '#8 EMEA',
       stats: {
         parties: livePlayersData ? livePlayersData.reduce((sum, p) => sum + p.gamesPlayed, 0) : 0,
@@ -158,19 +168,21 @@ function TeamPage({ currentGame, onGameChange }) {
     },
     'Call of Duty': {
       title: 'Call of Duty - CDL',
-      players: livePlayersData && currentGame === 'Call of Duty' ? livePlayersData.map(player => ({
-        name: player.id, // ID = pseudo du joueur
-        role: player.roleSpecific,
-        kd: player.overallKD?.toFixed(2) || '0.00',
-        spm: 'N/A', // Pas de SPM dans les données Google Sheets
-        gamesPlayed: player.gamesPlayed,
-        wins: player.wins,
-        losses: player.losses,
-        nationality: player.nationality,
-        hpKD: player.hpKD?.toFixed(2) || '0.00',
-        sndKD: player.sndKD?.toFixed(2) || '0.00',
-        olKD: player.olKD?.toFixed(2) || '0.00'
-      })) : [],
+      players: livePlayersData && currentGame === 'Call of Duty' ? livePlayersData
+        .filter(player => player.id && player.id.trim() !== '') // Filtrer les joueurs sans ID
+        .map(player => ({
+          name: player.id, // ID = pseudo du joueur
+          role: player.roleSpecific,
+          kd: player.overallKD?.toFixed(2) || '0.00',
+          spm: 'N/A', // Pas de SPM dans les données Google Sheets
+          gamesPlayed: player.gamesPlayed,
+          wins: player.wins,
+          losses: player.losses,
+          nationality: player.nationality,
+          hpKD: player.hpKD?.toFixed(2) || '0.00',
+          sndKD: player.sndKD?.toFixed(2) || '0.00',
+          olKD: player.olKD?.toFixed(2) || '0.00'
+        })) : [],
       region: '#10 International',
       stats: {
         parties: livePlayersData && currentGame === 'Call of Duty' ? 
@@ -356,13 +368,6 @@ function TeamPage({ currentGame, onGameChange }) {
           >
             <span className="game-icon"></span>
             <span className="game-name">Call of Duty</span>
-          </button>
-          <button 
-            className={`game-btn fortnite-btn ${gameIndex === 3 ? 'active' : ''}`}
-            onClick={() => onGameChange(3)}
-          >
-            <span className="game-icon"></span>
-            <span className="game-name">Fortnite</span>
           </button>
         </div>
 
@@ -620,15 +625,15 @@ function TeamPage({ currentGame, onGameChange }) {
         <div className="premium-section">
           <div className="section-header-premium">
             <h2 className="section-title">Timeline des Kills</h2>
-            {(userSubscription === 'basic' || userSubscription === 'pro') && (
+            {!hasGoldAccess && (
               <div className="premium-badge">
                 <span className="premium-icon">👑</span>
-                Elite
+                Gold
               </div>
             )}
           </div>
           
-          {userSubscription === 'elite' ? (
+          {hasGoldAccess ? (
             <div className="timeline-container">
               <div className="timeline-header">
                 <span className="timeline-label">Round</span>
@@ -659,10 +664,10 @@ function TeamPage({ currentGame, onGameChange }) {
             <div className="locked-overlay">
               <div className="lock-content">
                 <div className="lock-icon"><Icon name="lock" size={48} color="#7D3CFF" /></div>
-                <h3>Fonctionnalité Premium Elite</h3>
+                <h3>Fonctionnalité Premium Gold</h3>
                 <p>Accédez à la timeline détaillée des éliminations par round pour analyser les moments clés.</p>
                 <button className="unlock-btn" onClick={() => window.location.href = '#abonnement'}>
-                  Débloquer avec Elite
+                  Débloquer avec Gold
                 </button>
               </div>
             </div>
@@ -673,15 +678,15 @@ function TeamPage({ currentGame, onGameChange }) {
         <div className="premium-section">
           <div className="section-header-premium">
             <h2 className="section-title">Heatmap Tactique</h2>
-            {userSubscription === 'basic' && (
+            {!hasSilverAccess && (
               <div className="premium-badge">
                 <span className="premium-icon">⚡</span>
-                Pro
+                Silver
               </div>
             )}
           </div>
           
-          {(userSubscription === 'pro' || userSubscription === 'elite') ? (
+          {hasSilverAccess ? (
             <div className="heatmap-container">
               <div className="heatmap-grid">
                 {Array.from({ length: 100 }).map((_, index) => {

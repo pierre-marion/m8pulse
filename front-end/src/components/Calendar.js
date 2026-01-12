@@ -68,6 +68,16 @@ function Calendar({ currentGame }) {
     }
   };
 
+  const getGameAbbr = (game) => {
+    switch(game) {
+      case 'Valorant': return 'VAL';
+      case 'Counter Strike': return 'CS2';
+      case 'Call of Duty': return 'COD';
+      case 'Fortnite': return 'FTN';
+      default: return game;
+    }
+  };
+
   const generateDays = () => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
@@ -148,7 +158,7 @@ function Calendar({ currentGame }) {
           <div 
             key={index} 
             className={`calendar-day ${item.isEmpty ? 'empty' : ''} ${item.isToday ? 'today' : ''} ${item.matches.length > 0 ? 'has-matches' : ''}`}
-            title={item.matches.length > 0 ? `Match${item.matches.length > 1 ? 's' : ''}: ${item.matches.join(', ')}` : ''}
+            title={item.matches.length > 0 ? item.matches.map(g => getGameAbbr(g)).join(' • ') : ''}
           >
             {item.day}
             {item.matches.length > 0 && (
