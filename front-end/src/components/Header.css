@@ -5,6 +5,8 @@
   gap: 20px;
   flex-shrink: 0;
   padding-bottom: 10px;
+  position: relative;
+  z-index: 100;
 }
 
 .logo {

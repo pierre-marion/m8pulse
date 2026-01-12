@@ -1,0 +1,148 @@
+.match-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border-left: 4px solid;
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.3s ease;
+  border: 2px solid rgba(125, 60, 255, 0.2);
+}
+
+.match-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(125, 60, 255, 0.2);
+  background: rgba(125, 60, 255, 0.08);
+  border-color: rgba(125, 60, 255, 0.4);
+}
+
+.match-card.match-win {
+  background: rgba(76, 175, 80, 0.05);
+  border-left-color: #4CAF50;
+}
+
+.match-card.match-loss {
+  background: rgba(255, 107, 122, 0.05);
+  border-left-color: #FF6B7A;
+}
+
+.match-card-header {
+  margin-bottom: 15px;
+}
+
+.match-status {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(10px);
+}
+
+.match-game {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+}
+
+.match-card-body {
+  margin-bottom: 12px;
+}
+
+.match-teams {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.match-team {
+  flex: 1;
+  min-width: 0;
+}
+
+.team-name {
+  font-size: 16px;
+  font-weight: 700;
+  font-family: var(--font-title);
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
+.match-score {
+  font-size: 24px;
+  font-weight: 900;
+  font-family: var(--font-code);
+  color: #000;
+  padding: 0 15px;
+}
+
+.match-card-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.match-tournament,
+.match-date {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .match-card {
+    padding: 12px;
+  }
+
+  .match-score {
+    font-size: 18px;
+    padding: 0 8px;
+  }
+
+  .team-name {
+    font-size: 13px;
+  }
+
+  .match-card-footer {
+    flex-direction: column;
+    gap: 5px;
+    align-items: flex-start;
+    font-size: 11px;
+  }
+  
+  .match-status {
+    font-size: 10px;
+    padding: 4px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .match-card {
+    padding: 10px;
+  }
+  
+  .match-teams {
+    gap: 5px;
+  }
+  
+  .match-score {
+    font-size: 16px;
+    padding: 0 6px;
+  }
+  
+  .team-name {
+    font-size: 12px;
+  }
+}

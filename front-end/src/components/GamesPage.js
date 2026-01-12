@@ -1,5 +1,6 @@
 import React from 'react';
 import './GamesPage.css';
+import { GameCard } from './cards';
 
 const GamesPage = () => {
   const games = [
@@ -43,35 +44,12 @@ const GamesPage = () => {
 
   return (
     <div className="games-page">
-      {/* Liste des jeux */}
       <div className="games-list">
         {games.map(game => (
-          <div 
-            key={game.id} 
-            className="game-row"
-            style={{ 
-              backgroundImage: `url(${game.image})`
-            }}
-          >
-            <div className="game-overlay"></div>
-            <div className="game-row-content">
-              <h2 className="game-name">{game.name}</h2>
-              <div className="game-stats">
-                <div className="stat-item">
-                  <span className="stat-number">{game.stats.teams}</span>
-                  <span className="stat-label">Équipes</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-number">{game.stats.players}</span>
-                  <span className="stat-label">Joueurs</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-number">{game.stats.tournaments}</span>
-                  <span className="stat-label">Tournois</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          <GameCard
+            key={game.id}
+            {...game}
+          />
         ))}
       </div>
     </div>

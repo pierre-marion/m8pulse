@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './HomePage.css';
 import Icon from './Icon';
+import { Button, StatCard, Loading } from './ui';
+import { MatchCard, NewsCard, PlayerCard } from './cards';
 
 function HomePage({ user }) {
   const [pastMatches, setPastMatches] = useState([]);
@@ -208,34 +210,30 @@ function HomePage({ user }) {
 
       {/* Quick Stats */}
       <div className="quick-stats">
-        <div className="stat-card">
-          <div className="stat-icon"><Icon name="gamepad" size={32} color="#7D3CFF" /></div>
-          <div className="stat-info">
-            <div className="stat-value">4</div>
-            <div className="stat-label">Jeux</div>
-          </div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-icon"><Icon name="users" size={32} color="#7D3CFF" /></div>
-          <div className="stat-info">
-            <div className="stat-value">50+</div>
-            <div className="stat-label">Joueurs</div>
-          </div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-icon"><Icon name="barChart" size={32} color="#7D3CFF" /></div>
-          <div className="stat-info">
-            <div className="stat-value">1000+</div>
-            <div className="stat-label">Matchs</div>
-          </div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-icon"><Icon name="trophy" size={32} color="#7D3CFF" /></div>
-          <div className="stat-info">
-            <div className="stat-value">15</div>
-            <div className="stat-label">Trophées</div>
-          </div>
-        </div>
+        <StatCard
+          icon="gamepad"
+          value="4"
+          label="Jeux"
+          color="#7D3CFF"
+        />
+        <StatCard
+          icon="users"
+          value="50+"
+          label="Joueurs"
+          color="#7D3CFF"
+        />
+        <StatCard
+          icon="barChart"
+          value="1000+"
+          label="Matchs"
+          color="#7D3CFF"
+        />
+        <StatCard
+          icon="trophy"
+          value="15"
+          label="Trophées"
+          color="#7D3CFF"
+        />
       </div>
 
       {/* Main Content Grid */}
@@ -244,28 +242,20 @@ function HomePage({ user }) {
         <div className="content-section results-section">
           <div className="section-header">
             <h2 className="section-title-home"><Icon name="trendingUp" size={24} /> Matchs Passés</h2>
-            <button className="view-all-btn">Voir tout →</button>
+            <Button variant="ghost" size="small" icon="arrowRight" iconRight>
+              Voir tout
+            </Button>
           </div>
           {loading ? (
-            <div className="loading-message">Chargement des matchs...</div>
+            <Loading text="Chargement des matchs..." />
           ) : (
             <div className="results-list-home">
               {pastMatches.length > 0 ? (
                 pastMatches.map((match, index) => (
-                  <div key={index} className={`result-card-home ${match.win ? 'win' : 'loss'}`} style={{ borderLeftColor: match.color }}>
-                    <div className="result-status" style={{ backgroundColor: match.win ? '#4CAF50' : '#FF6B7A' }}>
-                      {match.win ? '✓ VICTOIRE' : '✗ DÉFAITE'}
-                    </div>
-                    <div className="result-teams">
-                      <span className="result-team">{match.team1}</span>
-                      <span className="result-score">{match.score}</span>
-                      <span className="result-team">{match.team2}</span>
-                    </div>
-                    <div className="result-footer">
-                      <span className="result-game">{match.game}</span>
-                      <span className="result-date">{match.date}</span>
-                    </div>
-                  </div>
+                  <MatchCard
+                    key={index}
+                    {...match}
+                  />
                 ))
               ) : (
                 <div className="no-matches-message">Aucun match disponible</div>
@@ -278,30 +268,20 @@ function HomePage({ user }) {
         <div className="content-section news-section-home">
           <div className="section-header">
             <h2 className="section-title-home"><Icon name="newspaper" size={24} /> Dernières Actualités</h2>
-            <button className="view-all-btn">Voir tout →</button>
+            <Button variant="ghost" size="small" icon="arrowRight" iconRight>
+              Voir tout
+            </Button>
           </div>
           {loadingNews ? (
-            <div className="loading-message">Chargement des actualités...</div>
+            <Loading text="Chargement des actualités..." />
           ) : (
             <div className="news-grid-home">
               {latestNews.length > 0 ? (
                 latestNews.map((news, index) => (
-                  <div key={news.id || index} className="news-card-home">
-                    <div className="news-image-placeholder" style={{ backgroundColor: news.color }}>
-                      <span className="news-emoji"><Icon name={news.image} size={40} color="white" /></span>
-                    </div>
-                    <div className="news-content-home">
-                      <span className="news-category-home" style={{ color: news.color }}>
-                        {news.category}
-                      </span>
-                      <h3 className="news-title-home">{news.title}</h3>
-                      <p className="news-excerpt">{news.excerpt}</p>
-                      <div className="news-footer-home">
-                        <span className="news-date-home">{news.date}</span>
-                        <button className="read-more-btn">Lire →</button>
-                      </div>
-                    </div>
-                  </div>
+                  <NewsCard
+                    key={news.id || index}
+                    {...news}
+                  />
                 ))
               ) : (
                 <div className="no-matches-message">Aucune actualité disponible</div>
@@ -316,29 +296,15 @@ function HomePage({ user }) {
             <h2 className="section-title-home"><Icon name="star" size={24} /> Joueurs en Forme</h2>
           </div>
           {loadingPlayers ? (
-            <div className="loading-message">Chargement des joueurs...</div>
+            <Loading text="Chargement des joueurs..." />
           ) : (
             <div className="featured-players">
               {topPlayers.length > 0 ? (
                 topPlayers.map((player, index) => (
-                  <div key={index} className="featured-player">
-                    <div className="player-avatar-home" style={{ backgroundColor: player.color }}>
-                      {player.name.charAt(0).toUpperCase()}
-                    </div>
-                    <div className="player-info-home">
-                      <h4>{player.name}</h4>
-                      <span className="player-role-home">{player.role}</span>
-                      <span className="player-game-home" style={{ color: player.color }}>
-                        {player.game}
-                      </span>
-                    </div>
-                    <div className="player-stat-home">
-                      <span className="stat-label-home">{player.statLabel}</span>
-                      <span className="stat-value-home" style={{ color: player.color }}>
-                        {player.statValue}
-                      </span>
-                    </div>
-                  </div>
+                  <PlayerCard
+                    key={index}
+                    {...player}
+                  />
                 ))
               ) : (
                 <div className="no-matches-message">Aucun joueur disponible</div>
@@ -409,7 +375,9 @@ function HomePage({ user }) {
         <div className="cta-section">
           <h2 className="cta-title">Débloquez toutes les statistiques</h2>
           <p className="cta-text">Accédez aux analyses avancées, heatmaps et timelines avec nos abonnements Silver et Gold</p>
-          <button className="cta-button">Voir les Abonnements 👑</button>
+          <Button variant="primary" size="large" icon="star">
+            Voir les Abonnements
+          </Button>
         </div>
       )}
     </div>

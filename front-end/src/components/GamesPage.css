@@ -1,13 +1,17 @@
 .games-page {
-    height: 100vh;
+    height: 100%;
+    max-height: calc(100vh - 100px);
     padding: 0;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .games-list {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    flex: 1;
+    gap: 0;
     overflow: hidden;
 }
 

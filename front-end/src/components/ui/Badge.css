@@ -1,0 +1,71 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 6px;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Sizes */
+.badge-small {
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.badge-medium {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.badge-large {
+  padding: 0.375rem 1rem;
+  font-size: 1rem;
+}
+
+/* Variants */
+.badge-primary {
+  background: linear-gradient(135deg, #7D3CFF 0%, #5B2BFF 100%);
+  color: white;
+}
+
+.badge-success {
+  background: linear-gradient(135deg, #00D9A3 0%, #00C48C 100%);
+  color: white;
+}
+
+.badge-warning {
+  background: linear-gradient(135deg, #FF9F1C 0%, #FF8C00 100%);
+  color: white;
+}
+
+.badge-danger {
+  background: linear-gradient(135deg, #FF4655 0%, #E63946 100%);
+  color: white;
+}
+
+.badge-info {
+  background: linear-gradient(135deg, #00AEEF 0%, #0099D6 100%);
+  color: white;
+}
+
+.badge-valorant {
+  background: linear-gradient(135deg, #FF4655 0%, #E63946 100%);
+  color: white;
+}
+
+.badge-cs2 {
+  background: linear-gradient(135deg, #FF9F1C 0%, #FF8C00 100%);
+  color: white;
+}
+
+.badge-cod {
+  background: linear-gradient(135deg, #8A2BE2 0%, #7B1FA2 100%);
+  color: white;
+}
+
+.badge-fortnite {
+  background: linear-gradient(135deg, #00AEEF 0%, #0099D6 100%);
+  color: white;
+}
