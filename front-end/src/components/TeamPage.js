@@ -36,6 +36,7 @@ function TeamPage({ currentGame, onGameChange }) {
       const data = await response.json();
       
       if (data.success) {
+        console.log(`[TeamPage] Joueurs ${game} chargés:`, data.players.length, data.players);
         setLivePlayersData(data.players);
       }
     } catch (error) {

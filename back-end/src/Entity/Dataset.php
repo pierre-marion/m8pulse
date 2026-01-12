@@ -64,6 +64,14 @@ class Dataset
     #[Groups(['dataset:read'])]
     private ?string $status = 'pending'; // pending, validated, error
 
+    #[ORM\Column(type: 'string', length: 50)]
+    #[Groups(['dataset:read', 'dataset:write'])]
+    private ?string $game = 'general'; // general, cs2, valorant, etc.
+
+    #[ORM\Column(type: 'boolean')]
+    #[Groups(['dataset:read', 'dataset:write'])]
+    private bool $public = true; // Dataset public ou privé
+
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'datasets')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['dataset:read'])]
@@ -203,5 +211,27 @@ class Dataset
     public function getValidatedAt(): ?\DateTimeInterface
     {
         return $this->validatedAt;
+    }
+
+    public function getGame(): ?string
+    {
+        return $this->game;
+    }
+
+    public function setGame(string $game): self
+    {
+        $this->game = $game;
+        return $this;
+    }
+
+    public function isPublic(): bool
+    {
+        return $this->public;
+    }
+
+    public function setPublic(bool $public): self
+    {
+        $this->public = $public;
+        return $this;
     }
 }

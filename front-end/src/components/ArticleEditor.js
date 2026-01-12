@@ -12,12 +12,31 @@ function ArticleEditor({ user, articleId, onBack, onSave }) {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [availableDatasets, setAvailableDatasets] = useState([]);
 
   useEffect(() => {
     if (articleId) {
       loadArticle();
     }
+    loadAvailableDatasets();
   }, [articleId]);
+
+  const loadAvailableDatasets = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:8000/api/datasets', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setAvailableDatasets(data);
+      }
+    } catch (err) {
+      console.error('Erreur chargement datasets:', err);
+    }
+  };
 
   const loadArticle = async () => {
     try {
@@ -29,6 +48,22 @@ function ArticleEditor({ user, articleId, onBack, onSave }) {
       });
       if (response.ok) {
         const data = await response.json();
+        
+        // Parser les données des blocs stats si elles sont en string JSON
+        if (data.blocks) {
+          data.blocks = data.blocks.map(block => {
+            if (block.type === 'stats' && block.content && typeof block.content === 'string') {
+              try {
+                return { ...block, content: JSON.parse(block.content) };
+              } catch (e) {
+                console.error('Erreur parsing stats content:', e);
+                return block;
+              }
+            }
+            return block;
+          });
+        }
+        
         setArticle(data);
       }
     } catch (err) {
@@ -47,13 +82,24 @@ function ArticleEditor({ user, articleId, onBack, onSave }) {
         ? `http://localhost:8000/api/articles/${articleId}`
         : 'http://localhost:8000/api/articles';
       
+      // Préparer les données pour l'envoi
+      const articleToSave = {
+        ...article,
+        blocks: article.blocks.map(block => {
+          if (block.type === 'stats' && block.content && Array.isArray(block.content)) {
+            return { ...block, content: JSON.stringify(block.content) };
+          }
+          return block;
+        })
+      };
+      
       const response = await fetch(url, {
         method: articleId ? 'PUT' : 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(article)
+        body: JSON.stringify(articleToSave)
       });
 
       if (response.ok) {
@@ -126,11 +172,42 @@ function ArticleEditor({ user, articleId, onBack, onSave }) {
       // Parser CSV
       const rows = text.split('\n').map(row => row.split(',').map(cell => cell.trim()));
       updateBlockData(index, { 
-        content: JSON.stringify(rows),
+        content: rows, // Stocker directement l'objet, pas la string JSON
         fileName: file.name 
       });
     };
     reader.readAsText(file);
+  };
+
+  const handleDatasetSelection = async (index, datasetId) => {
+    if (!datasetId) {
+      updateBlockData(index, { 
+        datasetId: null,
+        content: null,
+        fileName: null 
+      });
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:8000/api/datasets/${datasetId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (response.ok) {
+        const dataset = await response.json();
+        updateBlockData(index, { 
+          datasetId: dataset.id,
+          content: dataset.data,
+          fileName: dataset.name 
+        });
+      }
+    } catch (err) {
+      console.error('Erreur chargement dataset:', err);
+    }
   };
 
   const removeBlock = (index) => {
@@ -327,20 +404,48 @@ function ArticleEditor({ user, articleId, onBack, onSave }) {
                       </select>
                     </div>
                     
-                    <input
-                      type="file"
-                      accept=".csv,.xlsx,.xls"
-                      onChange={(e) => handleStatsUpload(index, e.target.files[0])}
-                      className="file-input"
-                    />
+                    <div className="dataset-selector">
+                      <label>Choisir un dataset :</label>
+                      <select
+                        value={block.datasetId || ''}
+                        onChange={(e) => handleDatasetSelection(index, e.target.value)}
+                        className="dataset-select"
+                      >
+                        <option value="">-- Sélectionner un dataset --</option>
+                        {availableDatasets.map(dataset => (
+                          <option key={dataset.id} value={dataset.id}>
+                            {dataset.name} ({dataset.game})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {(user.roles?.includes('ROLE_ADMIN') || user.roles?.includes('ROLE_SUPERADMIN') || user.roles?.includes('ROLE_PROVIDER')) && (
+                      <div className="or-divider">
+                        <span>ou</span>
+                      </div>
+                    )}
+
+                    {(user.roles?.includes('ROLE_ADMIN') || user.roles?.includes('ROLE_SUPERADMIN') || user.roles?.includes('ROLE_PROVIDER')) && (
+                      <div className="manual-upload">
+                        <label>Upload direct (Admin/Provider uniquement) :</label>
+                        <input
+                          type="file"
+                          accept=".csv,.xlsx,.xls"
+                          onChange={(e) => handleStatsUpload(index, e.target.files[0])}
+                          className="file-input"
+                        />
+                      </div>
+                    )}
+
                     {block.fileName && (
                       <div className="file-info">
                         📄 {block.fileName}
                       </div>
                     )}
-                    {block.content && (
+                    {block.content && Array.isArray(block.content) && (
                       <div className="stats-preview">
-                        <small>Données chargées ({JSON.parse(block.content).length} lignes)</small>
+                        <small>Données chargées ({block.content.length} lignes)</small>
                       </div>
                     )}
                   </div>

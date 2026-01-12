@@ -678,6 +678,10 @@ body.dark-mode .result-score {
   text-shadow: 0 0 10px rgba(157, 108, 255, 0.3);
 }
 
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
+
 @media (max-width: 1200px) {
   .quick-stats {
     grid-template-columns: repeat(2, 1fr);
@@ -690,8 +694,44 @@ body.dark-mode .result-score {
 }
 
 @media (max-width: 768px) {
+  .home-page {
+    padding: 10px;
+  }
+
+  .hero-section {
+    padding: 40px 20px;
+    min-height: 400px;
+  }
+
   .hero-title {
-    font-size: 48px;
+    font-size: 36px;
+    line-height: 1.2;
+  }
+
+  .hero-subtitle {
+    font-size: 14px;
+    margin-top: 15px;
+  }
+
+  .cta-buttons {
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .home-content {
+    padding: 20px 15px;
+  }
+
+  .section-title {
+    font-size: 24px;
+    margin-bottom: 20px;
   }
 
   .quick-stats,
@@ -699,5 +739,74 @@ body.dark-mode .result-score {
   .news-grid-home,
   .featured-players {
     grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .stat-card,
+  .result-card,
+  .news-card-home,
+  .player-card {
+    padding: 20px;
+  }
+
+  /* Featured articles en colonne sur mobile */
+  .featured-articles {
+    grid-template-columns: 1fr;
+  }
+
+  .featured-main,
+  .featured-secondary {
+    grid-column: 1;
+    min-height: 300px;
+  }
+
+  /* Simplifier les cartes sur mobile */
+  .stat-value {
+    font-size: 28px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-page {
+    padding: 5px;
+  }
+
+  .hero-section {
+    padding: 30px 15px;
+    min-height: 350px;
+  }
+
+  .hero-title {
+    font-size: 28px;
+  }
+
+  .hero-subtitle {
+    font-size: 13px;
+  }
+
+  .home-content {
+    padding: 15px 10px;
+  }
+
+  .section-title {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+
+  .stat-card,
+  .result-card,
+  .news-card-home,
+  .player-card {
+    padding: 15px;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 12px 20px;
+    font-size: 13px;
   }
 }

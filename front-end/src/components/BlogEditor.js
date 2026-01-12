@@ -140,12 +140,12 @@ function BlogEditor({ user, onBack }) {
     return colors[game] || '#667eea';
   };
 
-  if (!user || !user.roles?.includes('ROLE_ADMIN')) {
+  if (!user || (!user.roles?.includes('ROLE_ADMIN') && !user.roles?.includes('ROLE_EDITOR'))) {
     return (
       <div className="blog-editor">
         <div className="access-denied">
           <h2>Accès Refusé</h2>
-          <p>Seuls les administrateurs peuvent créer des articles</p>
+          <p>Seuls les administrateurs et éditeurs peuvent créer des articles</p>
           <button onClick={onBack}>Retour</button>
         </div>
       </div>

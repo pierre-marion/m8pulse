@@ -124,7 +124,7 @@ function NewsPage({ onArticleClick, user, onNavigate }) {
           <h1 className="news-page-title">Blog & Actualités</h1>
           <p className="news-page-subtitle">Découvrez les dernières actualités eSport</p>
         </div>
-        {user && user.roles?.includes('ROLE_ADMIN') && (
+        {user && (user.roles?.includes('ROLE_ADMIN') || user.roles?.includes('ROLE_EDITOR')) && (
           <button 
             className="btn-manage-articles"
             onClick={() => onNavigate && onNavigate('blog-editor')}
@@ -175,43 +175,59 @@ function NewsPage({ onArticleClick, user, onNavigate }) {
             <div 
               key={article.id} 
               className="article-card-news"
-              onClick={() => onArticleClick && onArticleClick(article.id)}
-              style={{ cursor: 'pointer' }}
+              style={{ position: 'relative' }}
             >
-              <div className="article-image-news">
-                <div className="article-emoji-news">{getGameEmoji(article.game)}</div>
-                <div className="article-overlay">
-                  <span className="badge-category-small" style={{ backgroundColor: getCategoryColor(article.type) }}>
-                    {getTypeLabel(article.type)}
-                  </span>
-                  <span className="badge-game-small" style={{ backgroundColor: getGameColor(article.game) }}>
-                    {getGameLabel(article.game)}
-                  </span>
-                </div>
-              </div>
-              <div className="article-content-news">
-                <h3 className="article-title-news">{article.title}</h3>
-                <p className="article-excerpt-news">{article.summary || 'Cliquez pour lire l\'article complet'}</p>
-                <div className="article-meta-news">
-                  <div className="meta-row">
-                    <span className="meta-item-news">
-                      📅 {new Date(article.publishedAt || article.createdAt).toLocaleDateString('fr-FR')}
+              {user && (user.roles?.includes('ROLE_ADMIN') || user.roles?.includes('ROLE_EDITOR')) && (
+                <button 
+                  className="btn-edit-article"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onNavigate && onNavigate('blog-editor', article.id);
+                  }}
+                  title="Modifier l'article"
+                >
+                  ✏️
+                </button>
+              )}
+              <div 
+                onClick={() => onArticleClick && onArticleClick(article.id)}
+                style={{ cursor: 'pointer' }}
+              >
+                <div className="article-image-news">
+                  <div className="article-emoji-news">{getGameEmoji(article.game)}</div>
+                  <div className="article-overlay">
+                    <span className="badge-category-small" style={{ backgroundColor: getCategoryColor(article.type) }}>
+                      {getTypeLabel(article.type)}
                     </span>
-                    <span className="meta-item-news">👁️ {article.viewCount || 0} vues</span>
-                  </div>
-                  <div className="meta-row">
-                    <span className="meta-author">✍️ {article.author?.username || 'Anonyme'}</span>
-                    {article.averageRating > 0 && (
-                      <span className="meta-rating">⭐ {article.averageRating.toFixed(1)}</span>
-                    )}
+                    <span className="badge-game-small" style={{ backgroundColor: getGameColor(article.game) }}>
+                      {getGameLabel(article.game)}
+                    </span>
                   </div>
                 </div>
-                {article.commentCount > 0 && (
-                  <div className="article-stats">
-                    💬 {article.commentCount} {article.commentCount > 1 ? 'commentaires' : 'commentaire'}
+                <div className="article-content-news">
+                  <h3 className="article-title-news">{article.title}</h3>
+                  <p className="article-excerpt-news">{article.summary || 'Cliquez pour lire l\'article complet'}</p>
+                  <div className="article-meta-news">
+                    <div className="meta-row">
+                      <span className="meta-item-news">
+                        📅 {new Date(article.publishedAt || article.createdAt).toLocaleDateString('fr-FR')}
+                      </span>
+                      <span className="meta-item-news">👁️ {article.viewCount || 0} vues</span>
+                    </div>
+                    <div className="meta-row">
+                      <span className="meta-author">✍️ {article.author?.username || 'Anonyme'}</span>
+                      {article.averageRating > 0 && (
+                        <span className="meta-rating">⭐ {article.averageRating.toFixed(1)}</span>
+                      )}
+                    </div>
                   </div>
-                )}
-                <button className="read-more-news-btn">Lire la suite →</button>
+                  {article.commentCount > 0 && (
+                    <div className="article-stats">
+                      💬 {article.commentCount} {article.commentCount > 1 ? 'commentaires' : 'commentaire'}
+                    </div>
+                  )}
+                  <button className="read-more-news-btn">Lire la suite →</button>
+                </div>
               </div>
             </div>
           ))}

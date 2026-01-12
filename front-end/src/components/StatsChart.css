@@ -11,6 +11,17 @@
   border: 1px solid rgba(102, 126, 234, 0.1);
 }
 
+.stats-error {
+  padding: 20px;
+  background: rgba(255, 59, 48, 0.1);
+  border: 1px solid rgba(255, 59, 48, 0.3);
+  border-radius: 8px;
+  color: #ff3b30;
+  text-align: center;
+  font-weight: 600;
+  margin: 20px 0;
+}
+
 .chart-title {
   font-size: 18px;
   font-weight: 700;
@@ -86,4 +97,96 @@ body.dark-mode .radar-chart polygon[fill*="rgba(102"] {
 
 body.dark-mode circle[fill="#667eea"] {
   fill: #9d6cff !important;
+}
+
+/* Tables responsive avec scroll horizontal */
+.stats-table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.stats-table {
+  min-width: 600px; /* Force le scroll sur petits écrans */
+}
+
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
+
+@media (max-width: 768px) {
+  .radar-chart-container,
+  .bar-chart-container,
+  .line-chart-container {
+    padding: 15px;
+    margin: 20px 0;
+  }
+
+  .chart-title {
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+
+  /* Réduire la taille des graphiques SVG sur mobile */
+  .radar-chart,
+  .bar-chart,
+  .line-chart {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Table scrollable horizontalement sur mobile */
+  .stats-table-container {
+    margin: 15px -10px; /* Déborder légèrement pour montrer qu'on peut scroller */
+    border-radius: 0;
+  }
+
+  .stats-table {
+    font-size: 13px;
+  }
+
+  .stats-table th,
+  .stats-table td {
+    padding: 10px 12px;
+    white-space: nowrap; /* Empêcher le retour à la ligne */
+  }
+
+  .stats-error {
+    padding: 15px;
+    font-size: 13px;
+    margin: 15px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .radar-chart-container,
+  .bar-chart-container,
+  .line-chart-container {
+    padding: 12px;
+    margin: 15px 0;
+  }
+
+  .chart-title {
+    font-size: 14px;
+  }
+
+  .stats-table {
+    font-size: 12px;
+  }
+
+  .stats-table th,
+  .stats-table td {
+    padding: 8px 10px;
+  }
+
+  .bar-label,
+  .line-label {
+    font-size: 11px !important;
+  }
+
+  .bar-value {
+    font-size: 10px !important;
+  }
 }

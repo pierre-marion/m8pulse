@@ -250,6 +250,8 @@ class DatasetController extends AbstractController
         $dataset->setName($request->request->get('name') ?? $file->getClientOriginalName());
         $dataset->setDescription($request->request->get('description'));
         $dataset->setSource($request->request->get('source'));
+        $dataset->setGame($request->request->get('game', 'general'));
+        $dataset->setPublic($request->request->get('public', 'true') === 'true');
         $dataset->setFilename($filename);
         $dataset->setFilepath('/uploads/datasets/' . $filename);
         $dataset->setVariables($parsedData['variables']);
@@ -363,6 +365,7 @@ class DatasetController extends AbstractController
         $separator = strpos($content, ';') !== false ? ';' : ',';
         
         $data = [];
+        $dataArray = []; // Format array 2D pour les charts
         $variables = [];
         $headers = [];
         
@@ -378,6 +381,9 @@ class DatasetController extends AbstractController
             // Nettoyer les en-têtes (trim whitespace)
             $headers = array_map('trim', $headers);
             
+            // Ajouter les headers comme première ligne du format array
+            $dataArray[] = $headers;
+            
             // Initialiser les variables
             foreach ($headers as $header) {
                 $variables[] = [
@@ -390,6 +396,8 @@ class DatasetController extends AbstractController
             $rowIndex = 0;
             while (($row = fgetcsv($handle, 0, $separator)) !== false && $rowIndex < 1000) { // Limiter à 1000 lignes
                 $row = array_map('trim', $row); // Nettoyer les valeurs
+                
+                // Format objet (pour compatibilité)
                 $rowData = [];
                 foreach ($row as $index => $value) {
                     $rowData[$headers[$index]] = $value;
@@ -400,6 +408,10 @@ class DatasetController extends AbstractController
                     }
                 }
                 $data[] = $rowData;
+                
+                // Format array 2D (pour les charts)
+                $dataArray[] = array_values($row);
+                
                 $rowIndex++;
             }
             
@@ -408,7 +420,7 @@ class DatasetController extends AbstractController
         
         return [
             'variables' => $variables,
-            'data' => $data,
+            'data' => $dataArray, // Utiliser le format array 2D
             'separator' => $separator
         ];
     }

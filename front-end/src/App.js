@@ -207,6 +207,7 @@ function App() {
                 currentPage={currentPage} 
                 setCurrentPage={setCurrentPage}
                 user={user}
+                onLogout={handleLogout}
               />
               {renderPage()}
             </div>

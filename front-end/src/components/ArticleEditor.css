@@ -496,6 +496,86 @@ body.dark-mode .form-group select {
   color: #495057;
 }
 
+.dataset-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.dataset-selector label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #495057;
+}
+
+.dataset-select {
+  padding: 10px 12px;
+  border: 2px solid rgba(102, 126, 234, 0.3);
+  border-radius: 8px;
+  background: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dataset-select:hover {
+  border-color: rgba(102, 126, 234, 0.5);
+  background: rgba(102, 126, 234, 0.02);
+}
+
+.dataset-select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.or-divider {
+  text-align: center;
+  margin: 15px 0;
+  position: relative;
+}
+
+.or-divider::before,
+.or-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.or-divider::before {
+  left: 0;
+}
+
+.or-divider::after {
+  right: 0;
+}
+
+.or-divider span {
+  background: white;
+  padding: 0 10px;
+  color: #999;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.manual-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.manual-upload label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #999;
+}
+
+
 .viz-type-select {
   padding: 8px 12px;
   border: 1px solid rgba(102, 126, 234, 0.3);
@@ -582,6 +662,40 @@ body.dark-mode .stats-viz-selector label {
   color: rgba(255, 255, 255, 0.8);
 }
 
+body.dark-mode .dataset-selector label {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+body.dark-mode .dataset-select {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(157, 108, 255, 0.3);
+  color: #fff;
+}
+
+body.dark-mode .dataset-select:hover {
+  border-color: rgba(157, 108, 255, 0.5);
+  background: rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .dataset-select:focus {
+  border-color: #9d6cff;
+  box-shadow: 0 0 0 3px rgba(157, 108, 255, 0.1);
+}
+
+body.dark-mode .or-divider::before,
+body.dark-mode .or-divider::after {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .or-divider span {
+  background: #1a1a2e;
+  color: #666;
+}
+
+body.dark-mode .manual-upload label {
+  color: #666;
+}
+
 body.dark-mode .viz-type-select {
   background: rgba(0, 0, 0, 0.3);
   border-color: rgba(157, 108, 255, 0.3);
@@ -595,4 +709,223 @@ body.dark-mode .viz-type-select:hover {
 body.dark-mode .viz-type-select:focus {
   border-color: #9d6cff;
   box-shadow: 0 0 0 3px rgba(157, 108, 255, 0.1);
+}
+
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
+
+/* Tablettes */
+@media (max-width: 1024px) {
+  .article-editor-popup {
+    max-width: 95%;
+    padding: 20px;
+  }
+
+  .editor-header h2 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Tablettes petites / Grands mobiles */
+@media (max-width: 768px) {
+  .article-editor-overlay {
+    padding: 0;
+  }
+
+  .article-editor-popup {
+    max-width: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+    margin: 0;
+  }
+
+  .editor-header {
+    padding: 15px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .editor-header h2 {
+    font-size: 1.3rem;
+  }
+
+  .editor-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .btn-close,
+  .btn-save {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+
+  .editor-form {
+    padding: 15px;
+  }
+
+  .form-group label {
+    font-size: 13px;
+  }
+
+  .form-input,
+  .form-textarea,
+  .form-select {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .blocks-section {
+    padding: 15px;
+  }
+
+  .add-block-buttons {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .btn-add-block {
+    font-size: 12px;
+    padding: 8px 14px;
+    flex: 1 1 calc(50% - 4px);
+    min-width: 120px;
+  }
+
+  .block-item {
+    padding: 12px;
+  }
+
+  .block-header h4 {
+    font-size: 13px;
+  }
+
+  .block-actions button {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+
+  /* Images et stats en colonne sur mobile */
+  .image-block-content,
+  .stats-block-content {
+    gap: 12px;
+  }
+
+  .dataset-selector,
+  .manual-upload {
+    font-size: 13px;
+  }
+
+  .dataset-select {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+
+/* Mobiles */
+@media (max-width: 480px) {
+  .editor-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .btn-close,
+  .btn-save {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .editor-form {
+    padding: 12px;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .form-group label {
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+
+  .form-input,
+  .form-textarea,
+  .form-select {
+    font-size: 13px;
+    padding: 8px;
+  }
+
+  .blocks-section {
+    padding: 12px;
+  }
+
+  .section-title {
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  .btn-add-block {
+    font-size: 11px;
+    padding: 6px 10px;
+    flex: 1 1 100%;
+  }
+
+  .block-item {
+    padding: 10px;
+  }
+
+  .block-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .block-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .block-actions button {
+    padding: 5px 8px;
+    font-size: 10px;
+  }
+
+  /* Textarea plus petit sur mobile */
+  textarea.form-textarea {
+    min-height: 80px;
+  }
+
+  /* File inputs adaptés */
+  .file-input {
+    font-size: 12px;
+    padding: 6px;
+  }
+
+  .file-info,
+  .stats-preview {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+}
+
+/* Avertissement pour les très petits écrans */
+@media (max-width: 360px) {
+  .editor-header::after {
+    content: "⚠️ Éditeur optimisé pour tablette";
+    position: absolute;
+    top: -30px;
+    left: 0;
+    right: 0;
+    background: rgba(255, 149, 0, 0.9);
+    color: white;
+    padding: 5px;
+    font-size: 11px;
+    text-align: center;
+    border-radius: 4px 4px 0 0;
+  }
+
+  .article-editor-popup {
+    position: relative;
+    padding-top: 40px;
+  }
 }

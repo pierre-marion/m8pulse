@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './Header.css';
 
-function Header({ currentPage, setCurrentPage, user }) {
+function Header({ currentPage, setCurrentPage, user, onLogout }) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [navItems, setNavItems] = useState([
     { id: 'accueil', label: 'Acceuil' },
     { id: 'jeux', label: 'Jeux' },
@@ -34,22 +35,98 @@ function Header({ currentPage, setCurrentPage, user }) {
     };
   }, []);
 
+  const handleNavClick = (pageId) => {
+    setCurrentPage(pageId);
+    setMobileMenuOpen(false); // Fermer le menu mobile après navigation
+  };
+
+  const handleLogoutClick = () => {
+    if (onLogout) {
+      onLogout();
+    }
+    setMobileMenuOpen(false);
+  };
+
   return (
     <header className="header">
       <div className="logo">
         <img src="/m8logo.png" alt="M8 Logo" className="header-logo-image" />
       </div>
-      <nav className="nav">
+      
+      {/* Menu hamburger (mobile) */}
+      <button 
+        className={`hamburger ${mobileMenuOpen ? 'active' : ''}`}
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        aria-label="Menu"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      {/* Navigation */}
+      <nav className={`nav ${mobileMenuOpen ? 'mobile-open' : ''}`}>
         {navItems.map((item) => (
           <button
             key={item.id}
             className={`nav-btn ${currentPage === item.id ? 'active' : ''}`}
-            onClick={() => setCurrentPage(item.id)}
+            onClick={() => handleNavClick(item.id)}
           >
             {item.label}
           </button>
         ))}
+        
+        {/* Section utilisateur dans le menu mobile */}
+        <div className="nav-user-section">
+          {user ? (
+            <>
+              <button 
+                className="nav-user-btn"
+                onClick={() => handleNavClick('profile')}
+              >
+                <span className="user-avatar-mobile">
+                  {user.username?.charAt(0).toUpperCase() || '👤'}
+                </span>
+                <span className="user-info-mobile">
+                  <span className="user-name-mobile">{user.username}</span>
+                  {user.roles?.includes('ROLE_ADMIN') && <span className="user-badge-mobile">👑 Admin</span>}
+                  {!user.roles?.includes('ROLE_ADMIN') && user.roles?.includes('ROLE_EDITOR') && <span className="user-badge-mobile">✏️ Éditeur</span>}
+                  {!user.roles?.includes('ROLE_ADMIN') && user.roles?.includes('ROLE_PROVIDER') && <span className="user-badge-mobile">📊 Provider</span>}
+                </span>
+              </button>
+              <button 
+                className="nav-logout-btn"
+                onClick={handleLogoutClick}
+              >
+                🚪 Se déconnecter
+              </button>
+            </>
+          ) : (
+            <>
+              <button 
+                className="nav-login-btn"
+                onClick={() => handleNavClick('login')}
+              >
+                🔑 Se connecter
+              </button>
+              <button 
+                className="nav-register-btn"
+                onClick={() => handleNavClick('register')}
+              >
+                ✨ S'inscrire
+              </button>
+            </>
+          )}
+        </div>
       </nav>
+      
+      {/* Overlay pour fermer le menu mobile */}
+      {mobileMenuOpen && (
+        <div 
+          className="mobile-overlay" 
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
     </header>
   );
 }

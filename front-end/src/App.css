@@ -56,3 +56,64 @@ body.dark-mode .loading-lazy {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
+
+@media (max-width: 1024px) {
+  .App {
+    padding: 15px;
+  }
+
+  .app-body {
+    gap: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .App {
+    padding: 10px;
+    padding-bottom: 0;
+  }
+
+  .app-body {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .main-section {
+    gap: 10px;
+    overflow-y: visible; /* Permettre le scroll naturel sur mobile */
+  }
+
+  /* Cacher RightPanel sur mobile par défaut */
+  .right-panel {
+    display: none;
+  }
+
+  /* Si vous voulez le garder, le mettre en bas */
+  .right-panel.mobile-visible {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .App {
+    padding: 5px;
+    padding-bottom: 0;
+  }
+
+  .main-section {
+    gap: 5px;
+  }
+
+  .loading-lazy {
+    min-height: 200px;
+    font-size: 1rem;
+  }
+}

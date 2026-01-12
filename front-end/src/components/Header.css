@@ -147,3 +147,285 @@ body.dark-mode .nav-btn:hover {
   font-size: 16px;
   margin-left: 4px;
 }
+
+/* ===================================
+   MOBILE RESPONSIVE
+   =================================== */
+
+/* Hamburger menu (caché par défaut sur desktop) */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  z-index: 1001;
+  margin-left: auto;
+}
+
+.hamburger span {
+  width: 25px;
+  height: 3px;
+  background: var(--text-primary);
+  transition: all 0.3s ease;
+  border-radius: 2px;
+}
+
+body.dark-mode .hamburger span {
+  background: #fff;
+}
+
+.hamburger.active span:nth-child(1) {
+  transform: rotate(45deg) translate(7px, 7px);
+}
+
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* Overlay pour fermer le menu mobile */
+.mobile-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .header {
+    padding: 10px 15px;
+    position: relative;
+  }
+
+  .header-logo-image {
+    width: 50px;
+    height: 50px;
+  }
+
+  /* Afficher le hamburger sur mobile */
+  .hamburger {
+    display: flex;
+  }
+
+  /* Menu mobile */
+  .nav {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    height: 100vh;
+    width: 280px;
+    max-width: 80vw;
+    background: white;
+    flex-direction: column;
+    padding: 80px 20px 20px;
+    gap: 10px;
+    transition: right 0.3s ease;
+    z-index: 1000;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+  }
+
+  body.dark-mode .nav {
+    background: linear-gradient(180deg, rgba(30, 30, 50, 0.98), rgba(25, 25, 45, 0.98));
+    border-left: 1px solid rgba(157, 108, 255, 0.2);
+  }
+
+  .nav.mobile-open {
+    right: 0;
+  }
+
+  .mobile-overlay {
+    display: block;
+  }
+
+  /* Section utilisateur mobile */
+  .nav-user-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(102, 126, 234, 0.2);
+  }
+
+  body.dark-mode .nav-user-section {
+    border-top-color: rgba(157, 108, 255, 0.3);
+  }
+
+  .nav-user-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(102, 126, 234, 0.1);
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    border-radius: 10px;
+    padding: 12px 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+  }
+
+  body.dark-mode .nav-user-btn {
+    background: rgba(157, 108, 255, 0.15);
+    border-color: rgba(157, 108, 255, 0.4);
+  }
+
+  .nav-user-btn:hover {
+    background: rgba(102, 126, 234, 0.2);
+    border-color: rgba(102, 126, 234, 0.5);
+  }
+
+  body.dark-mode .nav-user-btn:hover {
+    background: rgba(157, 108, 255, 0.25);
+    border-color: rgba(157, 108, 255, 0.6);
+  }
+
+  .user-avatar-mobile {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  body.dark-mode .user-avatar-mobile {
+    background: linear-gradient(135deg, #9d6cff 0%, #7d3cff 100%);
+  }
+
+  .user-info-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: left;
+    flex: 1;
+  }
+
+  .user-name-mobile {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  body.dark-mode .user-name-mobile {
+    color: white;
+  }
+
+  .user-badge-mobile {
+    font-size: 12px;
+    color: #667eea;
+    font-weight: 500;
+  }
+
+  body.dark-mode .user-badge-mobile {
+    color: #9d6cff;
+  }
+
+  .nav-logout-btn,
+  .nav-login-btn,
+  .nav-register-btn {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+  }
+
+  .nav-logout-btn {
+    background: rgba(255, 59, 48, 0.1);
+    color: #ff3b30;
+    border: 1px solid rgba(255, 59, 48, 0.3);
+  }
+
+  .nav-logout-btn:hover {
+    background: rgba(255, 59, 48, 0.2);
+    border-color: rgba(255, 59, 48, 0.5);
+  }
+
+  .nav-login-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+  }
+
+  body.dark-mode .nav-login-btn {
+    background: linear-gradient(135deg, #9d6cff 0%, #7d3cff 100%);
+  }
+
+  .nav-login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  }
+
+  .nav-register-btn {
+    background: white;
+    color: #667eea;
+    border: 2px solid #667eea;
+  }
+
+  body.dark-mode .nav-register-btn {
+    background: rgba(157, 108, 255, 0.1);
+    color: #9d6cff;
+    border-color: #9d6cff;
+  }
+
+  .nav-register-btn:hover {
+    background: rgba(102, 126, 234, 0.1);
+  }
+
+  body.dark-mode .nav-register-btn:hover {
+    background: rgba(157, 108, 255, 0.2);
+  }
+
+  .nav-btn {
+    width: 100%;
+    text-align: left;
+    padding: 15px 20px;
+    border-radius: 10px;
+  }
+}
+
+/* Cacher la section utilisateur sur desktop (elle sera dans RightPanel) */
+@media (min-width: 769px) {
+  .nav-user-section {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 8px 10px;
+  }
+
+  .header-logo-image {
+    width: 45px;
+    height: 45px;
+  }
+
+  .nav {
+    width: 260px;
+  }
+
+  .nav-btn {
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+}

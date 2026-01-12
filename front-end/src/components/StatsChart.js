@@ -2,7 +2,29 @@ import React from 'react';
 import './StatsChart.css';
 
 function StatsChart({ data, vizType = 'table' }) {
-  if (!data || data.length === 0) return null;
+  console.log('StatsChart received data:', data);
+  console.log('Data type:', typeof data, 'Is array:', Array.isArray(data));
+  
+  if (!data || !Array.isArray(data) || data.length === 0) {
+    return <div className="stats-error">Aucune donnée à afficher</div>;
+  }
+
+  // Vérifier que data[0] existe et est un array
+  if (!Array.isArray(data[0])) {
+    console.error('Format de données incorrect:', data);
+    console.error('data[0]:', data[0], 'Type:', typeof data[0]);
+    return (
+      <div className="stats-error">
+        Format de données incorrect
+        <details style={{ marginTop: '10px', fontSize: '12px' }}>
+          <summary>Détails (debug)</summary>
+          <pre style={{ textAlign: 'left', fontSize: '10px' }}>
+            {JSON.stringify(data, null, 2)}
+          </pre>
+        </details>
+      </div>
+    );
+  }
 
   const headers = data[0];
   const rows = data.slice(1);

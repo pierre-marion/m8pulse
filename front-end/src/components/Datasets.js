@@ -56,7 +56,7 @@ function Datasets({ user }) {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:8000/api/datasets', {
+      const response = await fetch('http://localhost:8000/api/datasets/upload', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -88,7 +88,7 @@ function Datasets({ user }) {
   };
 
   const handleDelete = async (id) => {
-    if (!confirm('Supprimer ce dataset ?')) return;
+    if (!window.confirm('Supprimer ce dataset ?')) return;
 
     try {
       const token = localStorage.getItem('token');

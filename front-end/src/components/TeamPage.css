@@ -268,14 +268,14 @@
 
 .players-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 15px;
+  grid-template-columns: repeat(5, 1fr); /* Force 5 colonnes */
+  gap: 12px;
 }
 
 .player-card {
   background: #fff;
   border-radius: 8px;
-  padding: 20px;
+  padding: 15px 10px; /* Réduit le padding */
   color: var(--text-primary);
   display: flex;
   flex-direction: column;
@@ -310,16 +310,16 @@
 }
 
 .player-avatar {
-  width: 60px;
-  height: 60px;
+  width: 50px; /* Réduit de 60px à 50px */
+  height: 50px;
   border-radius: 50%;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
+  font-size: 24px; /* Réduit de 28px à 24px */
   font-weight: 900;
-  margin-bottom: 12px;
+  margin-bottom: 10px; /* Réduit de 12px à 10px */
   border: 3px solid rgba(102, 126, 234, 0.3);
   font-family: 'Bebas Neue', 'Impact', sans-serif;
 }
@@ -398,13 +398,13 @@
 }
 
 .player-info {
-  margin-bottom: 15px;
+  margin-bottom: 10px; /* Réduit de 15px à 10px */
   position: relative;
   z-index: 1;
 }
 
 .player-name {
-  font-size: 18px;
+  font-size: 15px; /* Réduit de 18px à 15px */
   font-weight: 700;
   margin: 0 0 4px 0;
   font-family: var(--font-title);
@@ -413,7 +413,7 @@
 }
 
 .player-role {
-  font-size: 12px;
+  font-size: 11px; /* Réduit de 12px à 11px */
   margin: 0;
   opacity: 0.7;
   font-weight: 500;
@@ -424,7 +424,7 @@
 
 .player-stats {
   display: flex;
-  gap: 20px;
+  gap: 12px; /* Réduit de 20px à 12px */
   position: relative;
   z-index: 1;
 }
@@ -1561,5 +1561,34 @@
     align-items: flex-start;
     gap: 10px;
   }
+
+  /* Adapter la grille des joueurs sur tablette */
+  .players-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
+/* Responsive pour la grille des joueurs */
+@media (max-width: 1400px) {
+  .players-grid {
+    grid-template-columns: repeat(4, 1fr); /* 4 colonnes sur écrans moyens */
+  }
+}
+
+@media (max-width: 1200px) {
+  .players-grid {
+    grid-template-columns: repeat(3, 1fr); /* 3 colonnes sur petits écrans */
+  }
+}
+
+@media (max-width: 768px) {
+  .players-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 colonnes sur tablettes */
+  }
+}
+
+@media (max-width: 480px) {
+  .players-grid {
+    grid-template-columns: 1fr; /* 1 colonne sur mobile */
+  }
+}

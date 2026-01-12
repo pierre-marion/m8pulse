@@ -1,6 +1,6 @@
 /* ===== RIGHT PANEL MODERNE ===== */
 .right-panel {
-  width: 320px;
+  width: 280px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -960,14 +960,27 @@ body.dark-mode .stat-val {
   }
 }
 
+/* Responsive breakpoints */
+@media (min-width: 1600px) {
+  .right-panel {
+    width: 300px; /* Un peu plus large sur grands écrans */
+  }
+}
+
 @media (max-width: 1400px) {
   .right-panel {
-    width: 280px;
+    width: 260px; /* Plus compact sur écrans moyens */
   }
 }
 
 @media (max-width: 1200px) {
   .right-panel {
-    display: none;
+    width: 240px; /* Encore plus compact */
+  }
+}
+
+@media (max-width: 1024px) {
+  .right-panel {
+    display: none; /* Masquer complètement sur tablettes */
   }
 }
