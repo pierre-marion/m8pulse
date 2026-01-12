@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './ProfilePage.css';
+import Icon from './Icon';
 
 function ProfilePage({ user, onLogout }) {
   const [userData, setUserData] = useState(user);
@@ -63,9 +64,9 @@ function ProfilePage({ user, onLogout }) {
 
   const getSubscriptionBadge = (level) => {
     const badges = {
-      'gold': { icon: '👑', label: 'Gold', color: '#ffd700' },
-      'silver': { icon: '⭐', label: 'Silver', color: '#c0c0c0' },
-      'bronze': { icon: '🥉', label: 'Bronze', color: '#cd7f32' },
+      'gold': { icon: 'trophy', label: 'Gold', color: '#ffd700' },
+      'silver': { icon: 'star', label: 'Silver', color: '#c0c0c0' },
+      'bronze': { icon: 'star', label: 'Bronze', color: '#cd7f32' },
     };
     return badges[level] || badges['bronze'];
   };
@@ -139,7 +140,7 @@ function ProfilePage({ user, onLogout }) {
 
         <div className="profile-actions">
           <button onClick={handleLogout} className="logout-button">
-            🚪 Se déconnecter
+            <Icon name="logOut" size={18} /> Se déconnecter
           </button>
         </div>
       </div>

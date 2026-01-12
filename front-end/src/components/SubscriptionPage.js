@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './SubscriptionPage.css';
+import Icon from './Icon';
 
 function SubscriptionPage() {
   const [selectedPlan, setSelectedPlan] = useState('pro');
@@ -8,7 +9,7 @@ function SubscriptionPage() {
   const plans = {
     basic: {
       name: 'Basic',
-      icon: '📊',
+      icon: 'barChart',
       monthlyPrice: 0,
       yearlyPrice: 0,
       color: '#6C757D',
@@ -29,7 +30,7 @@ function SubscriptionPage() {
     },
     pro: {
       name: 'Pro',
-      icon: '⚡',
+      icon: 'rocket',
       monthlyPrice: 9.99,
       yearlyPrice: 99.99,
       color: '#7D3CFF',
@@ -51,7 +52,7 @@ function SubscriptionPage() {
     },
     elite: {
       name: 'Elite',
-      icon: '👑',
+      icon: 'trophy',
       monthlyPrice: 24.99,
       yearlyPrice: 249.99,
       color: '#FFD700',
@@ -163,49 +164,49 @@ function SubscriptionPage() {
         
         <div className="features-grid">
           <div className="feature-detail">
-            <div className="feature-detail-icon">📊</div>
+            <div className="feature-detail-icon"><Icon name="barChart" size={32} color="#7D3CFF" /></div>
             <h3>Statistiques de base</h3>
             <p>Accédez aux statistiques essentielles : KD, ACS, Rating, classements et historique des matchs.</p>
           </div>
 
           <div className="feature-detail">
-            <div className="feature-detail-icon">📈</div>
+            <div className="feature-detail-icon"><Icon name="trendingUp" size={32} color="#7D3CFF" /></div>
             <h3>Stats avancées</h3>
             <p>Débloquez des métriques détaillées : KAST, ADR, HS%, First Kills, Clutch Rate et plus encore.</p>
           </div>
 
           <div className="feature-detail">
-            <div className="feature-detail-icon">⏱️</div>
+            <div className="feature-detail-icon"><Icon name="clock" size={32} color="#7D3CFF" /></div>
             <h3>Timeline des kills</h3>
             <p>Visualisez la timeline des éliminations par round, identifiez les moments clés des matchs.</p>
           </div>
 
           <div className="feature-detail">
-            <div className="feature-detail-icon">🎯</div>
+            <div className="feature-detail-icon"><Icon name="target" size={32} color="#7D3CFF" /></div>
             <h3>Analyse tactique</h3>
             <p>Analysez les stratégies d'équipe, les rotations, le positionnement et les tendances tactiques.</p>
           </div>
 
           <div className="feature-detail">
-            <div className="feature-detail-icon">🗺️</div>
+            <div className="feature-detail-icon"><Icon name="globe" size={32} color="#7D3CFF" /></div>
             <h3>Heatmaps</h3>
             <p>Cartes de chaleur interactives pour visualiser les positions, les kills et les zones de contrôle.</p>
           </div>
 
           <div className="feature-detail">
-            <div className="feature-detail-icon">⚖️</div>
+            <div className="feature-detail-icon"><Icon name="users" size={32} color="#7D3CFF" /></div>
             <h3>Comparaison joueurs</h3>
             <p>Comparez les performances de plusieurs joueurs côte à côte avec des graphiques détaillés.</p>
           </div>
 
           <div className="feature-detail">
-            <div className="feature-detail-icon">💬</div>
+            <div className="feature-detail-icon"><Icon name="messageCircle" size={32} color="#7D3CFF" /></div>
             <h3>Support prioritaire</h3>
             <p>Assistance dédiée avec temps de réponse rapide et support technique prioritaire.</p>
           </div>
 
           <div className="feature-detail">
-            <div className="feature-detail-icon">👑</div>
+            <div className="feature-detail-icon"><Icon name="star" size={32} color="#FFD700" /></div>
             <h3>Badge exclusif</h3>
             <p>Badge Elite affiché sur votre profil, reconnaissable par toute la communauté.</p>
           </div>

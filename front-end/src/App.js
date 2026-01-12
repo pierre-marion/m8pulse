@@ -9,8 +9,8 @@ import NewsPage from './components/NewsPage';
 import ArticleDetail from './components/ArticleDetail';
 import SubscriptionPage from './components/SubscriptionPage';
 import DashboardPage from './components/DashboardPage';
-import LoginPage from './components/LoginPage';
-import RegisterPage from './components/RegisterPage';
+import LoginModal from './components/LoginModal';
+import RegisterModal from './components/RegisterModal';
 import ProfilePage from './components/ProfilePage';
 import PlayersPage from './components/PlayersPage';
 import ArticleManager from './components/ArticleManager';
@@ -35,6 +35,8 @@ function App() {
   const [authMode, setAuthMode] = useState('login'); // 'login' ou 'register'
   const [selectedCity, setSelectedCity] = useState(null);
   const [showDesignPanel, setShowDesignPanel] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
 
   const games = ['Valorant', 'Counter Strike', 'Call of Duty', 'Fortnite'];
 
@@ -88,24 +90,10 @@ function App() {
   };
 
   const renderPage = () => {
-    // Pages d'authentification
-    if (currentPage === 'login' && !user) {
-      return <LoginPage 
-        onLogin={handleLogin} 
-        onSwitchToRegister={() => setCurrentPage('register')} 
-      />;
-    }
-    
-    if (currentPage === 'register' && !user) {
-      return <RegisterPage 
-        onRegister={handleRegister} 
-        onSwitchToLogin={() => setCurrentPage('login')} 
-      />;
-    }
-
     if (currentPage === 'profile') {
       if (!user) {
-        setCurrentPage('login');
+        setShowLoginModal(true);
+        setCurrentPage('accueil');
         return null;
       }
       return <ProfilePage user={user} onLogout={handleLogout} />;
@@ -208,6 +196,8 @@ function App() {
                 setCurrentPage={setCurrentPage}
                 user={user}
                 onLogout={handleLogout}
+                onLoginClick={() => setShowLoginModal(true)}
+                onRegisterClick={() => setShowRegisterModal(true)}
               />
               {renderPage()}
             </div>
@@ -220,7 +210,7 @@ function App() {
                 onDatasetsClick={() => setCurrentPage('datasets')}
                 user={user}
                 onLogout={handleLogout}
-                onLoginClick={() => setCurrentPage('login')}
+                onLoginClick={() => setShowLoginModal(true)}
                 currentPage={currentPage}
                 selectedCity={selectedCity}
                 onPlayerClick={currentPage === 'joueurs' ? setSelectedCity : null}
@@ -228,6 +218,30 @@ function App() {
             )}
           </div>
         </div>
+
+        {/* Modale de connexion */}
+        {showLoginModal && (
+          <LoginModal
+            onClose={() => setShowLoginModal(false)}
+            onLogin={handleLogin}
+            onSwitchToRegister={() => {
+              setShowLoginModal(false);
+              setShowRegisterModal(true);
+            }}
+          />
+        )}
+
+        {/* Modale d'inscription */}
+        {showRegisterModal && (
+          <RegisterModal
+            onClose={() => setShowRegisterModal(false)}
+            onRegister={handleRegister}
+            onSwitchToLogin={() => {
+              setShowRegisterModal(false);
+              setShowLoginModal(true);
+            }}
+          />
+        )}
 
         {/* Popup Design pour les designers */}
         {showDesignPanel && (

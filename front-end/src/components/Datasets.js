@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Datasets.css';
+import Icon from './Icon';
 
 function Datasets({ user }) {
   const [datasets, setDatasets] = useState([]);
@@ -149,9 +150,9 @@ function Datasets({ user }) {
   return (
     <div className="datasets-container">
       <div className="datasets-header">
-        <h1>📊 Gestion des Datasets</h1>
+        <h1><Icon name="barChart" size={32} /> Gestion des Datasets</h1>
         <button onClick={() => setShowUpload(!showUpload)} className="btn-upload">
-          {showUpload ? '✕ Annuler' : '➕ Nouveau Dataset'}
+          {showUpload ? '✕ Annuler' : <><Icon name="sparkles" size={16} /> Nouveau Dataset</>}
         </button>
       </div>
 
@@ -242,17 +243,17 @@ function Datasets({ user }) {
               </div>
 
               <div className="dataset-info">
-                <span className="info-badge">📄 {dataset.filename}</span>
-                <span className="info-badge">📊 {dataset.rowCount} lignes</span>
+                <span className="info-badge"><Icon name="fileText" size={14} /> {dataset.filename}</span>
+                <span className="info-badge"><Icon name="barChart" size={14} /> {dataset.rowCount} lignes</span>
                 <span className="info-badge">
-                  {dataset.public ? '🌍 Public' : '🔒 Privé'}
+                  {dataset.public ? <><Icon name="globe" size={14} /> Public</> : <><Icon name="lock" size={14} /> Privé</>}
                 </span>
                 <span className="info-badge">✅ {dataset.status}</span>
               </div>
 
               {selectedDataset?.id === dataset.id && dataset.columnsInfo && (
                 <div className="dataset-columns">
-                  <h5>🔧 Variables ({dataset.columnsInfo.length})</h5>
+                  <h5><Icon name="settings" size={16} /> Variables ({dataset.columnsInfo.length})</h5>
                   <div className="columns-grid">
                     {dataset.columnsInfo.map((column, index) => (
                       <div key={index} className="column-item">
@@ -262,8 +263,8 @@ function Datasets({ user }) {
                           onChange={(e) => updateColumnType(dataset.id, index, e.target.value)}
                           className="column-type-select"
                         >
-                          <option value="number">🔢 Numérique</option>
-                          <option value="string">📝 Catégorielle</option>
+                          <option value="number"><Icon name="barChart" size={14} /> Numérique</option>
+                          <option value="string"><Icon name="fileText" size={14} /> Catégorielle</option>
                         </select>
                       </div>
                     ))}

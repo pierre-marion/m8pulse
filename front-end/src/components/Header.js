@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './Header.css';
+import Icon from './Icon';
 
-function Header({ currentPage, setCurrentPage, user, onLogout }) {
+function Header({ currentPage, setCurrentPage, user, onLogout, onLoginClick, onRegisterClick }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [navItems, setNavItems] = useState([
     { id: 'accueil', label: 'Acceuil' },
@@ -85,35 +86,35 @@ function Header({ currentPage, setCurrentPage, user, onLogout }) {
                 onClick={() => handleNavClick('profile')}
               >
                 <span className="user-avatar-mobile">
-                  {user.username?.charAt(0).toUpperCase() || '👤'}
+                  {user.username?.charAt(0).toUpperCase() || <Icon name="user" size={16} />}
                 </span>
                 <span className="user-info-mobile">
                   <span className="user-name-mobile">{user.username}</span>
-                  {user.roles?.includes('ROLE_ADMIN') && <span className="user-badge-mobile">👑 Admin</span>}
-                  {!user.roles?.includes('ROLE_ADMIN') && user.roles?.includes('ROLE_EDITOR') && <span className="user-badge-mobile">✏️ Éditeur</span>}
-                  {!user.roles?.includes('ROLE_ADMIN') && user.roles?.includes('ROLE_PROVIDER') && <span className="user-badge-mobile">📊 Provider</span>}
+                  {user.roles?.includes('ROLE_ADMIN') && <span className="user-badge-mobile"><Icon name="star" size={14} /> Admin</span>}
+                  {!user.roles?.includes('ROLE_ADMIN') && user.roles?.includes('ROLE_EDITOR') && <span className="user-badge-mobile"><Icon name="edit" size={14} /> Éditeur</span>}
+                  {!user.roles?.includes('ROLE_ADMIN') && user.roles?.includes('ROLE_PROVIDER') && <span className="user-badge-mobile"><Icon name="database" size={14} /> Provider</span>}
                 </span>
               </button>
               <button 
                 className="nav-logout-btn"
                 onClick={handleLogoutClick}
               >
-                🚪 Se déconnecter
+                <Icon name="logOut" size={16} /> Se déconnecter
               </button>
             </>
           ) : (
             <>
               <button 
                 className="nav-login-btn"
-                onClick={() => handleNavClick('login')}
+                onClick={onLoginClick}
               >
-                🔑 Se connecter
+                <Icon name="key" size={16} /> Se connecter
               </button>
               <button 
                 className="nav-register-btn"
-                onClick={() => handleNavClick('register')}
+                onClick={onRegisterClick}
               >
-                ✨ S'inscrire
+                <Icon name="sparkles" size={16} /> S'inscrire
               </button>
             </>
           )}

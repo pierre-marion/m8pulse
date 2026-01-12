@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './TeamPage.css';
 import MatchDetailPage from './MatchDetailPage';
+import Icon from './Icon';
 
 function TeamPage({ currentGame, onGameChange }) {
   const [showAllMatches, setShowAllMatches] = useState(false);
@@ -244,9 +245,9 @@ function TeamPage({ currentGame, onGameChange }) {
         { date: '20/11', title: 'Qualification pour les playoffs', category: 'Tournoi', description: 'Gentle Mates se qualifie pour les playoffs du FNCS EU.' }
       ],
       achievements: [
-        { title: 'FNCS Champion', date: '2024', icon: '🏆' },
-        { title: 'Top 5 EMEA', date: '2024', icon: '🥈' },
-        { title: '48 Victory Royales', date: 'Season 6', icon: '👑' }
+        { title: 'FNCS Champion', date: '2024', icon: 'trophy' },
+        { title: 'Top 5 EMEA', date: '2024', icon: 'star' },
+        { title: '48 Victory Royales', date: 'Season 6', icon: 'star' }
       ],
       performanceData: [
         { month: 'Août', winRate: 62 },
@@ -295,28 +296,28 @@ function TeamPage({ currentGame, onGameChange }) {
 
   const achievementsData = {
     'Valorant': [
-      { title: 'VCT EMEA Finalist', date: '2024', icon: '🏆' },
-      { title: 'Top 8 EMEA', date: '2024', icon: '⭐' },
-      { title: 'Longest Win Streak: 12', date: 'Oct 2024', icon: '🔥' },
-      { title: 'Player of Month: Starxo', date: 'Nov 2024', icon: '👑' }
+      { title: 'VCT EMEA Finalist', date: '2024', icon: 'trophy' },
+      { title: 'Top 8 EMEA', date: '2024', icon: 'star' },
+      { title: 'Longest Win Streak: 12', date: 'Oct 2024', icon: 'fire' },
+      { title: 'Player of Month: Starxo', date: 'Nov 2024', icon: 'star' }
     ],
     'Counter Strike': [
-      { title: 'ESL Pro League Top 16', date: '2024', icon: '🏆' },
-      { title: 'JaCkz 1000 Kills', date: '2024', icon: '⭐' },
-      { title: 'Best Comeback: 10-14', date: 'Nov 2024', icon: '�' },
-      { title: 'Highest Team Rating: 1.18', date: '2024', icon: '�' }
+      { title: 'ESL Pro League Top 16', date: '2024', icon: 'trophy' },
+      { title: 'JaCkz 1000 Kills', date: '2024', icon: 'star' },
+      { title: 'Best Comeback: 10-14', date: 'Nov 2024', icon: 'trendingUp' },
+      { title: 'Highest Team Rating: 1.18', date: '2024', icon: 'barChart' }
     ],
     'Call of Duty': [
-      { title: 'CDL Major Top 10', date: '2024', icon: '🏆' },
-      { title: 'HyDra Top 3 SMG', date: '2024', icon: '⭐' },
-      { title: 'Record Hill Time: 142s', date: 'Nov 2024', icon: '🔥' },
-      { title: 'S&D Win Rate: 67%', date: '2024', icon: '�' }
+      { title: 'CDL Major Top 10', date: '2024', icon: 'trophy' },
+      { title: 'HyDra Top 3 SMG', date: '2024', icon: 'star' },
+      { title: 'Record Hill Time: 142s', date: 'Nov 2024', icon: 'fire' },
+      { title: 'S&D Win Rate: 67%', date: '2024', icon: 'target' }
     ],
     'Fortnite': [
-      { title: 'FNCS Champion', date: '2024', icon: '🏆' },
-      { title: 'Top 6 EU Rankings', date: '2024', icon: '⭐' },
-      { title: '48 Victory Royales', date: 'Season 6', icon: '�' },
-      { title: 'Highest Earnings: $203K', date: '2024', icon: '�' }
+      { title: 'FNCS Champion', date: '2024', icon: 'trophy' },
+      { title: 'Top 6 EU Rankings', date: '2024', icon: 'star' },
+      { title: '48 Victory Royales', date: 'Season 6', icon: 'fire' },
+      { title: 'Highest Earnings: $203K', date: '2024', icon: 'trendingUp' }
     ]
   };
 
@@ -434,7 +435,7 @@ function TeamPage({ currentGame, onGameChange }) {
             </div>
           ) : data.players.length === 0 ? (
             <div className="no-data-message">
-              <div className="no-data-icon">📊</div>
+              <div className="no-data-icon"><Icon name="barChart" size={48} color="#7D3CFF" /></div>
               <h3>Aucune donnée disponible</h3>
               <p>Les stats des joueurs {currentGame} seront chargées depuis Google Sheets.</p>
             </div>
@@ -582,36 +583,17 @@ function TeamPage({ currentGame, onGameChange }) {
         <div className="achievements-section">
           <h2 className="section-title">Trophées & Achievements</h2>
           <div className="achievements-grid">
-            {achievements.map((achievement, index) => {
-              const getIconComponent = (iconType) => {
-                switch(iconType) {
-                  case 'trophy':
-                  case '🏆':
-                    return <div className="icon-trophy">▲</div>;
-                  case 'star':
-                  case '⭐':
-                    return <div className="icon-star">★</div>;
-                  case 'fire':
-                  case '🔥':
-                    return <div className="icon-fire">●</div>;
-                  case 'crown':
-                  case '👑':
-                    return <div className="icon-crown">◆</div>;
-                  default:
-                    return <div className="icon-default">■</div>;
-                }
-              };
-              
-              return (
+            {achievements.map((achievement, index) => (
                 <div key={index} className={`achievement-card ${currentGame.toLowerCase().replace(' ', '-')}-game`}>
-                  <div className="achievement-icon">{getIconComponent(achievement.icon)}</div>
+                  <div className="achievement-icon">
+                    <Icon name={achievement.icon} size={28} color="#7D3CFF" />
+                  </div>
                   <div className="achievement-info">
                     <h3 className="achievement-title">{achievement.title}</h3>
                     <p className="achievement-date">{achievement.date}</p>
                   </div>
                 </div>
-              );
-            })}
+              ))}
           </div>
         </div>
 
@@ -676,7 +658,7 @@ function TeamPage({ currentGame, onGameChange }) {
           ) : (
             <div className="locked-overlay">
               <div className="lock-content">
-                <div className="lock-icon">🔒</div>
+                <div className="lock-icon"><Icon name="lock" size={48} color="#7D3CFF" /></div>
                 <h3>Fonctionnalité Premium Elite</h3>
                 <p>Accédez à la timeline détaillée des éliminations par round pour analyser les moments clés.</p>
                 <button className="unlock-btn" onClick={() => window.location.href = '#abonnement'}>
@@ -737,7 +719,7 @@ function TeamPage({ currentGame, onGameChange }) {
           ) : (
             <div className="locked-overlay">
               <div className="lock-content">
-                <div className="lock-icon">🔒</div>
+                <div className="lock-icon"><Icon name="lock" size={48} color="#7D3CFF" /></div>
                 <h3>Fonctionnalité Premium Pro</h3>
                 <p>Visualisez les zones de contrôle et les positions les plus fréquentes avec des heatmaps interactives.</p>
                 <button className="unlock-btn" onClick={() => window.location.href = '#abonnement'}>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './ArticleDetail.css';
 import StatsChart from './StatsChart';
+import Icon from './Icon';
 
 function ArticleDetail({ articleId, onBack }) {
   const [article, setArticle] = useState(null);
@@ -186,14 +187,14 @@ function ArticleDetail({ articleId, onBack }) {
   };
 
   const getGameEmoji = (game) => {
-    const emojis = {
-      valorant: '🎯',
-      cs2: '🔫',
-      cod: '🎮',
-      fortnite: '🏗️',
-      general: '⭐'
+    const iconMap = {
+      valorant: 'target',
+      cs2: 'crosshair',
+      cod: 'shield',
+      fortnite: 'gamepad',
+      general: 'star'
     };
-    return emojis[game] || emojis.general;
+    return iconMap[game] || iconMap.general;
   };
 
   if (loading) {
@@ -214,17 +215,17 @@ function ArticleDetail({ articleId, onBack }) {
         <header className="article-header">
           <div className="article-badges">
             <span className={`badge badge-type badge-${article.type}`}>
-              {article.type === 'standard' && '📄 Standard'}
-              {article.type === 'data-story' && '📊 Data Story'}
-              {article.type === 'analysis' && '🔍 Analyse'}
-              {article.type === 'interview' && '🎤 Interview'}
-              {article.type === 'news' && '📰 News'}
+              {article.type === 'standard' && <><Icon name="fileText" size={14} /> Standard</>}
+              {article.type === 'data-story' && <><Icon name="barChart" size={14} /> Data Story</>}
+              {article.type === 'analysis' && <><Icon name="search" size={14} /> Analyse</>}
+              {article.type === 'interview' && <><Icon name="newspaper" size={14} /> Interview</>}
+              {article.type === 'news' && <><Icon name="newspaper" size={14} /> News</>}
             </span>
             <span 
               className="badge badge-game" 
               style={{ backgroundColor: getGameColor(article.game) }}
             >
-              {getGameEmoji(article.game)} {article.game?.toUpperCase() || 'GÉNÉRAL'}
+              <Icon name={getGameEmoji(article.game)} size={14} /> {article.game?.toUpperCase() || 'GÉNÉRAL'}
             </span>
           </div>
           

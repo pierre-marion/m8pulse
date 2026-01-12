@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import './NewsPage.css';
+import Icon from './Icon';
 
 // Cache simple pour les articles (évite de refetch à chaque rendu)
 let articlesCache = null;
@@ -99,14 +100,14 @@ function NewsPage({ onArticleClick, user, onNavigate }) {
   };
 
   const getGameEmoji = (game) => {
-    const emojis = {
-      'valorant': '🎯',
-      'cs2': '🔫',
-      'cod': '🎮',
-      'fortnite': '🏗️',
-      'general': '⭐'
+    const iconMap = {
+      'valorant': 'target',
+      'cs2': 'crosshair',
+      'cod': 'shield',
+      'fortnite': 'gamepad',
+      'general': 'star'
     };
-    return emojis[game] || '⭐';
+    return iconMap[game] || 'star';
   };
 
   if (loading) {
@@ -194,7 +195,7 @@ function NewsPage({ onArticleClick, user, onNavigate }) {
                 style={{ cursor: 'pointer' }}
               >
                 <div className="article-image-news">
-                  <div className="article-emoji-news">{getGameEmoji(article.game)}</div>
+                  <div className="article-emoji-news"><Icon name={getGameEmoji(article.game)} size={32} color="white" /></div>
                   <div className="article-overlay">
                     <span className="badge-category-small" style={{ backgroundColor: getCategoryColor(article.type) }}>
                       {getTypeLabel(article.type)}
@@ -210,20 +211,20 @@ function NewsPage({ onArticleClick, user, onNavigate }) {
                   <div className="article-meta-news">
                     <div className="meta-row">
                       <span className="meta-item-news">
-                        📅 {new Date(article.publishedAt || article.createdAt).toLocaleDateString('fr-FR')}
+                        <Icon name="calendar" size={14} /> {new Date(article.publishedAt || article.createdAt).toLocaleDateString('fr-FR')}
                       </span>
-                      <span className="meta-item-news">👁️ {article.viewCount || 0} vues</span>
+                      <span className="meta-item-news"><Icon name="user" size={14} /> {article.viewCount || 0} vues</span>
                     </div>
                     <div className="meta-row">
-                      <span className="meta-author">✍️ {article.author?.username || 'Anonyme'}</span>
+                      <span className="meta-author"><Icon name="edit" size={14} /> {article.author?.username || 'Anonyme'}</span>
                       {article.averageRating > 0 && (
-                        <span className="meta-rating">⭐ {article.averageRating.toFixed(1)}</span>
+                        <span className="meta-rating"><Icon name="star" size={14} /> {article.averageRating.toFixed(1)}</span>
                       )}
                     </div>
                   </div>
                   {article.commentCount > 0 && (
                     <div className="article-stats">
-                      💬 {article.commentCount} {article.commentCount > 1 ? 'commentaires' : 'commentaire'}
+                      <Icon name="messageCircle" size={14} /> {article.commentCount} {article.commentCount > 1 ? 'commentaires' : 'commentaire'}
                     </div>
                   )}
                   <button className="read-more-news-btn">Lire la suite →</button>

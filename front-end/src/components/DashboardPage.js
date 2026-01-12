@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './DashboardPageNew.css';
+import Icon from './Icon';
 
 function DashboardPage({ currentGame }) {
   const [stats, setStats] = useState({
@@ -42,7 +43,9 @@ function DashboardPage({ currentGame }) {
 
   const StatCard = ({ title, value, icon, color, trend }) => (
     <div className="stat-card" style={{ borderLeftColor: color }}>
-      <div className="stat-icon" style={{ background: color }}>{icon}</div>
+      <div className="stat-icon" style={{ background: color }}>
+        <Icon name={icon} size={24} color="white" />
+      </div>
       <div className="stat-details">
         <div className="stat-title">{title}</div>
         <div className="stat-value">{value}</div>
@@ -72,28 +75,28 @@ function DashboardPage({ currentGame }) {
         <StatCard 
           title="Utilisateurs Total"
           value={stats.totalUsers}
-          icon="👥"
+          icon="users"
           color="#667eea"
           trend="+12% ce mois"
         />
         <StatCard 
           title="Abonnés Actifs"
           value={stats.activeSubscribers}
-          icon="⭐"
+          icon="star"
           color="#f093fb"
           trend="+8% ce mois"
         />
         <StatCard 
           title="Articles Publiés"
           value={stats.totalArticles}
-          icon="📝"
+          icon="edit"
           color="#764ba2"
           trend="+5 cette semaine"
         />
         <StatCard 
           title="Vues Totales"
           value={stats.totalViews}
-          icon="👁️"
+          icon="trendingUp"
           color="#f5576c"
           trend="+28% ce mois"
         />
@@ -133,7 +136,7 @@ function DashboardPage({ currentGame }) {
           <div className="games-distribution">
             <div className="game-bar">
               <div className="game-label">
-                <span>🎯 Valorant</span>
+                <span><Icon name="target" size={16} /> Valorant</span>
                 <span>45%</span>
               </div>
               <div className="progress-bar">
@@ -142,7 +145,7 @@ function DashboardPage({ currentGame }) {
             </div>
             <div className="game-bar">
               <div className="game-label">
-                <span>🔫 CS2</span>
+                <span><Icon name="crosshair" size={16} /> CS2</span>
                 <span>30%</span>
               </div>
               <div className="progress-bar">
@@ -168,19 +171,19 @@ function DashboardPage({ currentGame }) {
         </div>
         <div className="quick-actions">
           <button className="action-card">
-            <span className="action-icon">👥</span>
+            <span className="action-icon"><Icon name="users" size={32} color="#7D3CFF" /></span>
             <span className="action-label">Gérer Utilisateurs</span>
           </button>
           <button className="action-card">
-            <span className="action-icon">✍️</span>
+            <span className="action-icon"><Icon name="edit" size={32} color="#7D3CFF" /></span>
             <span className="action-label">Nouvel Article</span>
           </button>
           <button className="action-card">
-            <span className="action-icon">📊</span>
+            <span className="action-icon"><Icon name="database" size={32} color="#7D3CFF" /></span>
             <span className="action-label">Dataset Manager</span>
           </button>
           <button className="action-card">
-            <span className="action-icon">🎨</span>
+            <span className="action-icon"><Icon name="palette" size={32} color="#7D3CFF" /></span>
             <span className="action-label">Theme Designer</span>
           </button>
         </div>

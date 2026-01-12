@@ -8,6 +8,12 @@
   transition: background 0.5s ease;
 }
 
+/* Page d'authentification sans padding */
+.App.auth-page {
+  padding: 0;
+  background: var(--background-main);
+}
+
 body.dark-mode .App {
   background: linear-gradient(135deg, #0a0a0f 0%, #15151f 50%, #1a1a2e 100%);
 }

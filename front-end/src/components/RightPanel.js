@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Calendar from './Calendar';
 import './RightPanel.css';
 import { useDarkMode } from '../contexts/DarkModeContext';
+import Icon from './Icon';
 
 function RightPanel({ currentGame, onDashboardClick, onDesignClick, onDatasetsClick, user, onLogout, onLoginClick, currentPage }) {
   const [selectedPlayer, setSelectedPlayer] = useState(0);
@@ -87,9 +88,9 @@ function RightPanel({ currentGame, onDashboardClick, onDesignClick, onDatasetsCl
           <div className="profile-text">
             <div className="username-modern">{user ? user.username : 'Invité'}</div>
             <div className="user-role">
-              {user && user.roles?.includes('ROLE_ADMIN') ? '⭐ Admin' : 
-               user && user.roles?.includes('ROLE_AUTHOR') ? '✍️ Auteur' : 
-               user ? '🎮 Joueur' : '👤 Visiteur'}
+              {user && user.roles?.includes('ROLE_ADMIN') ? <><Icon name="star" size={14} /> Admin</> : 
+               user && user.roles?.includes('ROLE_AUTHOR') ? <><Icon name="edit" size={14} /> Auteur</> : 
+               user ? <><Icon name="gamepad" size={14} /> Joueur</> : <><Icon name="user" size={14} /> Visiteur</>}
             </div>
           </div>
           <button className="theme-toggle-mini" onClick={toggleDarkMode} title={isDarkMode ? 'Mode clair' : 'Mode sombre'}>
@@ -102,31 +103,31 @@ function RightPanel({ currentGame, onDashboardClick, onDesignClick, onDatasetsCl
             <>
               {user.roles?.includes('ROLE_ADMIN') && (
                 <button className="action-mini admin" onClick={onDashboardClick}>
-                  📊 Dashboard
+                  <Icon name="barChart" size={16} /> Dashboard
                 </button>
               )}
               {(user.roles?.includes('ROLE_PROVIDER') || user.roles?.includes('ROLE_ADMIN')) && (
                 <button className="action-mini provider" onClick={onDatasetsClick}>
-                  📁 Datasets
+                  <Icon name="database" size={16} /> Datasets
                 </button>
               )}
               {user.roles?.includes('ROLE_EDITOR') && !user.roles?.includes('ROLE_ADMIN') && (
                 <button className="action-mini admin" onClick={onDashboardClick}>
-                  📝 Éditeur
+                  <Icon name="edit" size={16} /> Éditeur
                 </button>
               )}
               {user.roles?.includes('ROLE_DESIGNER') && !user.roles?.includes('ROLE_ADMIN') && !user.roles?.includes('ROLE_EDITOR') && (
                 <button className="action-mini admin" onClick={onDesignClick}>
-                  🎨 Design
+                  <Icon name="palette" size={16} /> Design
                 </button>
               )}
               <button className="action-mini logout" onClick={onLogout}>
-                🚪 Déconnexion
+                <Icon name="logOut" size={16} /> Déconnexion
               </button>
             </>
           ) : (
             <button className="action-mini login" onClick={onLoginClick}>
-              👤 Connexion
+              <Icon name="user" size={16} /> Connexion
             </button>
           )}
         </div>

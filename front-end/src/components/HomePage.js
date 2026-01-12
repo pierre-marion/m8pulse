@@ -1,11 +1,12 @@
 import React from 'react';
 import './HomePage.css';
+import Icon from './Icon';
 
 function HomePage() {
   const upcomingMatches = [
     {
       game: 'Valorant',
-      gameIcon: '🎯',
+      gameIcon: 'target',
       team1: 'Gentle Mates',
       team2: 'Fnatic',
       date: '5 Déc',
@@ -15,7 +16,7 @@ function HomePage() {
     },
     {
       game: 'Counter Strike',
-      gameIcon: '🔫',
+      gameIcon: 'crosshair',
       team1: 'Gentle Mates',
       team2: 'G2 Esports',
       date: '6 Déc',
@@ -25,7 +26,7 @@ function HomePage() {
     },
     {
       game: 'Call of Duty',
-      gameIcon: '💣',
+      gameIcon: 'shield',
       team1: 'Gentle Mates',
       team2: 'OpTic Gaming',
       date: '7 Déc',
@@ -80,7 +81,7 @@ function HomePage() {
       title: 'Minny rejoint Gentle Mates',
       excerpt: 'Le dueliste star signe pour 2 ans avec l\'équipe Valorant',
       date: '1 Déc 2025',
-      image: '🔥',
+      image: 'fire',
       color: '#FF4655'
     },
     {
@@ -88,7 +89,7 @@ function HomePage() {
       title: 'Gentle Mates remporte le VCT',
       excerpt: 'Performance exceptionnelle en finale contre Fnatic',
       date: '28 Nov 2025',
-      image: '🏆',
+      image: 'trophy',
       color: '#4CAF50'
     },
     {
@@ -96,7 +97,7 @@ function HomePage() {
       title: 'JaCkz : "On vise le top 10"',
       excerpt: 'L\'AWPer revient sur la saison et les objectifs 2025',
       date: '25 Nov 2025',
-      image: '🎤',
+      image: 'newspaper',
       color: '#7D3CFF'
     }
   ];
@@ -110,9 +111,9 @@ function HomePage() {
           <h1 className="hero-title">M8 PULSE</h1>
           <p className="hero-subtitle">Statistiques Esport en Temps Réel</p>
           <div className="hero-tags">
-            <span className="hero-tag">📊 Stats Avancées</span>
-            <span className="hero-tag">🏆 Compétitions Pro</span>
-            <span className="hero-tag">📈 Analyse Détaillée</span>
+            <span className="hero-tag"><Icon name="chart" size={16} /> Stats Avancées</span>
+            <span className="hero-tag"><Icon name="trophy" size={16} /> Compétitions Pro</span>
+            <span className="hero-tag"><Icon name="trendingUp" size={16} /> Analyse Détaillée</span>
           </div>
         </div>
       </div>
@@ -120,28 +121,28 @@ function HomePage() {
       {/* Quick Stats */}
       <div className="quick-stats">
         <div className="stat-card">
-          <div className="stat-icon">🎮</div>
+          <div className="stat-icon"><Icon name="gamepad" size={32} color="#7D3CFF" /></div>
           <div className="stat-info">
             <div className="stat-value">4</div>
             <div className="stat-label">Jeux</div>
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon">👥</div>
+          <div className="stat-icon"><Icon name="users" size={32} color="#7D3CFF" /></div>
           <div className="stat-info">
             <div className="stat-value">50+</div>
             <div className="stat-label">Joueurs</div>
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon">📊</div>
+          <div className="stat-icon"><Icon name="barChart" size={32} color="#7D3CFF" /></div>
           <div className="stat-info">
             <div className="stat-value">1000+</div>
             <div className="stat-label">Matchs</div>
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon">🏆</div>
+          <div className="stat-icon"><Icon name="trophy" size={32} color="#7D3CFF" /></div>
           <div className="stat-info">
             <div className="stat-value">15</div>
             <div className="stat-label">Trophées</div>
@@ -154,14 +155,14 @@ function HomePage() {
         {/* Prochains Matchs */}
         <div className="content-section upcoming-section">
           <div className="section-header">
-            <h2 className="section-title-home">🗓️ Prochains Matchs</h2>
+            <h2 className="section-title-home"><Icon name="calendar" size={24} /> Prochains Matchs</h2>
             <button className="view-all-btn">Voir tout →</button>
           </div>
           <div className="matches-list-home">
             {upcomingMatches.map((match, index) => (
               <div key={index} className="match-card-home upcoming" style={{ borderLeftColor: match.color }}>
                 <div className="match-game-badge" style={{ backgroundColor: match.color }}>
-                  {match.gameIcon} {match.game}
+                  <Icon name={match.gameIcon} size={16} /> {match.game}
                 </div>
                 <div className="match-teams-home">
                   <span className="team-name-home">{match.team1}</span>
@@ -169,8 +170,8 @@ function HomePage() {
                   <span className="team-name-home">{match.team2}</span>
                 </div>
                 <div className="match-info-home">
-                  <span className="match-date-home">📅 {match.date}</span>
-                  <span className="match-time">🕐 {match.time}</span>
+                  <span className="match-date-home"><Icon name="calendar" size={14} /> {match.date}</span>
+                  <span className="match-time"><Icon name="clock" size={14} /> {match.time}</span>
                   <span className="match-tournament-home">{match.tournament}</span>
                 </div>
               </div>
@@ -181,7 +182,7 @@ function HomePage() {
         {/* Résultats Récents */}
         <div className="content-section results-section">
           <div className="section-header">
-            <h2 className="section-title-home">📈 Résultats Récents</h2>
+            <h2 className="section-title-home"><Icon name="trendingUp" size={24} /> Résultats Récents</h2>
             <button className="view-all-btn">Voir tout →</button>
           </div>
           <div className="results-list-home">
@@ -207,14 +208,14 @@ function HomePage() {
         {/* Actualités */}
         <div className="content-section news-section-home">
           <div className="section-header">
-            <h2 className="section-title-home">📰 Dernières Actualités</h2>
+            <h2 className="section-title-home"><Icon name="newspaper" size={24} /> Dernières Actualités</h2>
             <button className="view-all-btn">Voir tout →</button>
           </div>
           <div className="news-grid-home">
             {latestNews.map((news, index) => (
               <div key={index} className="news-card-home">
                 <div className="news-image-placeholder" style={{ backgroundColor: news.color }}>
-                  <span className="news-emoji">{news.image}</span>
+                  <span className="news-emoji"><Icon name={news.image} size={40} color="white" /></span>
                 </div>
                 <div className="news-content-home">
                   <span className="news-category-home" style={{ color: news.color }}>
@@ -235,7 +236,7 @@ function HomePage() {
         {/* Featured Players */}
         <div className="content-section featured-section">
           <div className="section-header">
-            <h2 className="section-title-home">⭐ Joueurs en Forme</h2>
+            <h2 className="section-title-home"><Icon name="star" size={24} /> Joueurs en Forme</h2>
           </div>
           <div className="featured-players">
             <div className="featured-player">
