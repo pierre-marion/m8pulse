@@ -12,6 +12,13 @@
   --font-title: 'Poppins', sans-serif;
   --font-body: 'Roboto', sans-serif;
   --font-code: 'Fira Code', monospace;
+
+  /* Layout tokens (responsive) */
+  /* Right panel width adapts between small laptops and large desktops */
+  --right-panel-width: clamp(300px, 22vw, 360px);
+  /* Global spacing scale used by App container */
+  --app-padding: clamp(10px, 1.2vw, 20px);
+  --app-gap: clamp(10px, 1.2vw, 20px);
   
   /* Couleurs jeux */
   --valorant-color: #FF4655;

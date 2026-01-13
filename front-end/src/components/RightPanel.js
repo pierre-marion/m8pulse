@@ -1,12 +1,53 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Calendar from './Calendar';
 import './RightPanel.css';
 import { useDarkMode } from '../contexts/DarkModeContext';
 import Icon from './Icon';
 
+function useMediaQuery(query) {
+  const getMatches = () => {
+    if (typeof window === 'undefined' || typeof window.matchMedia === 'undefined') return false;
+    return window.matchMedia(query).matches;
+  };
+
+  const [matches, setMatches] = useState(getMatches);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia === 'undefined') return;
+
+    const mql = window.matchMedia(query);
+    const onChange = () => setMatches(mql.matches);
+
+    // Initial sync
+    onChange();
+
+    if (mql.addEventListener) mql.addEventListener('change', onChange);
+    else mql.addListener(onChange);
+
+    return () => {
+      if (mql.removeEventListener) mql.removeEventListener('change', onChange);
+      else mql.removeListener(onChange);
+    };
+  }, [query]);
+
+  return matches;
+}
+
 function RightPanel({ currentGame, onDashboardClick, onDesignClick, onDatasetsClick, user, onLogout, onLoginClick, currentPage }) {
   const [selectedPlayer, setSelectedPlayer] = useState(0);
   const { isDarkMode, toggleDarkMode } = useDarkMode();
+
+  // Laptop/MacBook widths: show fewer items to avoid crowding.
+  // - <= 1440px: show 2
+  // - otherwise: show 3
+  const isLaptopWidth = useMediaQuery('(max-width: 1440px)');
+  const topPlayersCount = isLaptopWidth ? 2 : 3;
+
+  useEffect(() => {
+    if (selectedPlayer >= topPlayersCount) {
+      setSelectedPlayer(0);
+    }
+  }, [selectedPlayer, topPlayersCount]);
 
   const topPlayers = [
     { 
@@ -141,7 +182,7 @@ function RightPanel({ currentGame, onDashboardClick, onDesignClick, onDatasetsCl
         </div>
         
         <div className="players-compact-list">
-          {topPlayers.slice(0, 3).map((player, index) => (
+          {topPlayers.slice(0, topPlayersCount).map((player, index) => (
             <div 
               key={player.id}
               className={`player-compact-card ${selectedPlayer === index ? 'active' : ''}`}
