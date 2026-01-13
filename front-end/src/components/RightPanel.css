@@ -757,9 +757,9 @@ body.dark-mode .stat-val {
     margin-bottom: 6px !important;
   }
   
-  /* Afficher seulement 2 joueurs */
+  /* Ne pas masquer des joueurs via CSS : la liste est gérée côté React */
   .player-card:nth-child(n+3) {
-    display: none !important;
+    display: flex !important;
   }
   
   .player-card {
@@ -883,8 +883,9 @@ body.dark-mode .stat-val {
   }
   
   /* Afficher seulement 2 joueurs */
+  /* Ne pas masquer des joueurs via CSS : la liste est gérée côté React */
   .player-card:nth-child(n+3) {
-    display: none !important;
+    display: flex !important;
   }
   
   .player-card {
@@ -1012,9 +1013,9 @@ body.dark-mode .stat-val {
     margin-bottom: 3px !important;
   }
   
-  /* Afficher seulement 1 joueur */
+  /* Ne pas masquer des joueurs via CSS : la liste est gérée côté React */
   .player-card:nth-child(n+2) {
-    display: none !important;
+    display: flex !important;
   }
   
   .player-card {
@@ -1041,133 +1042,7 @@ body.dark-mode .stat-val {
   }
 }
 
-/* Pour grands écrans (1600px+) : réduction agressive pour tout voir sans scroll */
-@media (min-width: 1600px) {
-  .right-panel {
-    width: 260px !important;
-    gap: 6px !important;
-    font-size: 0.85em !important;
-    overflow-y: hidden !important;
-    justify-content: space-between !important;
-  }
-  
-  .panel-section {
-    padding: 7px !important;
-    border-radius: 9px !important;
-  }
-  
-  .profile-modern,
-  .top-players,
-  .planning-modern {
-    padding: 7px !important;
-  }
-  
-  .profile-compact {
-    gap: 6px !important;
-    margin-bottom: 4px !important;
-  }
-  
-  .avatar-modern {
-    width: 38px !important;
-    height: 38px !important;
-    font-size: 16px !important;
-  }
-  
-  .status-dot {
-    width: 9px !important;
-    height: 9px !important;
-  }
-  
-  .username-modern {
-    font-size: 14px !important;
-  }
-  
-  .role-badge {
-    font-size: 8px !important;
-    padding: 2px 7px !important;
-  }
-  
-  .action-buttons {
-    gap: 3px !important;
-  }
-  
-  .section-header {
-    margin-bottom: 4px !important;
-  }
-  
-  .section-title {
-    font-size: 14px !important;
-  }
-  
-  .section-badge {
-    padding: 2px 7px !important;
-    font-size: 7px !important;
-  }
-  
-  .section-badge-small {
-    padding: 2px 6px !important;
-    font-size: 7px !important;
-  }
-  
-  .players-grid {
-    gap: 4px !important;
-    margin-bottom: 5px !important;
-    overflow-x: hidden !important;
-    width: 100% !important;
-  }
-  
-  .player-card {
-    padding: 7px 4px !important;
-    gap: 4px !important;
-    overflow: hidden !important;
-    border-radius: 10px !important;
-    flex: 1 1 auto !important;
-    text-align: center !important;
-  }
-  
-  .player-hex {
-    width: 32px !important;
-    height: 32px !important;
-    font-size: 14px !important;
-  }
-  
-  .player-mini-name {
-    font-size: 10px !important;
-  }
-  
-  .player-mini-city {
-    font-size: 8px !important;
-  }
-  
-  .player-details {
-    gap: 4px !important;
-  }
-  
-  .detail-item {
-    padding: 5px !important;
-  }
-  
-  .detail-value {
-    font-size: 15px !important;
-  }
-  
-  .detail-label {
-    font-size: 7px !important;
-  }
-  
-  .action-btn,
-  .action-mini {
-    padding: 6px 10px !important;
-    font-size: 9px !important;
-  }
-}
-
 /* Responsive breakpoints */
-@media (min-width: 1600px) {
-  .right-panel {
-    width: 300px; /* Un peu plus large sur grands écrans */
-  }
-}
 
 @media (max-width: 1400px) {
   .right-panel {
