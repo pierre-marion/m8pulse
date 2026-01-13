@@ -221,7 +221,7 @@ body.dark-mode .calendar-day-name {
   }
   
   .calendar-month {
-    font-size: 10px !important;
+    font-size: 11px !important;
   }
   
   .calendar-days-header {
@@ -230,7 +230,7 @@ body.dark-mode .calendar-day-name {
   }
   
   .calendar-day-name {
-    font-size: 6px !important;
+    font-size: 7px !important;
   }
   
   .calendar-grid {
@@ -238,12 +238,19 @@ body.dark-mode .calendar-day-name {
   }
   
   .calendar-day {
-    font-size: 9px !important;
+    font-size: 10px !important;
     border-width: 1px !important;
   }
   
-  .calendar-day.has-match {
+  /* Keep selector in sync with current class name */
+  .calendar-day.has-matches {
     border-width: 2px !important;
+  }
+
+  /* Dots were feeling too big when text shrinks due to OS scaling */
+  .match-dot {
+    width: 5px;
+    height: 5px;
   }
 }
 
@@ -259,7 +266,7 @@ body.dark-mode .calendar-day-name {
   }
   
   .calendar-month {
-    font-size: 9px !important;
+    font-size: 10px !important;
   }
   
   .calendar-days-header {
@@ -276,12 +283,17 @@ body.dark-mode .calendar-day-name {
   }
   
   .calendar-day {
-    font-size: 8px !important;
+    font-size: 9px !important;
     border-width: 1px !important;
   }
   
-  .calendar-day.has-match {
+  .calendar-day.has-matches {
     border-width: 1.5px !important;
+  }
+
+  .match-dot {
+    width: 4px;
+    height: 4px;
   }
 }
 
@@ -298,7 +310,7 @@ body.dark-mode .calendar-day-name {
   }
   
   .calendar-month {
-    font-size: 8px !important;
+    font-size: 9px !important;
   }
   
   .calendar-days-header {
@@ -315,11 +327,16 @@ body.dark-mode .calendar-day-name {
   }
   
   .calendar-day {
-    font-size: 7px !important;
+    font-size: 8px !important;
     border-width: 0.5px !important;
   }
   
-  .calendar-day.has-match {
+  .calendar-day.has-matches {
     border-width: 1px !important;
+  }
+
+  .match-dot {
+    width: 3px;
+    height: 3px;
   }
 }
