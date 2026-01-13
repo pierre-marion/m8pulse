@@ -38,9 +38,9 @@ function RightPanel({ currentGame, onDashboardClick, onDesignClick, onDatasetsCl
   const { isDarkMode, toggleDarkMode } = useDarkMode();
 
   // Laptop/MacBook widths: show fewer items to avoid crowding.
-  // - <= 1440px: show 2
+  // - <= 1600px: show 2 (covers Windows 125% scaling where 1920px often becomes ~1536px CSS)
   // - otherwise: show 3
-  const isLaptopWidth = useMediaQuery('(max-width: 1440px)');
+  const isLaptopWidth = useMediaQuery('(max-width: 1600px)');
   const topPlayersCount = isLaptopWidth ? 2 : 3;
 
   useEffect(() => {
