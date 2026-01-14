@@ -102,8 +102,8 @@
 
 /* Responsive */
 
-/* Écran 15" avec échelle 125% (1920px -> ~1536-1600px) */
-@media (max-width: 1600px) and (min-width: 1441px) {
+/* Tous les laptops <= 1920px */
+@media (max-width: 1920px) and (min-width: 1025px) {
   .match-card {
     padding: 14px;
   }
@@ -133,32 +133,6 @@
   
   .match-card-body {
     margin-bottom: 10px;
-  }
-  
-  .match-card-footer {
-    font-size: 11px;
-  }
-}
-
-/* Écrans MacBook (1440px et moins) */
-@media (max-width: 1440px) and (min-width: 1025px) {
-  .match-card {
-    padding: 14px;
-  }
-  
-  .match-status {
-    font-size: 10px;
-    padding: 4px 10px;
-  }
-  
-  .team-name {
-    font-size: 15px;
-    font-weight: 700;
-  }
-  
-  .match-score {
-    font-size: 22px;
-    padding: 0 12px;
   }
   
   .match-card-footer {

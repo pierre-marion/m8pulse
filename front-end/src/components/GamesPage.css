@@ -26,10 +26,6 @@
     transition: all 0.3s ease;
 }
 
-.game-row:hover {
-    /* Pas de scale pour éviter overflow */
-}
-
 .game-overlay {
     position: absolute;
     top: 0;
@@ -94,6 +90,55 @@
 }
 
 /* Responsive */
+
+/* Écran 15" avec échelle 125% (1920px -> ~1536-1600px) */
+@media (max-width: 1600px) and (min-width: 1441px) {
+    .game-row-content {
+        padding: 0 30px;
+        gap: 30px;
+    }
+
+    .game-name {
+        font-size: 42px;
+    }
+
+    .game-stats {
+        gap: 35px;
+    }
+
+    .stat-number {
+        font-size: 36px;
+    }
+
+    .stat-label {
+        font-size: 10px;
+    }
+}
+
+/* Écrans MacBook (1440px et moins) */
+@media (max-width: 1440px) and (min-width: 1201px) {
+    .game-row-content {
+        padding: 0 25px;
+        gap: 25px;
+    }
+
+    .game-name {
+        font-size: 38px;
+    }
+
+    .game-stats {
+        gap: 30px;
+    }
+
+    .stat-number {
+        font-size: 32px;
+    }
+
+    .stat-label {
+        font-size: 10px;
+    }
+}
+
 @media (max-width: 1200px) {
     .game-row-content {
         padding: 0 40px;

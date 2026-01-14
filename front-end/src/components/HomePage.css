@@ -19,8 +19,8 @@
   border-bottom: 2px solid rgba(125, 60, 255, 0.2);
 }
 
-/* Écran 15" avec échelle 125% (1920px -> ~1536-1600px) */
-@media (max-width: 1600px) and (min-width: 1441px) {
+/* Tous les laptops <= 1920px */
+@media (max-width: 1920px) and (min-width: 1025px) {
   .home-hero {
     height: 320px;
     margin-bottom: 24px;
@@ -37,21 +37,6 @@
   .hero-tag {
     padding: 8px 16px;
     font-size: 12px;
-  }
-}
-
-/* Écrans MacBook (1440px et moins) */
-@media (max-width: 1440px) and (min-width: 1025px) {
-  .home-hero {
-    height: 300px;
-  }
-  
-  .hero-title {
-    font-size: 54px;
-  }
-  
-  .hero-subtitle {
-    font-size: 18px;
   }
 }
 
@@ -140,8 +125,8 @@
   margin-bottom: 40px;
 }
 
-/* Écran 15" avec échelle 125% (1920px -> ~1536-1600px) */
-@media (max-width: 1600px) and (min-width: 1441px) {
+/* Tous les laptops <= 1920px */
+@media (max-width: 1920px) and (min-width: 1025px) {
   .quick-stats {
     gap: 15px;
     padding: 0 20px;
@@ -163,22 +148,6 @@
   
   .stat-label {
     font-size: 12px;
-  }
-}
-
-/* Écrans MacBook (1440px et moins) */
-@media (max-width: 1440px) and (min-width: 1025px) {
-  .quick-stats {
-    gap: 12px;
-    padding: 0 18px;
-  }
-  
-  .stat-card {
-    padding: 16px;
-  }
-  
-  .stat-value {
-    font-size: 28px;
   }
 }
 
@@ -273,8 +242,8 @@
   transition: all 0.3s ease;
 }
 
-/* Écran 15" avec échelle 125% (1920px -> ~1536-1600px) */
-@media (max-width: 1600px) and (min-width: 1441px) {
+/* Tous les laptops <= 1920px */
+@media (max-width: 1920px) and (min-width: 1025px) {
   .content-section {
     padding: 16px;
     border-radius: 16px;
@@ -291,22 +260,6 @@
   .home-content {
     padding: 0 16px 16px;
     gap: 16px;
-  }
-}
-
-/* Écrans MacBook (1440px et moins) */
-@media (max-width: 1440px) and (min-width: 1025px) {
-  .content-section {
-    padding: 14px;
-  }
-  
-  .section-title-home {
-    font-size: 20px;
-  }
-  
-  .home-content {
-    padding: 0 14px 14px;
-    gap: 14px;
   }
 }
 
@@ -478,8 +431,8 @@
   gap: 15px;
 }
 
-/* Écran 15" avec échelle 125% (1920px -> ~1536-1600px) - 1 COLONNE */
-@media (max-width: 1600px) and (min-width: 1441px) {
+/* Tous les laptops <= 1920px - 1 COLONNE */
+@media (max-width: 1920px) and (min-width: 1025px) {
   .results-list-home {
     grid-template-columns: 1fr;
     gap: 10px;
@@ -524,42 +477,6 @@
   
   .match-tournament-home {
     font-size: 11px;
-  }
-}
-
-/* Écrans MacBook (1440px et moins) - 1 COLONNE */
-@media (max-width: 1440px) and (min-width: 1025px) {
-  .results-list-home {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-  
-  .result-card-home,
-  .match-card-home {
-    padding: 14px;
-    min-height: auto;
-  }
-  
-  .match-game-badge {
-    padding: 5px 10px;
-    font-size: 10px;
-  }
-  
-  .team-name-home {
-    font-size: 15px;
-    font-weight: 700;
-  }
-  
-  .match-score-home {
-    font-size: 24px;
-  }
-  
-  .match-info-home {
-    font-size: 11px;
-  }
-  
-  .match-date-home {
-    font-size: 10px;
   }
 }
 
