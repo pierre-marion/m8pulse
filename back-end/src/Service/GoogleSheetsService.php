@@ -28,7 +28,11 @@ class GoogleSheetsService
      */
     public function getSheetData(string $spreadsheetId, string $range): array
     {
-        $response = $this->sheetsService->spreadsheets_values->get($spreadsheetId, $range);
+        // Demander les formules pour récupérer les valeurs comme "=IMAGE(...)" si présentes
+        $response = $this->sheetsService->spreadsheets_values->get($spreadsheetId, $range, [
+            'valueRenderOption' => 'FORMULA',
+            'dateTimeRenderOption' => 'FORMATTED_STRING'
+        ]);
         $values = $response->getValues();
 
         if (empty($values)) {
@@ -66,12 +70,61 @@ class GoogleSheetsService
     }
 
     /**
+     * Tente d'extraire une URL d'image depuis une ligne de données de feuille.
+     * Gère les formules =IMAGE("url"), les balises <img src="..."> et les URL directes.
+     */
+    private function getImageFromRow(array $row): ?string
+    {
+        // Prioriser champs communs
+        $candidates = [
+            'Image','image','Avatar','avatar','Photo','photo','Logo','logo','Image URL','ImageURL'
+        ];
+
+        foreach ($candidates as $key) {
+            if (isset($row[$key]) && $row[$key] !== null && $row[$key] !== '') {
+                $val = $row[$key];
+                $img = $this->extractImageUrlFromValue($val);
+                if ($img) return $img;
+            }
+        }
+
+        // Sinon parcourir toutes les colonnes pour trouver une valeur ressemblant à =IMAGE(...) ou une URL d'image
+        foreach ($row as $val) {
+            if ($val === null || $val === '') continue;
+            $img = $this->extractImageUrlFromValue($val);
+            if ($img) return $img;
+        }
+
+        return null;
+    }
+
+    private function extractImageUrlFromValue($val): ?string
+    {
+        $s = (string)$val;
+        $s = trim($s);
+        // =IMAGE("url")
+        if (preg_match('/=IMAGE\((?:\"|\')(.*?)(?:\"|\')\)/i', $s, $m)) {
+            return $m[1];
+        }
+        // <img ... src="...">
+        if (preg_match('/<img[^>]+src=["\']([^"\']+)["\']/i', $s, $m)) {
+            return $m[1];
+        }
+        // URL http(s)
+        if (preg_match('/https?:\/\/[^\s\"]+/i', $s, $m)) {
+            return $m[0];
+        }
+        return null;
+    }
+
+    /**
      * Récupère les données des joueurs COD depuis le PlayerRoster
      * Colonnes: ID, Name, Role Specific, Nationality, Join Date, Status, Games Played, Wins, Losses, Overall KD, HP KD, S&D KD, OL KD
      */
     public function getCodPlayerRoster(string $spreadsheetId, string $sheetName = 'PlayerRoster'): array
     {
-        $range = $sheetName . '!A:M';
+        // Étendre la plage jusqu'à la colonne N pour inclure Image en colonne N
+        $range = $sheetName . '!A:N';
         $sheetData = $this->getSheetData($spreadsheetId, $range);
         $players = $this->convertToAssociativeArray($sheetData);
 
@@ -98,6 +151,8 @@ class GoogleSheetsService
                 'hpKD' => isset($player['HP KD']) && $player['HP KD'] !== '' ? (float)str_replace(',', '.', $player['HP KD']) : null,
                 'sndKD' => isset($player['S&D KD']) && $player['S&D KD'] !== '' ? (float)str_replace(',', '.', $player['S&D KD']) : null,
                 'olKD' => isset($player['OL KD']) && $player['OL KD'] !== '' ? (float)str_replace(',', '.', $player['OL KD']) : null,
+                // Image (URL ou formule =IMAGE) en colonne N — extraite automatiquement
+                'image' => $this->getImageFromRow($player),
             ];
         }
 
@@ -110,7 +165,8 @@ class GoogleSheetsService
      */
     public function getValoPlayerRoster(string $spreadsheetId, string $sheetName = 'PlayerRoster'): array
     {
-        $range = $sheetName . '!A:L';
+        // Étendre la plage jusqu'à la colonne N pour inclure Rating (M) et Image (N)
+        $range = $sheetName . '!A:N';
         $sheetData = $this->getSheetData($spreadsheetId, $range);
         $players = $this->convertToAssociativeArray($sheetData);
 
@@ -135,7 +191,10 @@ class GoogleSheetsService
                 'losses' => isset($player['Losses']) && $player['Losses'] !== '' ? (int)$player['Losses'] : 0,
                 'kda' => isset($player['KDA']) && $player['KDA'] !== '' ? (float)str_replace(',', '.', $player['KDA']) : null,
                 'acs' => isset($player['ACS']) && $player['ACS'] !== '' ? (float)str_replace(',', '.', $player['ACS']) : null,
+                // Rating se trouve en colonne M (12) selon la feuille fournie
                 'rating' => isset($player['Rating']) && $player['Rating'] !== '' ? (float)str_replace(',', '.', $player['Rating']) : null,
+                // Image (URL ou formule =IMAGE) en colonne N — extraite automatiquement
+                'image' => $this->getImageFromRow($player),
             ];
         }
 
@@ -148,7 +207,8 @@ class GoogleSheetsService
      */
     public function getCs2PlayerRoster(string $spreadsheetId, string $sheetName = 'PlayerRoster'): array
     {
-        $range = $sheetName . '!A:L';
+        // Étendre la plage jusqu'à la colonne M pour inclure Image en colonne M
+        $range = $sheetName . '!A:M';
         $sheetData = $this->getSheetData($spreadsheetId, $range);
         $players = $this->convertToAssociativeArray($sheetData);
 
@@ -174,6 +234,8 @@ class GoogleSheetsService
                 'rating' => isset($player['Rating']) && $player['Rating'] !== '' ? (float)str_replace(',', '.', $player['Rating']) : null,
                 'tRating' => isset($player['T Rating']) && $player['T Rating'] !== '' ? (float)str_replace(',', '.', $player['T Rating']) : null,
                 'ctRating' => isset($player['CT Rating']) && $player['CT Rating'] !== '' ? (float)str_replace(',', '.', $player['CT Rating']) : null,
+                // Image (URL ou formule =IMAGE) en colonne M — extraite automatiquement
+                'image' => $this->getImageFromRow($player),
             ];
         }
 
