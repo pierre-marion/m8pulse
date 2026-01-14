@@ -12,6 +12,52 @@
   padding: 0 5px;
 }
 
+/* Écran 15" avec échelle 125% - ULTRA COMPACT */
+@media (max-width: 1600px) and (min-width: 1441px) {
+  .calendar-header {
+    margin-bottom: 5px !important;
+    padding: 0 2px !important;
+  }
+  
+  .calendar-nav-btn {
+    width: 20px !important;
+    height: 20px !important;
+    font-size: 12px !important;
+  }
+  
+  .calendar-month {
+    font-size: 10px !important;
+  }
+  
+  .calendar-days-header {
+    gap: 2px !important;
+    margin-bottom: 3px !important;
+  }
+  
+  .calendar-day-name {
+    font-size: 6px !important;
+  }
+  
+  .calendar-grid {
+    gap: 2px !important;
+  }
+  
+  .calendar-day {
+    font-size: 9px !important;
+    border-width: 1px !important;
+    gap: 1px !important;
+  }
+  
+  .match-dot {
+    width: 3px !important;
+    height: 3px !important;
+  }
+  
+  .match-dots {
+    gap: 1px !important;
+  }
+}
+
 .calendar-nav-btn {
   background: var(--primary-color);
   color: #fff;

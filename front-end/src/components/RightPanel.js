@@ -72,39 +72,9 @@ function RightPanel({ currentGame, onDashboardClick, onDesignClick, onDatasetsCl
       wr: '33.3%',
       gamesPlayed: 3
     },
-    { 
-      id: 3,
-      name: 'Envoy', 
-      fullName: 'Dylan Hannon',
-      game: 'Call of Duty',
-      role: 'SMG',
-      city: 'Washington DC',
-      rating: '0.9',
-      wr: '77.8%',
-      gamesPlayed: 9
-    },
-    { 
-      id: 4,
-      name: 'GLYPFI', 
-      fullName: 'Conner Garcia',
-      game: 'Valorant',
-      role: 'Co-IGL',
-      city: 'Manille',
-      rating: '0.96',
-      wr: '33.3%',
-      gamesPlayed: 3
-    },
-    { 
-      id: 5,
-      name: 'marteen', 
-      fullName: 'Martin Pištek',
-      game: 'Valorant',
-      role: 'Flex',
-      city: 'Varsovie',
-      rating: '1.2',
-      wr: '33.3%',
-      gamesPlayed: 3
-    }
+  
+ 
+
   ];
 
   const getGameColor = (game) => {

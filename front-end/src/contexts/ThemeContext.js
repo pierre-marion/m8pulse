@@ -12,9 +12,9 @@ export const useTheme = () => {
 
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(() => {
-    // Load theme from localStorage or default to 'dark'
+    // Load theme from localStorage or default to 'light'
     const savedTheme = localStorage.getItem('theme');
-    return savedTheme || 'dark';
+    return savedTheme || 'light';
   });
 
   useEffect(() => {
@@ -22,6 +22,15 @@ export const ThemeProvider = ({ children }) => {
     document.documentElement.setAttribute('data-theme', theme);
     // Save theme to localStorage
     localStorage.setItem('theme', theme);
+    
+    // Synchronize with body.dark-mode class
+    if (theme === 'dark') {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+    
+    console.log('🎨 Theme:', theme);
   }, [theme]);
 
   const toggleTheme = () => {

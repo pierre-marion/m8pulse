@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import './ArticleDetail.css';
 import StatsChart from './StatsChart';
 import Icon from './Icon';
+import ArticleBlockRenderer from './ArticleBlockRenderer';
 
 function ArticleDetail({ articleId, onBack }) {
   const [article, setArticle] = useState(null);
@@ -11,6 +12,7 @@ function ArticleDetail({ articleId, onBack }) {
   const [newComment, setNewComment] = useState('');
   const [submittingComment, setSubmittingComment] = useState(false);
   const [hoveredStar, setHoveredStar] = useState(0);
+  const [templateVersion, setTemplateVersion] = useState(0);
 
   // Mémoriser les fonctions de fetch pour éviter les re-renders
   const fetchArticle = useCallback(async () => {
@@ -69,6 +71,16 @@ function ArticleDetail({ articleId, onBack }) {
       fetchUserRating();
     }
   }, [articleId, fetchArticle, fetchComments, fetchUserRating]);
+
+  // Écouter les changements de template depuis le DesignPanel
+  useEffect(() => {
+    const handleTemplateChange = () => {
+      setTemplateVersion(prev => prev + 1);
+    };
+
+    window.addEventListener('articleTemplateChanged', handleTemplateChange);
+    return () => window.removeEventListener('articleTemplateChanged', handleTemplateChange);
+  }, []);
 
   const handleRating = async (stars) => {
     const token = localStorage.getItem('token');
@@ -238,78 +250,12 @@ function ArticleDetail({ articleId, onBack }) {
 
         {/* Contenu de l'article */}
         <div className="article-main-content">
-          {article.blocks && article.blocks.length > 0 ? (
-            article.blocks.map((block, index) => {
-              // Helper to safely extract a string from various content shapes
-              const extractText = (c) => {
-                if (c == null) return '';
-                if (typeof c === 'string') return c;
-                if (Array.isArray(c)) return c.map(item => (typeof item === 'string' ? item : JSON.stringify(item))).join('\n\n');
-                if (typeof c === 'object') {
-                  if ('text' in c && typeof c.text === 'string') return c.text;
-                  if ('content' in c && typeof c.content === 'string') return c.content;
-                  if ('paragraphs' in c && Array.isArray(c.paragraphs)) return c.paragraphs.join('\n\n');
-                  // Fallback to a JSON string to avoid passing objects directly to JSX
-                  try {
-                    return JSON.stringify(c);
-                  } catch (e) {
-                    return String(c);
-                  }
-                }
-                return String(c);
-              };
-
-              if (block.type === 'title') {
-                const level = block.titleLevel || (block.content && block.content.level) || 'h2';
-                const TitleTag = level;
-                const text = extractText(block.content || block.text || '');
-                return (
-                  <TitleTag key={index} className={`article-block-title ${TitleTag}`}>
-                    {text}
-                  </TitleTag>
-                );
-              } else if (block.type === 'image') {
-                const content = block.content || {};
-                const src = typeof content === 'string' ? content : content.src || content.url || '';
-                const alt = (typeof content === 'object' && content.alt) ? content.alt : '';
-                if (!src) return null;
-                return (
-                  <div key={index} className="article-block-image">
-                    <img src={src} alt={alt} />
-                  </div>
-                );
-              } else if (block.type === 'text') {
-                const text = extractText(block.content || block.text || '');
-                // Split into paragraphs on blank lines
-                const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim() !== '');
-                return (
-                  <div key={index} className="article-block-text">
-                    {paragraphs.length > 0 ? paragraphs.map((p, i) => <p key={i}>{p}</p>) : <p>{text}</p>}
-                  </div>
-                );
-              } else if (block.type === 'stats') {
-                try {
-                  let statsData = block.content;
-                  if (typeof statsData === 'string') {
-                    statsData = JSON.parse(statsData);
-                  }
-                  return (
-                    <div key={index} className="article-block-stats">
-                      <StatsChart data={statsData} vizType={block.vizType || 'table'} />
-                    </div>
-                  );
-                } catch (e) {
-                  console.warn('Erreur en parsant un bloc stats:', e, block);
-                  return null;
-                }
-              }
-              return null;
-            })
-          ) : (
-            <div className="article-placeholder">
-              <p>Contenu de l'article en construction...</p>
-            </div>
-          )}
+          {/* Utiliser le ArticleBlockRenderer pour appliquer le template personnalisé du designer */}
+          <ArticleBlockRenderer 
+            blocks={article.blocks || []} 
+            article={article}
+            key={templateVersion}
+          />
         </div>
 
         {/* Infos article */}

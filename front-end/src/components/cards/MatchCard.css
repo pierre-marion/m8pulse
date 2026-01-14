@@ -70,19 +70,27 @@
   font-size: 16px;
   font-weight: 700;
   font-family: var(--font-title);
-  color: var(--text-primary);
+  color: #2c3e50;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   display: block;
 }
 
+body.dark-mode .team-name {
+  color: #ffffff;
+}
+
 .match-score {
   font-size: 24px;
   font-weight: 900;
   font-family: var(--font-code);
-  color: #000;
+  color: #2c3e50;
   padding: 0 15px;
+}
+
+body.dark-mode .match-score {
+  color: #ffffff;
 }
 
 .match-card-footer {

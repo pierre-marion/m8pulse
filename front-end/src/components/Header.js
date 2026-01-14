@@ -4,6 +4,7 @@ import Icon from './Icon';
 
 function Header({ currentPage, setCurrentPage, user, onLogout, onLoginClick, onRegisterClick }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [siteLogo, setSiteLogo] = useState(localStorage.getItem('siteLogo') || '/m8logo.png');
   const [navItems, setNavItems] = useState([
     { id: 'accueil', label: 'Acceuil' },
     { id: 'jeux', label: 'Jeux' },
@@ -26,13 +27,25 @@ function Header({ currentPage, setCurrentPage, user, onLogout, onLoginClick, onR
       }
     };
 
-    loadNavOrder();
+    const loadLogo = () => {
+      const savedLogo = localStorage.getItem('siteLogo');
+      if (savedLogo) {
+        setSiteLogo(savedLogo);
+      } else {
+        setSiteLogo('/m8logo.png');
+      }
+    };
 
-    // Écouter les changements d'ordre
+    loadNavOrder();
+    loadLogo();
+
+    // Écouter les changements d'ordre et de logo
     window.addEventListener('navOrderChanged', loadNavOrder);
+    window.addEventListener('logoChanged', loadLogo);
     
     return () => {
       window.removeEventListener('navOrderChanged', loadNavOrder);
+      window.removeEventListener('logoChanged', loadLogo);
     };
   }, []);
 
@@ -51,7 +64,7 @@ function Header({ currentPage, setCurrentPage, user, onLogout, onLoginClick, onR
   return (
     <header className="header">
       <div className="logo">
-        <img src="/m8logo.png" alt="M8 Logo" className="header-logo-image" />
+        <img src={siteLogo} alt="M8 Logo" className="header-logo-image" />
       </div>
       
       {/* Menu hamburger (mobile) */}

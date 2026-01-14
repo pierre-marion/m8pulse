@@ -12,14 +12,16 @@ export const useDarkMode = () => {
 
 export const DarkModeProvider = ({ children }) => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    // Récupérer la préférence depuis localStorage
+    // Récupérer la préférence depuis localStorage, défaut = light mode (false)
     const savedMode = localStorage.getItem('darkMode');
-    return savedMode === 'true';
+    return savedMode === 'true' ? true : false;
   });
 
   useEffect(() => {
     // Sauvegarder la préférence dans localStorage
     localStorage.setItem('darkMode', isDarkMode);
+    
+    console.log('🎨 DarkMode:', isDarkMode);
     
     // Appliquer la classe au body
     if (isDarkMode) {

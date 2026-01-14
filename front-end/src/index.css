@@ -59,7 +59,7 @@
   --secondary-color: #00F0FF;
   --background-main: #0f0f0f;
   --background-secondary: #1a1a2e;
-  --background-card: #16213e;
+  --background-card: #1a1a1a;
   --text-primary: #ffffff;
   --text-secondary: #a0a0a0;
   --text-tertiary: #707070;
@@ -87,6 +87,23 @@ body {
 body.dark-mode {
   background: linear-gradient(135deg, #0a0a0f 0%, #15151f 50%, #1a1a2e 100%);
   background-attachment: fixed;
+}
+
+/* Force white background in light mode - FIXE */
+body:not(.dark-mode) {
+  background: #f5f5f7 !important;
+}
+
+body:not(.dark-mode) .App {
+  background: #f5f5f7 !important;
+}
+
+body:not(.dark-mode) .main-section {
+  background: var(--background-card, #ffffff) !important;
+}
+
+body:not(.dark-mode) .app-body {
+  background: transparent !important;
 }
 
 [data-theme="dark"] body {
