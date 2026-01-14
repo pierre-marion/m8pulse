@@ -20,6 +20,8 @@ function TeamPage({ currentGame, onGameChange, user }) {
   // IDs des Google Sheets
   const VALORANT_SHEET_ID = '1d6b3E3KEy1TwPRJgjvbgcrDrUbawUkHl9ckpNESyzeg';
   const COD_SHEET_ID = '1semtK-pmRquxyF88CjpjwmNpwhYezCHaWRKFkX90WkY';
+  // ID pour Counter-Strike (à remplacer par votre sheet ou laissez vide pour utiliser .env côté backend)
+  const CS_SHEET_ID = '';
 
   // Charger les données depuis Google Sheets
   useEffect(() => {
@@ -32,17 +34,55 @@ function TeamPage({ currentGame, onGameChange, user }) {
     }
   }, [currentGame]);
 
+  // Si Counter Strike, récupérer depuis l'API CS2 (Google Sheets backend)
+  useEffect(() => {
+    if (currentGame === 'Counter Strike') {
+      fetchLivePlayersData('cs2', CS_SHEET_ID);
+      fetchLiveMatchesData('cs2', CS_SHEET_ID);
+    }
+  }, [currentGame]);
+
   const fetchLivePlayersData = async (game, sheetId) => {
     try {
       setLoadingPlayers(true);
-      const response = await fetch(
-        `http://localhost:8000/api/google-sheets/players/${game}?spreadsheetId=${sheetId}`
-      );
-      const data = await response.json();
-      
-      if (data.success) {
-        console.log(`[TeamPage] Joueurs ${game} chargés:`, data.players.length, data.players);
-        setLivePlayersData(data.players);
+      let data = null;
+
+      // Pour CS2/COD, privilégier les routes dédiées si elles existent
+      if (game === 'cs2') {
+        try {
+          const resp = await fetch(`http://localhost:8000/api/cs2/players`);
+          const json = await resp.json();
+          data = json;
+        } catch (e) {
+          console.warn('[TeamPage] échec /api/cs2/players, fallback vers google-sheets', e);
+        }
+      }
+
+      if (game === 'cod') {
+        try {
+          const resp = await fetch(`http://localhost:8000/api/cod/players`);
+          const json = await resp.json();
+          data = json;
+        } catch (e) {
+          console.warn('[TeamPage] échec /api/cod/players, fallback vers google-sheets', e);
+        }
+      }
+
+      // Si pas de données encore, utiliser l'endpoint google-sheets générique
+      if (!data) {
+        const response = await fetch(
+          `http://localhost:8000/api/google-sheets/players/${game}?spreadsheetId=${sheetId}`
+        );
+        data = await response.json();
+      }
+
+      // Normaliser les différents formats de réponse
+      // PlayerController: { success:true, data: [...] }
+      // GoogleSheetsController: { success:true, players: [...] }
+      const players = data?.data || data?.players || data?.playersList || [];
+      if (players && players.length >= 0) {
+        console.log(`[TeamPage] Joueurs ${game} chargés:`, players.length, players);
+        setLivePlayersData(players);
       }
     } catch (error) {
       console.error('Erreur lors du chargement des stats:', error);
@@ -54,13 +94,16 @@ function TeamPage({ currentGame, onGameChange, user }) {
   const fetchLiveMatchesData = async (game, sheetId) => {
     try {
       setLoadingMatches(true);
+      // Pas d'endpoint dédié pour les matches CS2, on utilise google-sheets/matches
       const response = await fetch(
         `http://localhost:8000/api/google-sheets/matches/${game}?spreadsheetId=${sheetId}`
       );
       const data = await response.json();
-      
-      if (data.success) {
-        setLiveMatchesData(data.matches);
+
+      // Normaliser: { success:true, matches: [...] } ou { matches: [...] } ou { data: [...] }
+      const matches = data?.matches || data?.data || [];
+      if (matches && matches.length >= 0) {
+        setLiveMatchesData(matches);
       }
     } catch (error) {
       console.error('Erreur lors du chargement des matchs:', error);
@@ -69,25 +112,69 @@ function TeamPage({ currentGame, onGameChange, user }) {
     }
   };
 
+  // Normalize image field coming from Google Sheets (handles =IMAGE("url"), <img src="...">, Drive links)
+  const normalizeImageUrl = (raw) => {
+    if (!raw) return null;
+    try {
+      let s = String(raw).trim();
+      // =IMAGE("url") formula
+      const imageFormulaMatch = s.match(/=IMAGE\((["'])(.*?)\1\)/i);
+      if (imageFormulaMatch) return imageFormulaMatch[2];
+      // HTML img tag
+      const imgTagMatch = s.match(/<img[^>]+src=["']([^"']+)["'][^>]*>/i);
+      if (imgTagMatch) return imgTagMatch[1];
+      // Google Drive share links -> direct download
+      const driveMatch = s.match(/drive\.google\.com\/(?:file\/d\/([a-zA-Z0-9_-]+)|open\?id=([a-zA-Z0-9_-]+))/i);
+      if (driveMatch) {
+        const id = driveMatch[1] || driveMatch[2];
+        return `https://drive.google.com/uc?export=download&id=${id}`;
+      }
+      // If already a URL or data URI
+      if (/^https?:\/\//i.test(s) || /^data:/i.test(s)) return s;
+      // otherwise return raw string (maybe already usable)
+      return s;
+    } catch (e) {
+      return null;
+    }
+  };
+
   const gameData = {
     'Valorant': {
       title: 'Valorant - VCT',
       players: livePlayersData ? (() => {
-        const filtered = livePlayersData.filter(player => player.id && player.id.trim() !== '');
-        console.log('[TeamPage] Valorant - Total joueurs:', livePlayersData.length);
-        console.log('[TeamPage] Valorant - Joueurs après filtre:', filtered.length);
-        console.log('[TeamPage] Valorant - IDs:', livePlayersData.map(p => p.id));
-        return filtered.map(player => ({
-          name: player.id, // ID = pseudo du joueur
-          role: player.roleSpecific,
-          kd: player.kda?.toFixed(2) || '0.00',
-          acs: player.acs?.toString() || '0',
-          rating: player.rating?.toFixed(2) || '0.00',
-          gamesPlayed: player.gamesPlayed,
-          wins: player.wins,
-          losses: player.losses,
-          nationality: player.nationality
-        }));
+        const filtered = livePlayersData.filter(player => (player.id || player.ID || player.Name) && String(player.id || player.ID || player.Name).trim() !== '');
+        // Normalize fields and include `number` as jersey number (numero)
+        const normalized = filtered.map(player => {
+          const rawRating = player.Rating || player.rating || player.note || player.Note || player.Rate;
+          const rawKDA = player.KDA || player.kda || player.kd;
+          return ({
+            // Prefer pseudo/id for display, fallback to Name
+            displayId: player.id || player.ID || player.IDentifier || null,
+            name: player.id || player.ID || player.Name || player.name || 'Unknown',
+            role: player['Role Specific'] || player.roleSpecific || player.role || player.position || '',
+            kd: rawKDA ? String(rawKDA) : '0.00',
+            acs: (player.ACS || player.acs || player.acs_raw) ? String(player.ACS || player.acs || player.acs_raw) : '0',
+            rating: rawRating ? String(rawRating) : '0.00',
+            gamesPlayed: player.gamesPlayed,
+            wins: player.wins,
+            losses: player.losses,
+            nationality: player.Nationality || player.nationality,
+            number: player.Number || player.number || player.numero || player['Number'] || player['Numéro'] || '',
+            image: player.image || player.avatar || player.photo,
+            raw: player
+          });
+        });
+
+        // Sort: IGL (role includes 'IGL' case-insensitive) first, then alphabetically by name
+        normalized.sort((a, b) => {
+          const aIsIGL = /igl/i.test(String(a.role || ''));
+          const bIsIGL = /igl/i.test(String(b.role || ''));
+          if (aIsIGL && !bIsIGL) return -1;
+          if (!aIsIGL && bIsIGL) return 1;
+          return String(a.name).localeCompare(String(b.name), 'fr', { sensitivity: 'base' });
+        });
+
+        return normalized;
       })() : [],
       region: '#8 EMEA',
       stats: {
@@ -110,10 +197,10 @@ function TeamPage({ currentGame, onGameChange, user }) {
       },
       matches: liveMatchesData && liveMatchesData.length > 0 ? liveMatchesData : [],
       ranking: [
-        { pos: 1, team: 'Fnatic', points: 450, wins: 28, losses: 12 },
-        { pos: 2, team: 'Team Vitality', points: 425, wins: 26, losses: 14 },
-        { pos: 3, team: 'Team Liquid', points: 410, wins: 25, losses: 15 },
-        { pos: 8, team: 'Gentle Mates', points: 340, wins: 21, losses: 19, highlight: true }
+        { pos: 1, team: 'Fnatic', points: 450, wins: 28, losses: 12, image: 'https://upload.wikimedia.org/wikipedia/fr/thumb/f/f4/Fnatic-Logo-2020.svg/1280px-Fnatic-Logo-2020.svg.png'},
+        { pos: 2, team: 'Team Vitality', points: 425, wins: 26, losses: 14, image: 'https://static.wikia.nocookie.net/lolesports_gamepedia_en/images/8/86/Team_Vitalitylogo_square.png/revision/latest?cb=20230224142251'},
+        { pos: 3, team: 'Team Liquid', points: 410, wins: 25, losses: 15, image: 'https://upload.wikimedia.org/wikipedia/en/f/f1/Team_Liquid_logo.svg' },
+        { pos: 8, team: 'Gentle Mates', points: 340, wins: 21, losses: 19, highlight: true, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4tfPsDzgeiyBAajGZWsxVR_RTjGltwEkRyw&s'}
       ],
       performanceData: [
         { month: 'Août', winRate: 58 },
@@ -125,7 +212,33 @@ function TeamPage({ currentGame, onGameChange, user }) {
     },
     'Counter Strike': {
       title: 'Counter Strike 2 - ESL',
-      players: [
+      players: livePlayersData && currentGame === 'Counter Strike' ? (() => {
+        const filtered = livePlayersData.filter(player => (player.id || player.ID || player.Name) && String(player.id || player.ID || player.Name).trim() !== '');
+        const normalized = filtered.map(player => ({
+          // Preferer l'ID comme pseudo d'affichage
+          displayId: player.id || player.ID || player.IDentifier || null,
+          name: player.id || player.ID || player.Name || player.name || 'Unknown',
+          role: player['Role Specific'] || player.roleSpecific || player.role || player.position || '',
+          kd: player.KD?.toFixed ? player.KD.toFixed(2) : (player.kd || player.KDA || '0.00'),
+          rating: player.Rating || player.rating || '0.00',
+          gamesPlayed: player.gamesPlayed,
+          wins: player.wins,
+          losses: player.losses,
+          nationality: player.Nationality || player.nationality,
+          number: player.Number || player.number || player.numero || '',
+          // Image renvoyée par le backend dans la colonne Image (M)
+          image: player.image || player.Image || player.avatar || player.photo,
+          raw: player
+        }));
+        normalized.sort((a,b) => {
+          const aIsIGL = /igl/i.test(String(a.role || ''));
+          const bIsIGL = /igl/i.test(String(b.role || ''));
+          if (aIsIGL && !bIsIGL) return -1;
+          if (!aIsIGL && bIsIGL) return 1;
+          return String(a.name).localeCompare(String(b.name), 'fr', { sensitivity: 'base' });
+        });
+        return normalized;
+      })() : [
         { name: 'JaCkz', role: 'AWPer', kd: '1.31', rating: '1.18' },
         { name: 'afro', role: 'Rifler', kd: '1.15', rating: '1.09' },
         { name: 'bodyy', role: 'Entry', kd: '1.08', rating: '1.04' },
@@ -145,7 +258,7 @@ function TeamPage({ currentGame, onGameChange, user }) {
         entrySuccess: '56%',
         headshot: '51%'
       },
-      matches: [
+      matches: liveMatchesData && currentGame === 'Counter Strike' && liveMatchesData.length > 0 ? liveMatchesData : [
         { date: '27/11', team: 'Gentle Mates', score: '16-14', opponent: 'G2 Esports', tournament: 'ESL Pro League', win: true },
         { date: '24/11', team: 'Gentle Mates', score: '10-16', opponent: 'FaZe Clan', tournament: 'ESL Pro League', win: false },
         { date: '21/11', team: 'Gentle Mates', score: '16-12', opponent: 'Vitality', tournament: 'ESL Pro League', win: true },
@@ -168,21 +281,36 @@ function TeamPage({ currentGame, onGameChange, user }) {
     },
     'Call of Duty': {
       title: 'Call of Duty - CDL',
-      players: livePlayersData && currentGame === 'Call of Duty' ? livePlayersData
-        .filter(player => player.id && player.id.trim() !== '') // Filtrer les joueurs sans ID
-        .map(player => ({
-          name: player.id, // ID = pseudo du joueur
-          role: player.roleSpecific,
-          kd: player.overallKD?.toFixed(2) || '0.00',
-          spm: 'N/A', // Pas de SPM dans les données Google Sheets
+      players: livePlayersData && currentGame === 'Call of Duty' ? (() => {
+        const filtered = livePlayersData.filter(player => (player.id || player.ID || player.Name) && String(player.id || player.ID || player.Name).trim() !== '');
+        const normalized = filtered.map(player => ({
+          // Afficher l'ID comme pseudo
+          displayId: player.id || player.ID || player.IDentifier || null,
+          name: player.id || player.ID || player.Name || player.name || 'Unknown',
+          role: player['Role Specific'] || player.roleSpecific || player.role || player.position || '',
+          kd: player.overallKD?.toFixed(2) || player.KDA || player.kda || player.kd ? (player.overallKD || player.KDA || player.kda || player.kd).toString() : '0.00',
+          spm: 'N/A',
           gamesPlayed: player.gamesPlayed,
           wins: player.wins,
           losses: player.losses,
-          nationality: player.nationality,
+          nationality: player.Nationality || player.nationality,
           hpKD: player.hpKD?.toFixed(2) || '0.00',
           sndKD: player.sndKD?.toFixed(2) || '0.00',
-          olKD: player.olKD?.toFixed(2) || '0.00'
-        })) : [],
+          olKD: player.olKD?.toFixed(2) || '0.00',
+          number: player.Number || player.number || player.numero || player['Number'] || player['Numéro'] || '',
+          // Image renvoyée par le backend dans la colonne Image (N)
+          image: player.image || player.Image || player.avatar || player.photo,
+          raw: player
+        }));
+        normalized.sort((a,b) => {
+          const aIsIGL = /igl/i.test(String(a.role || ''));
+          const bIsIGL = /igl/i.test(String(b.role || ''));
+          if (aIsIGL && !bIsIGL) return -1;
+          if (!aIsIGL && bIsIGL) return 1;
+          return String(a.name).localeCompare(String(b.name), 'fr', { sensitivity: 'base' });
+        });
+        return normalized;
+      })() : [],
       region: '#10 International',
       stats: {
         parties: livePlayersData && currentGame === 'Call of Duty' ? 
@@ -336,7 +464,36 @@ function TeamPage({ currentGame, onGameChange, user }) {
   const data = gameData[currentGame] || gameData['Valorant'];
   const news = newsData[currentGame] || newsData['Valorant'];
   const achievements = achievementsData[currentGame] || achievementsData['Valorant'];
-  const matchesToShow = showAllMatches ? (data.allMatches || data.matches) : data.matches.slice(0, 5);
+  const matchesToShow = showAllMatches ? (data.allMatches || data.matches) : data.matches.slice(0, 3);
+
+  // Déterminer le prochain match affiché — overrides par jeu si demandé
+  const _baseNext = (matchesToShow && matchesToShow[0]) ? { ...matchesToShow[0] } : {};
+  let nextMatchDisplay = { ..._baseNext };
+
+  if (currentGame === 'Valorant') {
+    nextMatchDisplay = {
+      ..._baseNext,
+      team: 'Gentle Mates',
+      opponent: 'FUT Esport',
+      date: '26/01',
+      tournament: 'VCT EMEA KICKOFF',
+      homeLogo: _baseNext.homeLogo || '/img/teams/gentle-mates.svg',
+      awayLogo: _baseNext.awayLogo || '/img/teams/placeholder.svg'
+    };
+  } else if (currentGame === 'Call of Duty') {
+    nextMatchDisplay = {
+      ..._baseNext,
+      team: 'Riyadh Falcons',
+      opponent: 'Gentle Mates',
+      date: '16/01',
+      tournament: _baseNext.tournament || '',
+      homeLogo: _baseNext.homeLogo || '/img/teams/placeholder.svg',
+      awayLogo: _baseNext.awayLogo || '/img/teams/gentle-mates.svg'
+    };
+  } else {
+    // For CS and other games, conserver le premier match existant
+    nextMatchDisplay = { ..._baseNext };
+  }
 
   // Si un match est sélectionné, afficher la page de détail
   if (selectedMatch) {
@@ -344,7 +501,7 @@ function TeamPage({ currentGame, onGameChange, user }) {
   }
 
   return (
-    <div className="team-page">
+    <div className={`team-page ${currentGame.toLowerCase().replace(/\s+/g, '-')}-theme`}>
       
       <div className="team-content-wrapper">
         <div className="game-selector">
@@ -445,68 +602,47 @@ function TeamPage({ currentGame, onGameChange, user }) {
               <p>Les stats des joueurs {currentGame} seront chargées depuis Google Sheets.</p>
             </div>
           ) : (
-            <div className="players-grid">
-              {data.players.map((player, index) => (
-                <div key={index} className={`player-card ${currentGame.toLowerCase().replace(' ', '-')}-game`}>
-                  <div className="player-avatar">{player.name.charAt(0)}</div>
-                  <div className="player-info">
-                    <h3 className="player-name">{player.name}</h3>
-                    <p className="player-role">{player.role}</p>
-                    {player.nationality && (
-                      <p className="player-nationality">{player.nationality}</p>
-                    )}
+            <div className="dark-grid-container">
+              {data.players.map((player, index) => {
+                // show pseudo/id first if present
+                const name = player.displayId || player.name || 'Unknown';
+                const jersey = player.number || '';
+                // show player's role instead of data.title
+                const team = player.role || data.title || '';
+                const rawImg = player.image || player.avatar || player.photo || (player.raw && (player.raw.image || player.raw.Image));
+                const imgUrl = normalizeImageUrl(rawImg) || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=111827&color=ffffff&size=250`;
+                const kda = player.kd || '0.00';
+                const acs = player.acs || '0';
+                const rating = player.rating || (player.raw && (player.raw.Rating || player.raw.rating || player.raw.note)) || '0.00';
+
+                const gameClass = currentGame ? currentGame.toLowerCase().replace(/\s+/g, '-') + '-game' : '';
+                return (
+                  <div key={index} className={`neon-card ${gameClass}`}>
+                    <div
+                      className="card-top"
+                      style={{ backgroundImage: `url(${imgUrl})` }}
+                    />
+                    <div className="card-content">
+                      <h3 className="neon-name">{name.toUpperCase()}{jersey ? `  #${jersey}` : ''}</h3>
+                      <p className="neon-team">{team}</p>
+                      <div className="data-grid">
+                        <div className="data-item">
+                          <span className="label">KDA</span>
+                          <span className="value text-green">{kda}</span>
+                        </div>
+                        <div className="data-item">
+                          <span className="label">ACS</span>
+                          <span className="value">{acs}</span>
+                        </div>
+                        <div className="data-item">
+                          <span className="label">Rating</span>
+                          <span className="value text-blue">{rating}</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="player-stats">
-                    {currentGame === 'Call of Duty' ? (
-                      <>
-                        <div className="player-stat">
-                          <span className="stat-key">K/D:</span>
-                          <span className="stat-value">{player.kd}</span>
-                        </div>
-                        {player.hpKD && (
-                          <div className="player-stat">
-                            <span className="stat-key">HP K/D:</span>
-                            <span className="stat-value">{player.hpKD}</span>
-                          </div>
-                        )}
-                        {player.sndKD && (
-                          <div className="player-stat">
-                            <span className="stat-key">SnD K/D:</span>
-                            <span className="stat-value">{player.sndKD}</span>
-                          </div>
-                        )}
-                        {player.wins !== undefined && (
-                          <div className="player-stat">
-                            <span className="stat-key">W/L:</span>
-                            <span className="stat-value">{player.wins}/{player.losses}</span>
-                          </div>
-                        )}
-                      </>
-                    ) : (
-                      <>
-                        <div className="player-stat">
-                          <span className="stat-key">KDA:</span>
-                          <span className="stat-value">{player.kd}</span>
-                        </div>
-                        <div className="player-stat">
-                          <span className="stat-key">ACS:</span>
-                          <span className="stat-value">{player.acs}</span>
-                        </div>
-                        <div className="player-stat">
-                          <span className="stat-key">Rating:</span>
-                          <span className="stat-value">{player.rating}</span>
-                        </div>
-                        {player.wins !== undefined && (
-                          <div className="player-stat">
-                            <span className="stat-key">W/L:</span>
-                            <span className="stat-value">{player.wins}/{player.losses}</span>
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
@@ -533,54 +669,111 @@ function TeamPage({ currentGame, onGameChange, user }) {
           </div>
         </div>
 
-        <div className="team-content-grid">
-          <div className="team-matches-section">
+        <div className="split-container">
+          <div className="ranking-section">
             <div className="section-header">
-              <h2 className="section-title">Historique des Matchs</h2>
-              <button 
-                className="toggle-matches-btn"
-                onClick={() => setShowAllMatches(!showAllMatches)}
-              >
-                {showAllMatches ? 'Voir moins' : 'Voir tout'}
-              </button>
+              <h2>Classement</h2>
+              <span className="season-tag">2025/2026</span>
             </div>
-            <div className="matches-list">
-              {matchesToShow.map((match, index) => (
-                <div 
-                  key={index} 
-                  className={`match-row ${match.win ? 'win' : 'loss'}`}
-                  onClick={() => setSelectedMatch(match)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <div className="match-date">{match.date}</div>
-                  <div className="match-team">{match.team}</div>
-                  <div className="match-separator-bar"></div>
-                  <div className="match-score">{match.score}</div>
-                  <div className="match-separator-bar"></div>
-                  <div className="match-opponent">{match.opponent}</div>
-                  <div className="match-tournament-badge">{match.tournament}</div>
-                </div>
-              ))}
+
+            <table className="pro-table">
+              <thead>
+                <tr>
+                  <th className="col-pos">#</th>
+                  <th className="col-team">Équipe</th>
+                  <th className="col-pts">Pts</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.ranking.map((team, i) => {
+                  // Marquer les top-3 visuellement, sans label "Masters"
+                  const rowClass = team.pos <= 3 ? 'row-ucl' : '';
+
+                  // Générer un slug à partir du nom d'équipe pour chercher un logo local
+                  const teamSlug = team.team ? String(team.team).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') : 'team';
+                  const localLogo = `/img/teams/${teamSlug}.svg`;
+                  const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(team.team || 'Team')}&background=eee&color=555`;
+
+                  return (
+                    <tr key={i} className={`${rowClass}`}>
+                      <td className="pos">{team.pos}</td>
+                      <td className="team">
+                        {/* Utilise un logo local si présent dans /public/img/teams, sinon fallback vers team.image/team.logo puis ui-avatars */}
+                        <img
+                          src={localLogo}
+                          onError={(e) => { e.target.onerror = null; e.target.src = team.image || team.logo || fallbackAvatar; }}
+                          className="mini-logo"
+                          alt={team.team}
+                        />
+                        {team.team}
+                      </td>
+                      <td className="pts">{team.points}</td>
+                    </tr>
+                  );
+                })}
+                
+              </tbody>
+            </table>
+
+            <div className="table-footer">
+              <a href="#">Classement complet →</a>
             </div>
           </div>
 
-          <div className="team-ranking-section">
-            <h2 className="section-title">Ranking</h2>
-            <div className="ranking-table">
-              <div className="ranking-header">
-                <div className="rank-col">Pos</div>
-                <div className="team-col">Équipe</div>
-                <div className="stats-col">W-L</div>
-                <div className="points-col">Points</div>
+          <div className="sidebar-section">
+            <div className="next-game-card">
+              <div className="next-label">À SUIVRE</div>
+              <div className="game-flex">
+                {nextMatchDisplay ? (
+                  <>
+                    <img src={nextMatchDisplay.homeLogo} className="lg-logo" alt="home" />
+                    <div className="game-info">
+                      <span className="date">{nextMatchDisplay.date || ''}</span>
+                      <span className="versus" style={{ whiteSpace: 'nowrap' }}>{nextMatchDisplay.team || ''} <span className="v">vs</span> {nextMatchDisplay.opponent || ''}</span>
+                      <span className="stadium">{nextMatchDisplay.stadium || nextMatchDisplay.tournament || ''}</span>
+                    </div>
+                    <img src={nextMatchDisplay.awayLogo} className="lg-logo" alt="away" />
+                  </>
+                ) : (
+                  <div style={{width: '100%'}}>Aucun match à venir</div>
+                )}
               </div>
-              {data.ranking.map((team, index) => (
-                <div key={index} className={`ranking-row ${team.highlight ? 'highlight' : ''}`}>
-                  <div className="rank-col">#{team.pos}</div>
-                  <div className="team-col">{team.team}</div>
-                  <div className="stats-col">{team.wins}-{team.losses}</div>
-                  <div className="points-col">{team.points}</div>
-                </div>
-              ))}
+            </div>
+
+            <div className="history-block">
+              <h3>Derniers résultats</h3>
+              {matchesToShow.slice(0,3).map((m, idx) => {
+                const resClass = m.win === true ? 'win' : (m.win === false ? 'loss' : 'draw');
+                const score = m.score || m.result || (m.homeScore != null ? `${m.homeScore} - ${m.awayScore}` : '—');
+                return (
+                  <div key={idx} className={`hist-row results-row`}>
+                    <div className="h-date">{m.date || ''}</div>
+                    <div className="h-match">
+                      <span className="h-team">{m.team || m.home || ''}</span>
+                      <span className="score-box" style={{minWidth:56, display:'inline-block', textAlign:'center'}}>{score}</span>
+                      <span className="h-team text-right">{m.opponent || m.away || ''}</span>
+                    </div>
+                    <div style={{marginLeft:8}}>
+                      <div
+                        className="result-pill"
+                        style={{
+                          backgroundColor: resClass === 'win' ? '#22c55e' : resClass === 'loss' ? '#ef4444' : '#6b7280',
+                          color: '#ffffff',
+                          borderRadius: 6,
+                          padding: '4px 6px',
+                          fontWeight: 700
+                        }}
+                      >
+                        {resClass === 'win' ? 'V' : resClass === 'draw' ? 'N' : 'D'}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+
+              <div className="hist-more">
+                <a href="#">Voir le calendrier complet</a>
+              </div>
             </div>
           </div>
         </div>
