@@ -478,87 +478,88 @@
   gap: 15px;
 }
 
-/* Écran 15" avec échelle 125% (1920px -> ~1536-1600px) */
+/* Écran 15" avec échelle 125% (1920px -> ~1536-1600px) - 1 COLONNE */
 @media (max-width: 1600px) and (min-width: 1441px) {
   .results-list-home {
-    gap: 8px;
+    grid-template-columns: 1fr;
+    gap: 10px;
   }
   
   .result-card-home,
   .match-card-home {
-    padding: 10px;
-    min-height: 130px;
+    padding: 14px;
+    min-height: auto;
   }
   
   .match-game-badge {
-    padding: 4px 8px;
-    font-size: 9px;
-    margin-bottom: 6px;
-  }
-  
-  .team-name-home {
-    font-size: 13px;
-    font-weight: 600;
-  }
-  
-  .match-score-home {
-    font-size: 20px;
-    margin: 2px 0;
-    letter-spacing: 1px;
-  }
-  
-  .match-teams-home {
-    gap: 6px;
+    padding: 5px 10px;
+    font-size: 10px;
     margin-bottom: 8px;
   }
   
+  .team-name-home {
+    font-size: 15px;
+    font-weight: 700;
+  }
+  
+  .match-score-home {
+    font-size: 26px;
+    margin: 4px 0;
+  }
+  
+  .match-teams-home {
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  
   .match-info-home {
-    font-size: 9px;
-    gap: 4px;
-    padding-top: 8px;
+    font-size: 11px;
+    gap: 6px;
+    padding-top: 10px;
   }
   
   .match-date-home {
-    font-size: 8px;
+    font-size: 10px;
   }
   
   .match-tournament-home {
-    font-size: 9px;
+    font-size: 11px;
   }
 }
 
-/* Écrans MacBook (1440px et moins) */
+/* Écrans MacBook (1440px et moins) - 1 COLONNE */
 @media (max-width: 1440px) and (min-width: 1025px) {
   .results-list-home {
-    gap: 8px;
+    grid-template-columns: 1fr;
+    gap: 10px;
   }
   
   .result-card-home,
   .match-card-home {
-    padding: 10px;
-    min-height: 120px;
+    padding: 14px;
+    min-height: auto;
   }
   
   .match-game-badge {
-    padding: 3px 7px;
-    font-size: 8px;
+    padding: 5px 10px;
+    font-size: 10px;
   }
   
   .team-name-home {
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 15px;
+    font-weight: 700;
   }
   
   .match-score-home {
-    font-size: 18px;
+    font-size: 24px;
   }
   
   .match-info-home {
-    font-size: 8px;
+    font-size: 11px;
   }
   
   .match-date-home {
-    font-size: 8px;
+    font-size: 10px;
   }
 }
 
