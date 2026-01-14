@@ -1,42 +1,124 @@
 nelmio_api_doc:
     documentation:
         info:
-            title: M8Pulse API Backend
-            description: 'API REST Symfony pour un CMS de Data Storytelling avec gestion fine des utilisateurs, articles, blocs, médias, datasets et visualisations'
-            version: 1.0.0
+            title: M8Pulse API - Data Storytelling Esport
+            description: |
+                # 🎮 Bienvenue sur l'API M8Pulse
+                
+                **M8Pulse** est une plateforme moderne de Data Storytelling dédiée à l'analyse esport.
+                
+                ## 🚀 Fonctionnalités principales
+                
+                - **📝 Articles** : Système de publication avec blocs modulaires
+                - **📊 Données** : Import CSV et Google Sheets pour vos analyses
+                - **🖼️ Médias** : Gestion complète des images et vidéos
+                - **🎨 Thèmes** : Personnalisation visuelle avancée
+                - **⭐ Interactions** : Système de notations et commentaires
+                - **👥 Utilisateurs** : Gestion des rôles et abonnements (Bronze, Silver, Gold)
+                - **🔒 Sécurité** : Authentification JWT robuste
+                
+                ## 🎯 Rôles et permissions
+                
+                | Rôle | Permissions |
+                |------|-------------|
+                | **VISITOR** | Lecture des articles publiés |
+                | **SUBSCRIBER** | + Commentaires et notations |
+                | **EDITOR** | + Création et modification d'articles |
+                | **ADMIN** | Accès complet à toutes les fonctionnalités |
+                
+                ## 🔐 Guide d'authentification
+                
+                1. **Créer un compte**
+                   ```
+                   POST /api/auth/register
+                   {
+                     "email": "votre@email.com",
+                     "username": "VotreNom",
+                     "password": "MotDePasse123!"
+                   }
+                   ```
+                
+                2. **Se connecter**
+                   ```
+                   POST /api/login
+                   {
+                     "username": "votre@email.com",
+                     "password": "MotDePasse123!"
+                   }
+                   ```
+                   → Vous recevez un **token JWT**
+                
+                3. **Utiliser le token**
+                   - Cliquez sur le bouton **"Authorize" 🔓** en haut à droite
+                   - Entrez : `Bearer <votre_token>`
+                   - Vous pouvez maintenant tester tous les endpoints protégés !
+                
+                ## 📚 Endpoints principaux
+                
+                - `/api/articles` - Gestion des articles
+                - `/api/media/upload` - Upload de fichiers
+                - `/api/datasets` - Import de données
+                - `/api/themes` - Personnalisation visuelle
+                - `/api/google-sheets/import` - Import Google Sheets
+                
+                ---
+                
+                💡 **Astuce** : Tous les endpoints marqués avec un cadenas 🔒 nécessitent une authentification.
+                
+            version: 2.0.0
+            contact:
+                name: Équipe M8Pulse
+                email: contact@m8pulse.com
+                url: https://github.com/stonefaII/m8pulse
         servers:
             - url: http://localhost:8000
-              description: Serveur de développement
+              description: 🔧 Développement local
         tags:
             - name: Authentification
-              description: 'Connexion, inscription et gestion des tokens'
+              description: Connexion, inscription et gestion des tokens JWT
             - name: Utilisateurs
-              description: 'Gestion des utilisateurs et profils'
+              description: Gestion des utilisateurs, profils et abonnements
             - name: Articles
-              description: 'CRUD des articles et publications'
+              description: CRUD des articles, publication et statistiques
             - name: Blocs
-              description: 'Gestion des blocs de contenu dans les articles'
-            - name: Media
-              description: 'Upload et gestion des fichiers média'
+              description: Gestion des blocs de contenu modulaires dans les articles
+            - name: Médias
+              description: Upload et gestion des fichiers média (images, vidéos)
             - name: Datasets
-              description: 'Upload et traitement des fichiers CSV'
+              description: Upload et traitement des fichiers CSV, import Google Sheets
             - name: Visualisations
-              description: 'Création et gestion des graphiques'
+              description: Création et gestion des graphiques et visualisations
             - name: Notations
-              description: 'Système de notation par étoiles'
+              description: Système de notation par étoiles (1-5) pour articles et blocs
+            - name: Commentaires
+              description: Système de commentaires sur les articles
             - name: Thèmes
-              description: 'Gestion des thèmes visuels'
-            - name: Page d''accueil
-              description: 'Configuration de la page d''accueil'
+              description: Gestion des thèmes visuels et personnalisation
+            - name: "Page d'accueil"
+              description: "Configuration de la page d'accueil et visualisations 3D"
+            - name: Administration
+              description: "Outils d'administration (stats, gestion utilisateurs)"
+            - name: Google Sheets
+              description: Intégration et import de données depuis Google Sheets
         components:
             securitySchemes:
-                Bearer:
+                bearerAuth:
                     type: http
                     scheme: bearer
                     bearerFormat: JWT
-                    description: 'JWT Token obtenu via POST /api/login'
+                    description: |
+                        🔑 **Token d'authentification JWT**
+                        
+                        Pour obtenir votre token :
+                        1. Créez un compte avec `POST /api/auth/register`
+                        2. Connectez-vous avec `POST /api/login`
+                        3. Récupérez le token dans la réponse
+                        4. Cliquez sur **"Authorize"** ci-dessus
+                        5. Entrez : `Bearer <votre_token_jwt>`
+                        
+                        Le token est valide pendant 1 heure.
         security:
-            - Bearer: []
-    areas: # to filter documented areas
+            - bearerAuth: []
+    areas:
         path_patterns:
-            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
+            - ^/api(?!/doc$)

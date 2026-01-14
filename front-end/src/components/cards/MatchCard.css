@@ -101,6 +101,71 @@
 }
 
 /* Responsive */
+
+/* Écran 15" avec échelle 125% (1920px -> ~1536-1600px) */
+@media (max-width: 1600px) and (min-width: 1441px) {
+  .match-card {
+    padding: 10px;
+  }
+  
+  .match-status {
+    font-size: 8px;
+    padding: 3px 7px;
+  }
+  
+  .match-game {
+    font-size: 9px;
+  }
+  
+  .match-card-header {
+    margin-bottom: 8px;
+  }
+  
+  .team-name {
+    font-size: 12px;
+    font-weight: 600;
+  }
+  
+  .match-score {
+    font-size: 18px;
+    padding: 0 8px;
+  }
+  
+  .match-card-body {
+    margin-bottom: 8px;
+  }
+  
+  .match-card-footer {
+    font-size: 9px;
+  }
+}
+
+/* Écrans MacBook (1440px et moins) */
+@media (max-width: 1440px) and (min-width: 1025px) {
+  .match-card {
+    padding: 9px;
+  }
+  
+  .match-status {
+    font-size: 8px;
+    padding: 3px 6px;
+  }
+  
+  .team-name {
+    font-size: 11px;
+    font-weight: 600;
+  }
+  
+  .match-score {
+    font-size: 16px;
+    padding: 0 7px;
+  }
+  
+  .match-card-footer {
+    font-size: 8px;
+  }
+}
+
 @media (max-width: 768px) {
   .match-card {
     padding: 12px;

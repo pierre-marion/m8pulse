@@ -13,22 +13,33 @@
   padding-right: 12px;
 }
 
+/* Écrans 15" avec échelle 125% (1920px -> ~1536px) */
+@media (max-width: 1600px) {
+  .right-panel {
+    width: 260px;
+    max-width: 260px;
+    min-width: 240px;
+    gap: 12px;
+  }
+}
+
 /* MacBook / laptops: shrink a bit more */
 @media (max-width: 1440px) {
   .right-panel {
-    width: 300px;
-    max-width: 300px;
-    min-width: 260px;
-    gap: 18px;
+    width: 240px;
+    max-width: 240px;
+    min-width: 220px;
+    gap: 10px;
   }
 }
 
 /* Small laptops */
 @media (max-width: 1280px) {
   .right-panel {
-    width: 280px;
-    max-width: 280px;
-    min-width: 240px;
+    width: 220px;
+    max-width: 220px;
+    min-width: 200px;
+    gap: 8px;
   }
 }
 
@@ -1043,6 +1054,122 @@ body.dark-mode .stat-val {
 }
 
 /* Responsive breakpoints */
+
+/* Écran 15" avec échelle 125% (1920px -> ~1536-1600px) */
+@media (max-width: 1600px) and (min-width: 1441px) {
+  .panel-section {
+    padding: 14px !important;
+  }
+  
+  .profile-modern {
+    padding: 10px !important;
+  }
+  
+  .avatar-modern {
+    width: 50px !important;
+    height: 50px !important;
+    font-size: 22px !important;
+  }
+  
+  .status-dot {
+    width: 10px !important;
+    height: 10px !important;
+  }
+  
+  .username-modern {
+    font-size: 16px !important;
+  }
+  
+  .user-role {
+    font-size: 12px !important;
+  }
+  
+  .theme-toggle-mini {
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 16px !important;
+  }
+  
+  .quick-actions {
+    gap: 6px !important;
+  }
+  
+  .action-mini {
+    padding: 10px 12px !important;
+    font-size: 12px !important;
+    min-width: 100px !important;
+  }
+  
+  .top-players {
+    padding: 8px !important;
+  }
+  
+  .section-header {
+    margin-bottom: 8px !important;
+  }
+  
+  .section-title {
+    font-size: 20px !important;
+  }
+  
+  .section-badge {
+    padding: 3px 10px !important;
+    font-size: 9px !important;
+  }
+  
+  .section-badge-small {
+    padding: 2px 8px !important;
+    font-size: 8px !important;
+  }
+  
+  .players-compact-list {
+    gap: 5px !important;
+    margin-bottom: 8px !important;
+  }
+  
+  .player-compact-card {
+    padding: 10px 12px !important;
+    gap: 10px !important;
+  }
+  
+  .player-avatar-compact {
+    width: 40px !important;
+    height: 40px !important;
+    font-size: 18px !important;
+  }
+  
+  .player-name-compact {
+    font-size: 14px !important;
+  }
+  
+  .player-game-compact {
+    font-size: 10px !important;
+  }
+  
+  .rating-value {
+    font-size: 18px !important;
+  }
+  
+  .player-detail-box {
+    padding: 8px !important;
+  }
+  
+  .detail-row {
+    padding: 4px 0 !important;
+  }
+  
+  .detail-label {
+    font-size: 9px !important;
+  }
+  
+  .detail-value {
+    font-size: 11px !important;
+  }
+  
+  .planning-modern {
+    padding: 8px !important;
+  }
+}
 
 @media (max-width: 1400px) {
   .right-panel {

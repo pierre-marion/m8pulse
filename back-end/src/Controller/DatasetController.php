@@ -28,6 +28,28 @@ class DatasetController extends AbstractController
     }
 
     #[Route('', name: 'list', methods: ['GET'])]
+    #[OA\Get(
+        path: '/api/datasets',
+        summary: 'Liste tous les datasets',
+        description: 'Récupère la liste de tous les fichiers de données uploadés (CSV, Google Sheets)',
+        tags: ['Datasets']
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Liste des datasets',
+        content: new OA\JsonContent(
+            type: 'array',
+            items: new OA\Items(
+                properties: [
+                    new OA\Property(property: 'id', type: 'integer', example: 1),
+                    new OA\Property(property: 'name', type: 'string', example: 'stats-vitality-2024.csv'),
+                    new OA\Property(property: 'source', type: 'string', example: 'google_sheets'),
+                    new OA\Property(property: 'uploadedAt', type: 'string', format: 'date-time'),
+                    new OA\Property(property: 'rowCount', type: 'integer', example: 245)
+                ]
+            )
+        )
+    )]
     public function list(): JsonResponse
     {
         $datasets = $this->entityManager->getRepository(Dataset::class)->findBy(
@@ -41,6 +63,34 @@ class DatasetController extends AbstractController
     }
 
     #[Route('/{id}', name: 'show', methods: ['GET'])]
+    #[OA\Get(
+        path: '/api/datasets/{id}',
+        summary: 'Affiche un dataset spécifique',
+        description: 'Récupère les détails d\'un dataset incluant les métadonnées et les variables définies',
+        tags: ['Datasets']
+    )]
+    #[OA\Parameter(
+        name: 'id',
+        in: 'path',
+        description: 'ID du dataset',
+        required: true,
+        schema: new OA\Schema(type: 'integer')
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Détails du dataset',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'id', type: 'integer', example: 1),
+                new OA\Property(property: 'name', type: 'string', example: 'stats-kills.csv'),
+                new OA\Property(property: 'filePath', type: 'string'),
+                new OA\Property(property: 'variables', type: 'array', items: new OA\Items(type: 'object')),
+                new OA\Property(property: 'rowCount', type: 'integer', example: 245)
+            ]
+        )
+    )]
+    #[OA\Response(response: 404, description: 'Dataset non trouvé')]
+    #[OA\Response(response: 403, description: 'Accès refusé')]
     public function show(int $id): JsonResponse
     {
         $dataset = $this->entityManager->getRepository(Dataset::class)->find($id);
@@ -64,20 +114,50 @@ class DatasetController extends AbstractController
 
     #[Route('/{id}/variables', name: 'update_variables', methods: ['PATCH'])]
     #[OA\Patch(
+        path: '/api/datasets/{id}/variables',
         summary: 'Définir les types de colonnes (variables)',
-        requestBody: new OA\RequestBody(
-            content: new OA\JsonContent(
-                properties: [
-                    new OA\Property(property: 'variables', type: 'array', items: new OA\Items(
+        description: 'Configure les types de variables pour chaque colonne du dataset (numérique ou catégorielle)',
+        security: [['bearerAuth' => []]],
+        tags: ['Datasets']
+    )]
+    #[OA\Parameter(
+        name: 'id',
+        in: 'path',
+        description: 'ID du dataset',
+        required: true,
+        schema: new OA\Schema(type: 'integer')
+    )]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(
+                    property: 'variables',
+                    type: 'array',
+                    items: new OA\Items(
                         properties: [
-                            new OA\Property(property: 'name', type: 'string'),
-                            new OA\Property(property: 'type', type: 'string', enum: ['numérique', 'catégorielle'])
+                            new OA\Property(property: 'name', type: 'string', example: 'kills'),
+                            new OA\Property(property: 'type', type: 'string', enum: ['numérique', 'catégorielle'], example: 'numérique')
                         ]
-                    ))
-                ]
-            )
+                    ),
+                    example: [
+                        ['name' => 'kills', 'type' => 'numérique'],
+                        ['name' => 'player', 'type' => 'catégorielle']
+                    ]
+                )
+            ]
         )
     )]
+    #[OA\Response(
+        response: 200,
+        description: 'Variables mises à jour',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'message', type: 'string', example: 'Variables updated successfully')
+            ]
+        )
+    )]
+    #[OA\Response(response: 404, description: 'Dataset non trouvé')]
     public function updateVariables(int $id, Request $request): JsonResponse
     {
         $dataset = $this->entityManager->getRepository(Dataset::class)->find($id);

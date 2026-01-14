@@ -25,6 +25,7 @@ const PlayerCard = ({
   avatar,
   onClick,
   className = '',
+  sortValue, // extracted to avoid passing unknown prop to DOM
   ...props 
 }) => {
   // Générer des initiales si pas d'avatar
@@ -42,6 +43,8 @@ const PlayerCard = ({
       clickable={!!onClick}
       className={`player-card ${className}`}
       onClick={onClick}
+      // Passer la valeur de tri comme data-attribute pour éviter les warnings React
+      data-sortvalue={sortValue}
       {...props}
     >
       <div className="player-card-content">

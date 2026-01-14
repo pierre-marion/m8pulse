@@ -19,6 +19,42 @@
   border-bottom: 2px solid rgba(125, 60, 255, 0.2);
 }
 
+/* Écran 15" avec échelle 125% (1920px -> ~1536-1600px) */
+@media (max-width: 1600px) and (min-width: 1441px) {
+  .home-hero {
+    height: 320px;
+    margin-bottom: 24px;
+  }
+  
+  .hero-title {
+    font-size: 58px;
+  }
+  
+  .hero-subtitle {
+    font-size: 20px;
+  }
+  
+  .hero-tag {
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+}
+
+/* Écrans MacBook (1440px et moins) */
+@media (max-width: 1440px) and (min-width: 1025px) {
+  .home-hero {
+    height: 300px;
+  }
+  
+  .hero-title {
+    font-size: 54px;
+  }
+  
+  .hero-subtitle {
+    font-size: 18px;
+  }
+}
+
 .hero-overlay {
   position: absolute;
   top: 0;
@@ -102,6 +138,48 @@
   gap: 20px;
   padding: 0 30px;
   margin-bottom: 40px;
+}
+
+/* Écran 15" avec échelle 125% (1920px -> ~1536-1600px) */
+@media (max-width: 1600px) and (min-width: 1441px) {
+  .quick-stats {
+    gap: 15px;
+    padding: 0 20px;
+    margin-bottom: 30px;
+  }
+  
+  .stat-card {
+    padding: 18px;
+    gap: 15px;
+  }
+  
+  .stat-icon {
+    font-size: 40px;
+  }
+  
+  .stat-value {
+    font-size: 30px;
+  }
+  
+  .stat-label {
+    font-size: 12px;
+  }
+}
+
+/* Écrans MacBook (1440px et moins) */
+@media (max-width: 1440px) and (min-width: 1025px) {
+  .quick-stats {
+    gap: 12px;
+    padding: 0 18px;
+  }
+  
+  .stat-card {
+    padding: 16px;
+  }
+  
+  .stat-value {
+    font-size: 28px;
+  }
 }
 
 @media (max-width: 1024px) {
@@ -193,6 +271,43 @@
   padding: 30px;
   border: 2px solid rgba(125, 60, 255, 0.2);
   transition: all 0.3s ease;
+}
+
+/* Écran 15" avec échelle 125% (1920px -> ~1536-1600px) */
+@media (max-width: 1600px) and (min-width: 1441px) {
+  .content-section {
+    padding: 16px;
+    border-radius: 16px;
+  }
+  
+  .section-header {
+    margin-bottom: 14px;
+  }
+  
+  .section-title-home {
+    font-size: 22px;
+  }
+  
+  .home-content {
+    padding: 0 16px 16px;
+    gap: 16px;
+  }
+}
+
+/* Écrans MacBook (1440px et moins) */
+@media (max-width: 1440px) and (min-width: 1025px) {
+  .content-section {
+    padding: 14px;
+  }
+  
+  .section-title-home {
+    font-size: 20px;
+  }
+  
+  .home-content {
+    padding: 0 14px 14px;
+    gap: 14px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -361,6 +476,96 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 15px;
+}
+
+/* Écran 15" avec échelle 125% (1920px -> ~1536-1600px) */
+@media (max-width: 1600px) and (min-width: 1441px) {
+  .results-list-home {
+    gap: 8px;
+  }
+  
+  .result-card-home,
+  .match-card-home {
+    padding: 10px;
+    min-height: 130px;
+  }
+  
+  .match-game-badge {
+    padding: 4px 8px;
+    font-size: 9px;
+    margin-bottom: 6px;
+  }
+  
+  .team-name-home {
+    font-size: 13px;
+    font-weight: 600;
+  }
+  
+  .match-score-home {
+    font-size: 20px;
+    margin: 2px 0;
+    letter-spacing: 1px;
+  }
+  
+  .match-teams-home {
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  
+  .match-info-home {
+    font-size: 9px;
+    gap: 4px;
+    padding-top: 8px;
+  }
+  
+  .match-date-home {
+    font-size: 8px;
+  }
+  
+  .match-tournament-home {
+    font-size: 9px;
+  }
+}
+
+/* Écrans MacBook (1440px et moins) */
+@media (max-width: 1440px) and (min-width: 1025px) {
+  .results-list-home {
+    gap: 8px;
+  }
+  
+  .result-card-home,
+  .match-card-home {
+    padding: 10px;
+    min-height: 120px;
+  }
+  
+  .match-game-badge {
+    padding: 3px 7px;
+    font-size: 8px;
+  }
+  
+  .team-name-home {
+    font-size: 12px;
+    font-weight: 600;
+  }
+  
+  .match-score-home {
+    font-size: 18px;
+  }
+  
+  .match-info-home {
+    font-size: 8px;
+  }
+  
+  .match-date-home {
+    font-size: 8px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .results-list-home {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 768px) {

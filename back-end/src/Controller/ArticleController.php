@@ -24,6 +24,70 @@ class ArticleController extends AbstractController
     ) {}
 
     #[Route('', name: 'list', methods: ['GET'])]
+    #[OA\Get(
+        path: '/api/articles',
+        summary: 'Liste tous les articles',
+        description: 'Récupère la liste des articles avec filtres optionnels (type, statut, auteur, recherche). Les visiteurs ne voient que les articles publiés.',
+        tags: ['Articles']
+    )]
+    #[OA\Parameter(
+        name: 'type',
+        in: 'query',
+        description: 'Filtrer par type d\'article',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'blog')
+    )]
+    #[OA\Parameter(
+        name: 'status',
+        in: 'query',
+        description: 'Filtrer par statut (published, draft)',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'published')
+    )]
+    #[OA\Parameter(
+        name: 'author',
+        in: 'query',
+        description: 'Filtrer par ID de l\'auteur',
+        required: false,
+        schema: new OA\Schema(type: 'integer', example: 1)
+    )]
+    #[OA\Parameter(
+        name: 'search',
+        in: 'query',
+        description: 'Recherche dans le titre et le résumé',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'esport')
+    )]
+    #[OA\Parameter(
+        name: 'limit',
+        in: 'query',
+        description: 'Nombre d\'articles à retourner',
+        required: false,
+        schema: new OA\Schema(type: 'integer', example: 10)
+    )]
+    #[OA\Parameter(
+        name: 'offset',
+        in: 'query',
+        description: 'Décalage pour la pagination',
+        required: false,
+        schema: new OA\Schema(type: 'integer', example: 0)
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Liste des articles',
+        content: new OA\JsonContent(
+            type: 'array',
+            items: new OA\Items(
+                properties: [
+                    new OA\Property(property: 'id', type: 'integer', example: 1),
+                    new OA\Property(property: 'title', type: 'string', example: 'Analyse du match Vitality vs NAVI'),
+                    new OA\Property(property: 'summary', type: 'string', example: 'Retour sur la performance...'),
+                    new OA\Property(property: 'status', type: 'string', example: 'published'),
+                    new OA\Property(property: 'viewCount', type: 'integer', example: 342)
+                ]
+            )
+        )
+    )]
     public function list(Request $request): JsonResponse
     {
         $type = $request->query->get('type');
@@ -72,6 +136,33 @@ class ArticleController extends AbstractController
     }
 
     #[Route('/{id}', name: 'show', methods: ['GET'])]
+    #[OA\Get(
+        path: '/api/articles/{id}',
+        summary: 'Affiche un article spécifique',
+        description: 'Récupère les détails complets d\'un article et incrémente automatiquement le compteur de vues',
+        tags: ['Articles']
+    )]
+    #[OA\Parameter(
+        name: 'id',
+        in: 'path',
+        description: 'ID de l\'article',
+        required: true,
+        schema: new OA\Schema(type: 'integer')
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Détails de l\'article',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'id', type: 'integer', example: 1),
+                new OA\Property(property: 'title', type: 'string', example: 'Mon article'),
+                new OA\Property(property: 'content', type: 'string'),
+                new OA\Property(property: 'viewCount', type: 'integer', example: 343),
+                new OA\Property(property: 'blocks', type: 'array', items: new OA\Items(type: 'object'))
+            ]
+        )
+    )]
+    #[OA\Response(response: 404, description: 'Article non trouvé')]
     public function show(int $id): JsonResponse
     {
         $article = $this->entityManager->getRepository(Article::class)->find($id);
@@ -90,6 +181,40 @@ class ArticleController extends AbstractController
     }
 
     #[Route('', name: 'create', methods: ['POST'])]
+    #[OA\Post(
+        path: '/api/articles',
+        summary: 'Crée un nouvel article',
+        description: 'Permet de créer un article. Nécessite le rôle EDITOR ou ADMIN. L\'article est en brouillon par défaut.',
+        security: [['bearerAuth' => []]],
+        tags: ['Articles']
+    )]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['title'],
+            properties: [
+                new OA\Property(property: 'title', type: 'string', example: 'Nouveau match analysis'),
+                new OA\Property(property: 'summary', type: 'string', example: 'Résumé de l\'article'),
+                new OA\Property(property: 'content', type: 'string', example: 'Contenu complet...'),
+                new OA\Property(property: 'type', type: 'string', example: 'blog'),
+                new OA\Property(property: 'coverImage', type: 'string', example: 'https://...'),
+                new OA\Property(property: 'tags', type: 'array', items: new OA\Items(type: 'string'))
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 201,
+        description: 'Article créé avec succès',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'id', type: 'integer', example: 42),
+                new OA\Property(property: 'title', type: 'string'),
+                new OA\Property(property: 'status', type: 'string', example: 'draft')
+            ]
+        )
+    )]
+    #[OA\Response(response: 401, description: 'Non authentifié')]
+    #[OA\Response(response: 403, description: 'Accès refusé')]
     public function create(Request $request): JsonResponse
     {
         // DEBUG: Vérifier si le token arrive

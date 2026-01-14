@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use OpenApi\Attributes as OA;
 
 #[Route('/api/media', name: 'api_media_')]
-#[OA\Tag(name: 'Media')]
+#[OA\Tag(name: 'Médias')]
 class MediaController extends AbstractController
 {
     private string $uploadDirectory;
@@ -28,6 +28,49 @@ class MediaController extends AbstractController
     }
 
     #[Route('', name: 'list', methods: ['GET'])]
+    #[OA\Get(
+        path: '/api/media',
+        summary: 'Liste tous les médias',
+        description: 'Récupère la liste des fichiers média avec filtres optionnels (nom, type, tag)',
+        tags: ['Médias']
+    )]
+    #[OA\Parameter(
+        name: 'search',
+        in: 'query',
+        description: 'Rechercher par nom de fichier',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'logo')
+    )]
+    #[OA\Parameter(
+        name: 'type',
+        in: 'query',
+        description: 'Filtrer par type (image, video, audio)',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'image')
+    )]
+    #[OA\Parameter(
+        name: 'tag',
+        in: 'query',
+        description: 'Filtrer par tag',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'esport')
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Liste des médias',
+        content: new OA\JsonContent(
+            type: 'array',
+            items: new OA\Items(
+                properties: [
+                    new OA\Property(property: 'id', type: 'integer', example: 1),
+                    new OA\Property(property: 'name', type: 'string', example: 'logo-vitality.png'),
+                    new OA\Property(property: 'type', type: 'string', example: 'image'),
+                    new OA\Property(property: 'url', type: 'string', example: '/uploads/media/logo-vitality.png'),
+                    new OA\Property(property: 'size', type: 'integer', example: 45632)
+                ]
+            )
+        )
+    )]
     public function list(Request $request): JsonResponse
     {
         $search = $request->query->get('search');
@@ -75,6 +118,58 @@ class MediaController extends AbstractController
     }
 
     #[Route('/upload', name: 'upload', methods: ['POST'])]
+    #[OA\Post(
+        path: '/api/media/upload',
+        summary: 'Upload un fichier média',
+        description: 'Permet d\'uploader une image, vidéo ou autre fichier. Nécessite le rôle EDITOR ou ADMIN.',
+        security: [['bearerAuth' => []]],
+        tags: ['Médias']
+    )]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\MediaType(
+            mediaType: 'multipart/form-data',
+            schema: new OA\Schema(
+                required: ['file'],
+                properties: [
+                    new OA\Property(
+                        property: 'file',
+                        type: 'string',
+                        format: 'binary',
+                        description: 'Le fichier à uploader'
+                    ),
+                    new OA\Property(
+                        property: 'name',
+                        type: 'string',
+                        description: 'Nom personnalisé (optionnel)',
+                        example: 'Logo Team Vitality'
+                    ),
+                    new OA\Property(
+                        property: 'tags',
+                        type: 'string',
+                        description: 'Tags séparés par des virgules',
+                        example: 'esport,vitality,logo'
+                    )
+                ]
+            )
+        )
+    )]
+    #[OA\Response(
+        response: 201,
+        description: 'Fichier uploadé avec succès',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'id', type: 'integer', example: 1),
+                new OA\Property(property: 'name', type: 'string', example: 'logo-vitality.png'),
+                new OA\Property(property: 'url', type: 'string', example: '/uploads/media/logo-vitality.png'),
+                new OA\Property(property: 'type', type: 'string', example: 'image'),
+                new OA\Property(property: 'size', type: 'integer', example: 45632)
+            ]
+        )
+    )]
+    #[OA\Response(response: 400, description: 'Fichier manquant ou invalide')]
+    #[OA\Response(response: 401, description: 'Non authentifié')]
+    #[OA\Response(response: 403, description: 'Accès refusé')]
     public function upload(Request $request): JsonResponse
     {
         // Vérifier les permissions via le Voter

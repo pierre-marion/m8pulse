@@ -68,7 +68,7 @@ body.dark-mode .loading-lazy {
    =================================== */
 
 /* Grands écrans (Desktop > 1600px) */
-@media (min-width: 1600px) {
+@media (min-width: 1601px) {
   .App {
     padding: 20px;
   }
@@ -78,25 +78,36 @@ body.dark-mode .loading-lazy {
   }
 }
 
-/* Écrans moyens-larges (Laptop 15" et MacBook Pro 16" = 1440-1600px) */
-@media (max-width: 1599px) and (min-width: 1280px) {
-  .App {
-    padding: 18px;
-  }
-
-  .app-body {
-    gap: 18px;
-  }
-}
-
-/* Écrans moyens (MacBook 13-14" = 1280-1440px) */
-@media (max-width: 1279px) and (min-width: 1024px) {
+/* Écran 15" avec échelle 125% (1920px -> ~1536-1600px) */
+@media (max-width: 1600px) and (min-width: 1441px) {
   .App {
     padding: 15px;
   }
 
   .app-body {
     gap: 15px;
+  }
+}
+
+/* Écrans moyens-larges (Laptop 15" et MacBook Pro 16" = 1440px) */
+@media (max-width: 1440px) and (min-width: 1280px) {
+  .App {
+    padding: 14px;
+  }
+
+  .app-body {
+    gap: 14px;
+  }
+}
+
+/* Écrans moyens (MacBook 13-14" = 1280px) */
+@media (max-width: 1279px) and (min-width: 1024px) {
+  .App {
+    padding: 12px;
+  }
+
+  .app-body {
+    gap: 12px;
   }
 }
 

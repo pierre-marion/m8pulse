@@ -23,6 +23,24 @@ class WelcomeController extends AbstractController
     ) {}
 
     #[Route('', name: 'get', methods: ['GET'])]
+    #[OA\Get(
+        path: '/api/welcome',
+        summary: 'Récupère la configuration de la page d\'accueil',
+        description: 'Retourne la configuration active de la page d\'accueil incluant le texte de bienvenue et la configuration de visualisation 3D',
+        tags: ['Page d\'accueil']
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Configuration récupérée avec succès',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'id', type: 'integer', example: 1),
+                new OA\Property(property: 'welcome_text', type: 'string', example: 'Bienvenue sur M8Pulse - Plateforme de Data Storytelling'),
+                new OA\Property(property: 'visualization_config', type: 'object', example: ['type' => 'threejs', 'scene' => 'particles']),
+                new OA\Property(property: 'is_active', type: 'boolean', example: true)
+            ]
+        )
+    )]
     public function get(): JsonResponse
     {
         // Récupérer la config active
@@ -54,6 +72,38 @@ class WelcomeController extends AbstractController
 
     #[Route('', name: 'update', methods: ['PUT', 'PATCH'])]
     #[IsGranted('ROLE_ADMIN')]
+    #[OA\Put(
+        path: '/api/welcome',
+        summary: 'Met à jour la configuration de la page d\'accueil',
+        description: 'Permet de modifier le texte de bienvenue et la configuration de visualisation. Réservé aux administrateurs.',
+        security: [['bearerAuth' => []]],
+        tags: ['Page d\'accueil']
+    )]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'welcome_text', type: 'string', example: 'Nouveau texte de bienvenue'),
+                new OA\Property(
+                    property: 'visualization_config',
+                    type: 'object',
+                    example: ['type' => 'threejs', 'scene' => 'particles', 'colors' => ['primary' => '#4F46E5']]
+                ),
+                new OA\Property(property: 'is_active', type: 'boolean', example: true)
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Configuration mise à jour avec succès',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'message', type: 'string', example: 'Welcome configuration updated successfully')
+            ]
+        )
+    )]
+    #[OA\Response(response: 401, description: 'Non authentifié')]
+    #[OA\Response(response: 403, description: 'Accès refusé - Admin requis')]
     public function update(Request $request): JsonResponse
     {
         $config = $this->entityManager->getRepository(WelcomeConfig::class)->findOneBy([
@@ -87,6 +137,32 @@ class WelcomeController extends AbstractController
 
     #[Route('/preview', name: 'preview', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
+    #[OA\Post(
+        path: '/api/welcome/preview',
+        summary: 'Prévisualise une configuration sans la sauvegarder',
+        description: 'Permet de tester une configuration de page d\'accueil avant de la sauvegarder définitivement',
+        security: [['bearerAuth' => []]],
+        tags: ['Page d\'accueil']
+    )]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'welcome_text', type: 'string', example: 'Test de texte'),
+                new OA\Property(property: 'visualization_config', type: 'object', example: ['type' => 'threejs'])
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Prévisualisation générée',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'welcome_text', type: 'string'),
+                new OA\Property(property: 'visualization_config', type: 'object')
+            ]
+        )
+    )]
     public function preview(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -101,6 +177,32 @@ class WelcomeController extends AbstractController
 
     #[Route('/templates', name: 'templates', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]
+    #[OA\Get(
+        path: '/api/welcome/templates',
+        summary: 'Liste les templates de visualisation disponibles',
+        description: 'Retourne une liste de templates préconfigurés pour les visualisations 3D (Particles, Waves, VR, Globe)',
+        security: [['bearerAuth' => []]],
+        tags: ['Page d\'accueil']
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Liste des templates',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(
+                    property: 'templates',
+                    type: 'array',
+                    items: new OA\Items(
+                        properties: [
+                            new OA\Property(property: 'id', type: 'string', example: 'particles'),
+                            new OA\Property(property: 'name', type: 'string', example: 'Particles 3D'),
+                            new OA\Property(property: 'config', type: 'object')
+                        ]
+                    )
+                )
+            ]
+        )
+    )]
     public function templates(): JsonResponse
     {
         return $this->json([

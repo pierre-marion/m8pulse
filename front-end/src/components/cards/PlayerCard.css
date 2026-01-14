@@ -89,6 +89,72 @@
 }
 
 /* Responsive */
+
+/* Écran 15" avec échelle 125% (1920px -> ~1536-1600px) */
+@media (max-width: 1600px) and (min-width: 1441px) {
+  .player-card {
+    padding: 1rem;
+  }
+
+  .player-card-content {
+    gap: 0.875rem;
+  }
+
+  .player-avatar {
+    width: 55px;
+    height: 55px;
+    border-width: 2.5px;
+  }
+
+  .player-initials {
+    font-size: 1.125rem;
+  }
+
+  .player-name {
+    font-size: 1rem;
+  }
+
+  .player-role {
+    font-size: 0.8125rem;
+  }
+
+  .player-stat .stat-value {
+    font-size: 1.375rem;
+  }
+
+  .player-stat .stat-label {
+    font-size: 0.6875rem;
+  }
+}
+
+/* Écrans moyens (1440px et moins) */
+@media (max-width: 1440px) and (min-width: 1024px) {
+  .player-card {
+    padding: 0.9rem;
+  }
+
+  .player-avatar {
+    width: 50px;
+    height: 50px;
+  }
+
+  .player-initials {
+    font-size: 1rem;
+  }
+
+  .player-name {
+    font-size: 0.9375rem;
+  }
+
+  .player-role {
+    font-size: 0.75rem;
+  }
+
+  .player-stat .stat-value {
+    font-size: 1.25rem;
+  }
+}
+
 @media (max-width: 768px) {
   .player-card {
     padding: 1rem;
