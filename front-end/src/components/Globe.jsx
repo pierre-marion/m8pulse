@@ -1,428 +1,325 @@
-import React, { useEffect, useRef, forwardRef, useImperativeHandle, useState } from 'react';
+import React, { useEffect, useRef, forwardRef, useImperativeHandle, useState, useCallback } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import gsap from 'gsap';
 import { useDarkMode } from '../contexts/DarkModeContext';
 import './Globe.css';
 
-const Globe = forwardRef(({ onPlayerSelect, selectedPlayer }, ref) => {
+const GLOBE_RADIUS = 100;
+const GLOBE_SIZE = { width: 4098 / 2, height: 1968 / 2 };
+const ZOOM_DISTANCE = 150;
+const INITIAL_CAMERA_Z = 300;
+
+const CAPITALS = [
+  { name: 'Madrid', x: 1996.5, y: 561.5 },
+  { name: 'Rome', x: 2191.5, y: 546.5 },
+  { name: 'Washington DC', x: 1201.5, y: 561.5 },
+  { name: 'Manille', x: 3421.5, y: 846.5 },
+  { name: 'Varsovie', x: 2311.5, y: 441.5 },
+];
+
+const Globe = forwardRef(({ onPlayerSelect }, ref) => {
   const { isDarkMode } = useDarkMode();
   const canvasRef = useRef(null);
-  const containerRef = useRef(null);
-  const controlsRef = useRef(null);
-  const cameraRef = useRef(null);
   const sceneRef = useRef(null);
-  const initialCameraPosition = { x: 0, y: 0, z: -300 };
+  const cameraRef = useRef(null);
+  const controlsRef = useRef(null);
+  const rendererRef = useRef(null);
   const capitalMeshesRef = useRef([]);
-  const allPointMeshesRef = useRef([]);
-  const selectedPointRef = useRef(null);
   const [isZoomed, setIsZoomed] = useState(false);
-  const setIsZoomedRef = useRef(setIsZoomed);
+
+  const convertToSphereCoords = useCallback((x, y) => {
+    const latitude = ((x - GLOBE_SIZE.width) / GLOBE_SIZE.width) * -180 * Math.PI / 180;
+    const longitude = ((y - GLOBE_SIZE.height) / GLOBE_SIZE.height) * -90 * Math.PI / 180;
+    const radius = Math.cos(longitude) * GLOBE_RADIUS;
+    
+    return {
+      x: Math.cos(latitude) * radius,
+      y: Math.sin(longitude) * GLOBE_RADIUS,
+      z: Math.sin(latitude) * radius
+    };
+  }, []);
+
+  const animateCamera = useCallback((targetPos, duration = 1.5, onComplete) => {
+    if (!cameraRef.current || !controlsRef.current) return;
+    
+    gsap.to(cameraRef.current.position, {
+      x: targetPos.x,
+      y: targetPos.y,
+      z: targetPos.z,
+      duration,
+      ease: "power2.inOut",
+      onUpdate: () => {
+        cameraRef.current.lookAt(0, 0, 0);
+        controlsRef.current.update();
+      },
+      onComplete
+    });
+  }, []);
+
+  const zoomToCity = useCallback((cityName) => {
+    const cityPoint = capitalMeshesRef.current.find(m => m.userData.name === cityName);
+    if (!cityPoint || !cameraRef.current || !controlsRef.current) return;
+
+    console.log('🎯 Zoom vers:', cityName);
+    const controls = controlsRef.current;
+    const camera = cameraRef.current;
+    
+    console.log('Position actuelle:', camera.position.x, camera.position.y, camera.position.z);
+    
+    controls.autoRotate = false;
+    controls.enabled = false;
+    
+    gsap.killTweensOf(camera.position);
+    
+    const cityPos = cityPoint.position.clone();
+    const direction = cityPos.normalize();
+    const targetPos = direction.multiplyScalar(ZOOM_DISTANCE);
+    
+    console.log('Position cible:', targetPos.x, targetPos.y, targetPos.z);
+    
+    const startPos = camera.position.clone();
+    const distance = startPos.distanceTo(targetPos);
+    
+    const midHeight = Math.max(startPos.length(), targetPos.length()) + 100;
+    const midPos = new THREE.Vector3()
+      .addVectors(startPos, targetPos)
+      .multiplyScalar(0.5)
+      .normalize()
+      .multiplyScalar(midHeight);
+
+    const path = { t: 0 };
+    gsap.to(path, {
+      t: 1,
+      duration: 2,
+      ease: "power2.inOut",
+      onStart: () => console.log('🚀 Animation démarrée'),
+      onUpdate: () => {
+        const t = path.t;
+        const t1 = 1 - t;
+        
+        camera.position.x = t1 * t1 * startPos.x + 2 * t1 * t * midPos.x + t * t * targetPos.x;
+        camera.position.y = t1 * t1 * startPos.y + 2 * t1 * t * midPos.y + t * t * targetPos.y;
+        camera.position.z = t1 * t1 * startPos.z + 2 * t1 * t * midPos.z + t * t * targetPos.z;
+        
+        camera.lookAt(0, 0, 0);
+      },
+      onComplete: () => {
+        console.log('✅ Animation terminée');
+        controls.enabled = true;
+        setIsZoomed(true);
+      }
+    });
+
+    if (onPlayerSelect) onPlayerSelect(cityName);
+  }, [onPlayerSelect]);
+
+  const resetZoom = useCallback(() => {
+    if (!cameraRef.current || !controlsRef.current) return;
+
+    const controls = controlsRef.current;
+    const camera = cameraRef.current;
+    
+    controls.enabled = false;
+    setIsZoomed(false);
+    
+    gsap.killTweensOf(camera.position);
+    
+    const startPos = camera.position.clone();
+    const targetPos = new THREE.Vector3(0, 0, INITIAL_CAMERA_Z);
+    
+    const midHeight = Math.max(startPos.length(), targetPos.length()) + 100;
+    const midPos = new THREE.Vector3()
+      .addVectors(startPos, targetPos)
+      .multiplyScalar(0.5)
+      .normalize()
+      .multiplyScalar(midHeight);
+
+    const path = { t: 0 };
+    gsap.to(path, {
+      t: 1,
+      duration: 1.8,
+      ease: "power2.inOut",
+      onUpdate: () => {
+        const t = path.t;
+        const t1 = 1 - t;
+        
+        camera.position.x = t1 * t1 * startPos.x + 2 * t1 * t * midPos.x + t * t * targetPos.x;
+        camera.position.y = t1 * t1 * startPos.y + 2 * t1 * t * midPos.y + t * t * targetPos.y;
+        camera.position.z = t1 * t1 * startPos.z + 2 * t1 * t * midPos.z + t * t * targetPos.z;
+        
+        camera.lookAt(0, 0, 0);
+      },
+      onComplete: () => {
+        controls.autoRotate = true;
+        controls.enabled = true;
+      }
+    });
+
+    if (onPlayerSelect) onPlayerSelect(null);
+  }, [onPlayerSelect]);
+
+  useImperativeHandle(ref, () => ({ zoomToCity, resetCamera: resetZoom }), [zoomToCity, resetZoom]);
 
   useEffect(() => {
-    setIsZoomedRef.current = setIsZoomed;
-  }, [setIsZoomed]);
-
-  useEffect(() => {
-    if (!canvasRef.current || !containerRef.current) return;
+    if (!canvasRef.current) return;
 
     const canvas = canvasRef.current;
     const scene = new THREE.Scene();
-    scene.background = null;
     sceneRef.current = scene;
 
-    const camera = new THREE.PerspectiveCamera(
-      45,
-      canvas.clientWidth / canvas.clientHeight,
-      0.1,
-      1000
-    );
-    camera.position.z = -300;
+    const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+    camera.position.z = INITIAL_CAMERA_Z;
     cameraRef.current = camera;
 
-    const renderer = new THREE.WebGLRenderer({
-      canvas: canvas,
-      antialias: true,
-      alpha: true
-    });
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
     renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    rendererRef.current = renderer;
 
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.enableZoom = false;
-    controls.enablePan = false;
-    controls.enableRotate = true;
-    controls.autoRotate = true;
-    controls.autoRotateSpeed = 0.8;
+    const controls = new OrbitControls(camera, canvas);
+    Object.assign(controls, {
+      enableDamping: true,
+      dampingFactor: 0.05,
+      enableZoom: false,
+      enablePan: false,
+      autoRotate: true,
+      autoRotateSpeed: 0.8
+    });
     controlsRef.current = controls;
 
-    const globeRadius = 100;
-    const globeWidth = 4098 / 2;
-    const globeHeight = 1968 / 2;
+    scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+    const light = new THREE.DirectionalLight(0xffffff, 0.5);
+    light.position.set(5, 3, 5);
+    scene.add(light);
 
-    const capitalCoordinates = [
-      { name: 'Madrid', x: 1996.5, y: 561.5 },
-      { name: 'Rome', x: 2191.5, y: 546.5 },
-      { name: 'Washington DC', x: 1201.5, y: 561.5 },
-      { name: 'Manille', x: 3421.5, y: 846.5 },
-      { name: 'Varsovie', x: 2311.5, y: 441.5 },
-    ];
+    const globeGeometry = new THREE.SphereGeometry(GLOBE_RADIUS, 24, 24);
+    const globeMaterial = new THREE.MeshBasicMaterial({
+      color: isDarkMode ? 0xffffff : 0x000000,
+      transparent: true,
+      opacity: isDarkMode ? 0.05 : 0.08,
+      side: THREE.DoubleSide
+    });
+    scene.add(new THREE.Mesh(globeGeometry, globeMaterial));
 
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
-    let capitalMeshes = [];
-    let hoveredCapital = null;
+    let hoveredPoint = null;
+    const allMeshes = [];
 
-    function convertFlatCoordsToSphereCoords(x, y) {
-      let latitude = ((x - globeWidth) / globeWidth) * -180;
-      let longitude = ((y - globeHeight) / globeHeight) * -90;
-      latitude = (latitude * Math.PI) / 180;
-      longitude = (longitude * Math.PI) / 180;
-      const radius = Math.cos(longitude) * globeRadius;
+    const pointColor = isDarkMode ? 0x626177 : 0x888888;
+    const capitalColor = 0xff0000;
 
-      return {
-        x: Math.cos(latitude) * radius,
-        y: Math.sin(longitude) * globeRadius,
-        z: Math.sin(latitude) * radius
-      };
-    }
+    fetch('./points.json')
+      .then(res => res.json())
+      .then(data => {
+        CAPITALS.forEach(capital => {
+          const pos = convertToSphereCoords(capital.x, capital.y);
+          if (!pos.x) return;
 
-    function isCapital(x, y) {
-      for (let capital of capitalCoordinates) {
-        if (capital.x === x && capital.y === y) {
-          return capital;
-        }
-      }
-      return null;
-    }
-
-    async function addPoints() {
-      const globeGeometry = new THREE.SphereGeometry(globeRadius, 64, 64);
-      const globeColor = isDarkMode ? 0xffffff : 0x000000;
-      const globeMaterial = new THREE.MeshBasicMaterial({
-        color: globeColor,
-        transparent: true,
-        opacity: isDarkMode ? 0.05 : 0.08,
-        side: THREE.DoubleSide
-      });
-      const globeSphere = new THREE.Mesh(globeGeometry, globeMaterial);
-      scene.add(globeSphere);
-
-      const response = await fetch('./points.json');
-      const data = await response.json();
-      const points = data.points;
-
-      const allPointMeshes = [];
-
-      // D'abord, créer les points rouges brillants pour toutes les capitales
-      const capitalColor = 0xff0000;
-      const normalPointColor = isDarkMode ? 0x626177 : 0x888888;
-      
-      for (let capital of capitalCoordinates) {
-        const pos = convertFlatCoordsToSphereCoords(capital.x, capital.y);
-        
-        if (pos.x && pos.y && pos.z) {
-          const geometry = new THREE.SphereGeometry(0.5, 5, 5);
-          const material = new THREE.MeshBasicMaterial({ 
-            color: capitalColor,
-            emissive: capitalColor,
-            emissiveIntensity: 0.5
-          });
-          const mesh = new THREE.Mesh(geometry, material);
+          const mesh = new THREE.Mesh(
+            new THREE.SphereGeometry(0.5, 4, 4),
+            new THREE.MeshBasicMaterial({ color: capitalColor })
+          );
           mesh.position.set(pos.x, pos.y, pos.z);
-          mesh.userData = {
-            isCapital: true,
-            isSpecial: true,
-            name: capital.name,
-            coordinates: { x: capital.x, y: capital.y },
-            originalColor: capitalColor,
-            originalScale: 1
-          };
+          mesh.userData = { name: capital.name, isCapital: true };
           scene.add(mesh);
-          allPointMeshes.push(mesh);
-          capitalMeshes.push(mesh);
-        }
-      }
+          allMeshes.push(mesh);
+          capitalMeshesRef.current.push(mesh);
+        });
 
-      for (let point of points) {
-        const capital = isCapital(point.x, point.y);
-        if (capital) continue;
+        data.points.forEach(point => {
+          if (CAPITALS.some(c => c.x === point.x && c.y === point.y)) return;
+          
+          const pos = convertToSphereCoords(point.x, point.y);
+          if (!pos.x) return;
 
-        const pos = convertFlatCoordsToSphereCoords(point.x, point.y);
-        
-        if (pos.x && pos.y && pos.z) {
-          const geometry = new THREE.SphereGeometry(0.5, 5, 5);
-          const material = new THREE.MeshBasicMaterial({ 
-            color: normalPointColor 
-          });
-          const mesh = new THREE.Mesh(geometry, material);
+          const mesh = new THREE.Mesh(
+            new THREE.SphereGeometry(0.5, 4, 4),
+            new THREE.MeshBasicMaterial({ color: pointColor })
+          );
           mesh.position.set(pos.x, pos.y, pos.z);
-          mesh.userData = {
-            isCapital: false,
-            isSpecial: false,
-            name: '',
-            coordinates: { x: point.x, y: point.y },
-            originalColor: normalPointColor,
-            originalScale: 1
-          };
+          mesh.userData = { isCapital: false };
           scene.add(mesh);
-          allPointMeshes.push(mesh);
-        }
-      }
-      
-      capitalMeshesRef.current = capitalMeshes;
-      allPointMeshesRef.current = allPointMeshes;
-    }
+          allMeshes.push(mesh);
+        });
+      })
+      .catch(err => console.error('Erreur chargement points:', err));
 
-    addPoints();
-
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-    scene.add(ambientLight);
-
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-    directionalLight.position.set(5, 3, 5);
-    scene.add(directionalLight);
-
-    function onMouseMove(event) {
+    const handleMouse = (event) => {
       const rect = canvas.getBoundingClientRect();
       mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
       mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
       raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObjects(allPointMeshesRef.current);
+      const intersects = raycaster.intersectObjects(allMeshes);
 
-      if (hoveredCapital && (!intersects.length || intersects[0].object !== hoveredCapital)) {
-        hoveredCapital.scale.setScalar(1);
+      if (hoveredPoint) {
+        hoveredPoint.scale.setScalar(1);
         canvas.style.cursor = 'default';
-        hoveredCapital = null;
+        hoveredPoint = null;
       }
 
       if (intersects.length > 0) {
-        const point = intersects[0].object;
-        point.scale.setScalar(2);
+        hoveredPoint = intersects[0].object;
+        hoveredPoint.scale.setScalar(2);
         canvas.style.cursor = 'pointer';
-        hoveredCapital = point;
       }
-    }
+    };
 
-    function onClick(event) {
-      const rect = canvas.getBoundingClientRect();
-      mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-      mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
-      raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObjects(allPointMeshesRef.current);
-
-      if (intersects.length > 0) {
-        const point = intersects[0].object;
-        
-        if (selectedPointRef.current && selectedPointRef.current !== point) {
-          selectedPointRef.current.material.color.setHex(selectedPointRef.current.userData.originalColor);
-        }
-        
-        point.material.color.setHex(0xff0000);
-        selectedPointRef.current = point;
-        
-        console.log(`Point cliqué - Coordonnées: x=${point.userData.coordinates.x}, y=${point.userData.coordinates.y}`);
-        
-        if (point.userData.isCapital && point.userData.name && onPlayerSelect) {
-          // Arrêter l'auto-rotation
-          controls.autoRotate = false;
-          
-          // Calculer la position de la caméra pour faire face à la ville
-          const pointPosition = point.position.clone();
-          const distance = 150; // Distance du zoom
-          
-          // Calculer la direction de la caméra vers le point
-          const direction = pointPosition.clone().normalize();
-          const newCameraPosition = direction.multiplyScalar(distance);
-          
-          // Animer la caméra vers la nouvelle position
-          gsap.to(camera.position, {
-            x: newCameraPosition.x,
-            y: newCameraPosition.y,
-            z: newCameraPosition.z,
-            duration: 1.5,
-            ease: "power2.inOut",
-            onUpdate: () => {
-              camera.lookAt(0, 0, 0);
-              controls.update();
-            },
-            onComplete: () => {
-              setIsZoomedRef.current(true);
-            }
-          });
-          
-          onPlayerSelect(point.userData.name);
-        }
+    const handleClick = () => {
+      if (hoveredPoint?.userData.isCapital && hoveredPoint.userData.name) {
+        zoomToCity(hoveredPoint.userData.name);
       }
-    }
+    };
 
-    canvas.addEventListener('mousemove', onMouseMove);
-    canvas.addEventListener('click', onClick);
+    canvas.addEventListener('mousemove', handleMouse);
+    canvas.addEventListener('click', handleClick);
 
-    let animationFrameId; // Pour pouvoir cancel l'animation
-    function animate() {
-      animationFrameId = requestAnimationFrame(animate);
+    let frameId;
+    const animate = () => {
+      frameId = requestAnimationFrame(animate);
       controls.update();
       renderer.render(scene, camera);
-    }
+    };
+    animate();
 
-    function handleResize() {
+    const handleResize = () => {
       const width = canvas.clientWidth;
       const height = canvas.clientHeight;
-
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
-
       renderer.setSize(width, height);
-    }
+    };
 
     window.addEventListener('resize', handleResize);
 
-    const resizeObserver = new ResizeObserver(handleResize);
-    resizeObserver.observe(canvas);
-
-    animate();
-
-    // CLEANUP COMPLET pour libérer toute la mémoire quand le composant est démonté
     return () => {
-      console.log('🧹 Nettoyage du Globe 3D...');
-      
-      // Arrêter l'animation
-      cancelAnimationFrame(animationFrameId);
-      
-      // Retirer les event listeners
+      cancelAnimationFrame(frameId);
       window.removeEventListener('resize', handleResize);
-      resizeObserver.disconnect();
-      canvas.removeEventListener('mousemove', onMouseMove);
-      canvas.removeEventListener('click', onClick);
       
-      // Nettoyer TOUS les meshes
-      allPointMeshesRef.current.forEach(mesh => {
-        if (mesh.geometry) mesh.geometry.dispose();
-        if (mesh.material) mesh.material.dispose();
-        scene.remove(mesh);
-      });
-      
-      capitalMeshesRef.current.forEach(mesh => {
-        if (mesh.geometry) mesh.geometry.dispose();
-        if (mesh.material) mesh.material.dispose();
-        scene.remove(mesh);
-      });
-      
-      // Nettoyer la scène complètement
-      while(scene.children.length > 0) { 
-        const object = scene.children[0];
-        if (object.geometry) object.geometry.dispose();
-        if (object.material) {
-          if (Array.isArray(object.material)) {
-            object.material.forEach(mat => mat.dispose());
+      scene.traverse(obj => {
+        if (obj.geometry) obj.geometry.dispose();
+        if (obj.material) {
+          if (Array.isArray(obj.material)) {
+            obj.material.forEach(m => m.dispose());
           } else {
-            object.material.dispose();
+            obj.material.dispose();
           }
-        }
-        scene.remove(object);
-      }
-      
-      // Dispose du renderer
-      renderer.dispose();
-      
-      // Nettoyer les controls
-      if (controls) controls.dispose();
-      
-      // Vider les refs
-      allPointMeshesRef.current = [];
-      capitalMeshesRef.current = [];
-      selectedPointRef.current = null;
-      
-      console.log('✅ Globe 3D nettoyé et mémoire libérée');
-    };
-  }, [onPlayerSelect, isDarkMode]);
-
-  let animationFrameId; // Déclarer pour pouvoir cancel dans cleanup
-
-  useEffect(() => {
-    if (!selectedPlayer && cameraRef.current && controlsRef.current) {
-      const controls = controlsRef.current;
-      
-      controls.autoRotate = true;
-      
-      if (selectedPointRef.current) {
-        selectedPointRef.current.material.color.setHex(selectedPointRef.current.userData.originalColor);
-        selectedPointRef.current = null;
-      }
-    }
-  }, [selectedPlayer]);
-
-  useImperativeHandle(ref, () => ({
-    resetCamera: () => {
-      if (cameraRef.current && controlsRef.current) {
-        const controls = controlsRef.current;
-        const camera = cameraRef.current;
-        
-        controls.autoRotate = true;
-        setIsZoomed(false);
-        
-        if (selectedPointRef.current) {
-          selectedPointRef.current.material.color.setHex(selectedPointRef.current.userData.originalColor);
-          selectedPointRef.current = null;
-        }
-        
-        gsap.to(camera.position, {
-          x: 0,
-          y: 0,
-          z: -300,
-          duration: 1.5,
-          ease: "power2.inOut",
-          onUpdate: () => {
-            camera.lookAt(0, 0, 0);
-            controls.update();
-          }
-        });
-      }
-    }
-  }));
-
-  const handleResetZoom = () => {
-    if (cameraRef.current && controlsRef.current) {
-      const controls = controlsRef.current;
-      const camera = cameraRef.current;
-      
-      controls.autoRotate = true;
-      setIsZoomed(false);
-      
-      if (selectedPointRef.current) {
-        selectedPointRef.current.material.color.setHex(selectedPointRef.current.userData.originalColor);
-        selectedPointRef.current = null;
-      }
-      
-      gsap.to(camera.position, {
-        x: 0,
-        y: 0,
-        z: -300,
-        duration: 1.5,
-        ease: "power2.inOut",
-        onUpdate: () => {
-          camera.lookAt(0, 0, 0);
-          controls.update();
         }
       });
 
-      // Réinitialiser la ville sélectionnée
-      if (onPlayerSelect) {
-        onPlayerSelect(null);
-      }
-    }
-  };
+      renderer.dispose();
+      controls.dispose();
+      capitalMeshesRef.current = [];
+    };
+  }, [isDarkMode, convertToSphereCoords]);
 
   return (
-    <div className="globe-container" ref={containerRef}>
+    <div className="globe-container">
       <canvas ref={canvasRef}></canvas>
       {isZoomed && (
-        <button className="reset-zoom-btn" onClick={handleResetZoom} title="Retour à la vue globale">
+        <button className="reset-zoom-btn" onClick={resetZoom} title="Retour à la vue globale">
           <span className="reset-icon">↺</span>
           <span className="reset-text">Vue Globale</span>
         </button>
