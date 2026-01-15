@@ -1,4 +1,4 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import './App.css';
 import Header from './components/Header';
 import HomePage from './components/HomePage';
@@ -37,6 +37,7 @@ function App() {
   const [showDesignPanel, setShowDesignPanel] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const globeRef = useRef(null); // Ref partagée pour contrôler le Globe depuis n'importe où
 
   const games = ['Valorant', 'Counter Strike', 'Call of Duty', 'Fortnite'];
 
@@ -89,6 +90,14 @@ function App() {
     setCurrentPage('accueil');
   };
 
+  // Fonction pour zoomer vers une ville depuis la RightPanel
+  const handlePlayerClickFromPanel = (cityName) => {
+    setSelectedCity(cityName);
+    if (globeRef.current && globeRef.current.zoomToCity) {
+      globeRef.current.zoomToCity(cityName);
+    }
+  };
+
   const renderPage = () => {
     if (currentPage === 'profile') {
       if (!user) {
@@ -112,13 +121,13 @@ function App() {
         return (
           <Suspense fallback={<div className="loading-lazy">Chargement de la carte 3D...</div>}>
             <PlayersPage 
+              ref={globeRef}
               user={user}
               onLogout={handleLogout}
               onLoginClick={() => setCurrentPage('login')}
               onDashboardClick={() => setCurrentPage('dashboard')}
               onDesignClick={() => setShowDesignPanel(true)}
               onCitySelect={setSelectedCity}
-              onPlayerSelectFromPanel={setSelectedCity}
             />
           </Suspense>
         );
@@ -201,21 +210,18 @@ function App() {
               />
               {renderPage()}
             </div>
-            {/* Cacher le RightPanel sur la page Joueurs pour laisser le Globe en plein écran */}
-            {currentPage !== 'joueurs' && (
-              <RightPanel 
-                currentGame={games[currentGame]} 
-                onDashboardClick={() => setCurrentPage('dashboard')}
-                onDesignClick={() => setShowDesignPanel(true)}
-                onDatasetsClick={() => setCurrentPage('datasets')}
-                user={user}
-                onLogout={handleLogout}
-                onLoginClick={() => setShowLoginModal(true)}
-                currentPage={currentPage}
-                selectedCity={selectedCity}
-                onPlayerClick={currentPage === 'joueurs' ? setSelectedCity : null}
-              />
-            )}
+            <RightPanel 
+              currentGame={games[currentGame]} 
+              onDashboardClick={() => setCurrentPage('dashboard')}
+              onDesignClick={() => setShowDesignPanel(true)}
+              onDatasetsClick={() => setCurrentPage('datasets')}
+              user={user}
+              onLogout={handleLogout}
+              onLoginClick={() => setShowLoginModal(true)}
+              currentPage={currentPage}
+              selectedCity={selectedCity}
+              onPlayerClick={currentPage === 'joueurs' ? handlePlayerClickFromPanel : null}
+            />
           </div>
         </div>
 

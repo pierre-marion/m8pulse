@@ -1,25 +1,34 @@
 /* ===== RIGHT PANEL MODERNE ===== */
 .right-panel {
-  width: var(--right-panel-width, 360px);
-  max-width: 360px;
-  min-width: 300px;
+  width: var(--right-panel-width, 320px);
+  max-width: 320px;
+  min-width: 280px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 12px;
   flex-shrink: 0;
   overflow-y: auto;
   overflow-x: hidden;
   height: calc(100vh - 40px);
-  padding-right: 12px;
+  padding-right: 8px;
 }
 
 /* Écrans 15" avec échelle 125% (1920px -> ~1536px) */
 @media (max-width: 1600px) {
   .right-panel {
-    width: 260px;
-    max-width: 260px;
-    min-width: 240px;
-    gap: 12px;
+    width: 280px;
+    max-width: 280px;
+    min-width: 260px;
+    gap: 10px;
+  }
+  
+  .top-players {
+    max-height: 220px;
+  }
+  
+  .player-stats-detailed,
+  .planning-modern {
+    max-height: 320px;
   }
 }
 
@@ -83,10 +92,36 @@ body.dark-mode .panel-section {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 50px rgba(157, 108, 255, 0.1);
 }
 
+/* Icône d'accordéon */
+.accordion-icon {
+  font-size: 14px;
+  color: #7D3CFF;
+  transition: transform 0.3s ease;
+  display: inline-block;
+}
+
+body.dark-mode .accordion-icon {
+  color: #9D6CFF;
+}
+
+/* Icône d'accordéon */
+.accordion-icon {
+  font-size: 14px;
+  color: #7D3CFF;
+  transition: transform 0.3s ease;
+  display: inline-block;
+}
+
+body.dark-mode .accordion-icon {
+  color: #9D6CFF;
+}
+
 /* ===== PROFIL MODERNE ===== */
 .profile-modern {
   padding: 12px !important;
   margin-bottom: 8px;
+  max-height: 110px;
+  flex-shrink: 0;
 }
 
 .profile-compact {
@@ -259,9 +294,106 @@ body.dark-mode .theme-toggle-mini {
 /* ===== SECTION TOP PLAYERS ===== */
 .top-players {
   padding: 10px !important;
-  overflow-x: hidden;
+  overflow: hidden;
   max-width: 100%;
   margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  max-height: 240px;
+}
+
+.players-scrollable-content {
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+}
+
+.players-scrollable-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.players-scrollable-content::-webkit-scrollbar-track {
+  background: rgba(125, 60, 255, 0.05);
+  border-radius: 10px;
+}
+
+body.dark-mode .players-scrollable-content::-webkit-scrollbar-track {
+  background: rgba(157, 108, 255, 0.1);
+}
+
+.players-scrollable-content::-webkit-scrollbar-thumb {
+  background: rgba(125, 60, 255, 0.3);
+  border-radius: 10px;
+}
+
+body.dark-mode .players-scrollable-content::-webkit-scrollbar-thumb {
+  background: rgba(157, 108, 255, 0.4);
+}
+
+.players-scrollable-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(125, 60, 255, 0.5);
+}
+
+body.dark-mode .players-scrollable-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(157, 108, 255, 0.6);
+}
+
+/* ===== TAILLES SPÉCIFIQUES POUR PAGE JOUEURS ===== */
+.top-players-joueurs {
+  max-height: 250px !important;
+}
+
+.player-stats-joueurs {
+  max-height: 350px !important;
+}
+
+.planning-joueurs {
+  max-height: 250px !important;
+}
+
+/* Écrans 15" - Ajustements pour page joueurs */
+@media (max-width: 1600px) {
+  .top-players-joueurs {
+    max-height: 220px !important;
+  }
+  
+  .player-stats-joueurs {
+    max-height: 300px !important;
+  }
+  
+  .planning-joueurs {
+    max-height: 220px !important;
+  }
+}
+
+/* MacBook / laptops - Ajustements pour page joueurs */
+@media (max-width: 1440px) {
+  .top-players-joueurs {
+    max-height: 200px !important;
+  }
+  
+  .player-stats-joueurs {
+    max-height: 280px !important;
+  }
+  
+  .planning-joueurs {
+    max-height: 200px !important;
+  }
+}
+
+/* Small laptops - Ajustements pour page joueurs */
+@media (max-width: 1280px) {
+  .top-players-joueurs {
+    max-height: 180px !important;
+  }
+  
+  .player-stats-joueurs {
+    max-height: 250px !important;
+  }
+  
+  .planning-joueurs {
+    max-height: 180px !important;
+  }
 }
 
 .section-header {
@@ -702,15 +834,233 @@ body.dark-mode .stat-val {
 /* ===== PLANNING MODERNE ===== */
 .planning-modern {
   padding: 10px !important;
+  max-height: 350px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.planning-modern::-webkit-scrollbar {
+  width: 6px;
+}
+
+.planning-modern::-webkit-scrollbar-track {
+  background: rgba(125, 60, 255, 0.05);
+  border-radius: 10px;
+}
+
+body.dark-mode .planning-modern::-webkit-scrollbar-track {
+  background: rgba(157, 108, 255, 0.1);
+}
+
+.planning-modern::-webkit-scrollbar-thumb {
+  background: rgba(125, 60, 255, 0.3);
+  border-radius: 10px;
+}
+
+body.dark-mode .planning-modern::-webkit-scrollbar-thumb {
+  background: rgba(157, 108, 255, 0.4);
+}
+
+.planning-modern::-webkit-scrollbar-thumb:hover {
+  background: rgba(125, 60, 255, 0.5);
+}
+
+body.dark-mode .planning-modern::-webkit-scrollbar-thumb:hover {
+  background: rgba(157, 108, 255, 0.6);
+}
+
+/* ===== STATS DÉTAILLÉES DES JOUEURS ===== */
+.player-stats-detailed {
+  padding: 16px !important;
+  display: flex;
+  flex-direction: column;
+  max-height: 350px;
+  overflow: hidden;
+}
+
+.stats-scrollable-content {
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+}
+
+.stats-scrollable-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.stats-scrollable-content::-webkit-scrollbar-track {
+  background: rgba(125, 60, 255, 0.05);
+  border-radius: 10px;
+}
+
+body.dark-mode .stats-scrollable-content::-webkit-scrollbar-track {
+  background: rgba(157, 108, 255, 0.1);
+}
+
+.stats-scrollable-content::-webkit-scrollbar-thumb {
+  background: rgba(125, 60, 255, 0.3);
+  border-radius: 10px;
+}
+
+body.dark-mode .stats-scrollable-content::-webkit-scrollbar-thumb {
+  background: rgba(157, 108, 255, 0.4);
+}
+
+.stats-scrollable-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(125, 60, 255, 0.5);
+}
+
+body.dark-mode .stats-scrollable-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(157, 108, 255, 0.6);
+}
+
+.player-header-detailed {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(125, 60, 255, 0.2);
+}
+
+body.dark-mode .player-header-detailed {
+  border-bottom-color: rgba(157, 108, 255, 0.3);
+}
+
+.player-avatar-large {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.player-info-detailed {
+  flex: 1;
+  min-width: 0;
+}
+
+.player-name-large {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  color: #2c3e50;
+}
+
+body.dark-mode .player-name-large {
+  color: #fff;
+}
+
+.player-fullname {
+  font-size: 13px;
+  color: #7f8c8d;
+  margin: 0 0 6px 0;
+}
+
+body.dark-mode .player-fullname {
+  color: #95a5a6;
+}
+
+.player-role-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.player-description {
+  background: rgba(125, 60, 255, 0.05);
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  border-left: 3px solid rgba(125, 60, 255, 0.3);
+}
+
+body.dark-mode .player-description {
+  background: rgba(157, 108, 255, 0.1);
+  border-left-color: rgba(157, 108, 255, 0.5);
+}
+
+.player-description p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #34495e;
+}
+
+body.dark-mode .player-description p {
+  color: #bdc3c7;
+}
+
+.stats-grid-detailed {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  flex: 1;
+  align-content: start;
+}
+
+.stat-box {
+  background: rgba(125, 60, 255, 0.05);
+  padding: 12px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+body.dark-mode .stat-box {
+  background: rgba(157, 108, 255, 0.1);
+}
+
+.stat-box:hover {
+  background: rgba(125, 60, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+body.dark-mode .stat-box:hover {
+  background: rgba(157, 108, 255, 0.2);
+}
+
+.stat-label-detailed {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #7f8c8d;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+body.dark-mode .stat-label-detailed {
+  color: #95a5a6;
+}
+
+.stat-value-detailed {
+  font-size: 20px;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+body.dark-mode .stat-value-detailed {
+  color: #ecf0f1;
 }
 
 /* Sur grands écrans (1920px+), étirer le calendrier pour remplir l'espace */
 @media (min-width: 1920px) and (min-height: 1000px) {
   .planning-modern {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 500px;
+    min-height: auto;
   }
 }
 
@@ -719,25 +1069,70 @@ body.dark-mode .stat-val {
 /* Pour écrans avec hauteur réduite (laptops, MacBook) */
 @media (max-height: 900px) {
   .right-panel {
-    gap: 5px !important;
+    gap: 8px !important;
   }
   
   .panel-section {
-    padding: 7px !important;
+    padding: 8px !important;
   }
   
-  .planning-modern {
-    padding: 5px !important;
+  .planning-modern,
+  .player-stats-detailed {
+    padding: 8px !important;
+  }
+  
+  .top-players {
+    padding: 8px !important;
+  }
+  
+  .profile-modern {
+    padding: 8px !important;
+    max-height: 120px;
   }
   
   .profile-compact {
-    margin-bottom: 4px !important;
+    margin-bottom: 6px !important;
   }
   
   .avatar-modern {
-    width: 40px !important;
-    height: 40px !important;
-    font-size: 18px !important;
+    width: 50px !important;
+    height: 50px !important;
+    font-size: 22px !important;
+  }
+
+  .player-avatar-large {
+    width: 45px !important;
+    height: 45px !important;
+    font-size: 20px !important;
+  }
+
+  .player-name-large {
+    font-size: 16px !important;
+  }
+
+  .player-fullname {
+    font-size: 11px !important;
+  }
+
+  .player-description {
+    padding: 8px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .player-description p {
+    font-size: 11px !important;
+  }
+
+  .stat-box {
+    padding: 8px !important;
+  }
+
+  .stat-label-detailed {
+    font-size: 9px !important;
+  }
+
+  .stat-value-detailed {
+    font-size: 16px !important;
   }
   
   .quick-actions {
