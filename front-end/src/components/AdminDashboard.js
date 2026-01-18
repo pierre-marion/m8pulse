@@ -1,5 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import './AdminDashboard.css';
+
+const DesignPanel = lazy(() => import('./DesignPanel'));
+const Datasets = lazy(() => import('./Datasets'));
 
 function AdminDashboard({ user, onBack }) {
   // Déterminer l'onglet par défaut selon le rôle
@@ -8,7 +11,7 @@ function AdminDashboard({ user, onBack }) {
     if (user.roles?.includes('ROLE_DATA_PROVIDER')) return 'stats';
     if (user.roles?.includes('ROLE_EDITOR')) return 'articles';
     if (user.roles?.includes('ROLE_AUTHOR')) return 'articles';
-    if (user.roles?.includes('ROLE_DESIGNER')) return 'design';
+    if (user.roles?.includes('ROLE_DESIGNER')) return 'stats';
     return 'stats';
   };
 
@@ -24,13 +27,15 @@ function AdminDashboard({ user, onBack }) {
   const [users, setUsers] = useState([]);
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showDesignPanel, setShowDesignPanel] = useState(false);
+  const [showDatasetsPanel, setShowDatasetsPanel] = useState(false);
+  const [showUploadPanel, setShowUploadPanel] = useState(false);
 
   // Vérifier si l'utilisateur a accès à un onglet
   const hasAccess = (tab) => {
     if (user.roles?.includes('ROLE_ADMIN')) return true;
     if (tab === 'stats' && user.roles?.includes('ROLE_DATA_PROVIDER')) return true;
     if (tab === 'articles' && (user.roles?.includes('ROLE_EDITOR') || user.roles?.includes('ROLE_AUTHOR'))) return true;
-    if (tab === 'design' && user.roles?.includes('ROLE_DESIGNER')) return true;
     if (tab === 'users' && user.roles?.includes('ROLE_ADMIN')) return true;
     return false;
   };
@@ -266,48 +271,67 @@ function AdminDashboard({ user, onBack }) {
             📝 Articles ({articles.length})
           </button>
         )}
-        {hasAccess('design') && (
-          <button 
-            className={`tab-btn ${activeTab === 'design' ? 'active' : ''}`}
-            onClick={() => setActiveTab('design')}
-          >
-            🎨 Design
-          </button>
-        )}
       </div>
 
       {/* Content */}
       {activeTab === 'stats' && (
-        <div className="stats-overview">
-          <div className="stat-card">
-            <div className="stat-icon">👥</div>
-            <div className="stat-content">
-              <h3>{stats.totalUsers}</h3>
-              <p>Utilisateurs</p>
+        <>
+          <div className="stats-overview">
+            <div className="stat-card">
+              <div className="stat-icon">👥</div>
+              <div className="stat-content">
+                <h3>{stats.totalUsers}</h3>
+                <p>Utilisateurs</p>
+              </div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-icon">📝</div>
+              <div className="stat-content">
+                <h3>{stats.totalArticles}</h3>
+                <p>Articles</p>
+              </div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-icon">✅</div>
+              <div className="stat-content">
+                <h3>{stats.publishedArticles}</h3>
+                <p>Publiés</p>
+              </div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-icon">⭐</div>
+              <div className="stat-content">
+                <h3>{stats.premium}</h3>
+                <p>Premium</p>
+              </div>
             </div>
           </div>
-          <div className="stat-card">
-            <div className="stat-icon">📝</div>
-            <div className="stat-content">
-              <h3>{stats.totalArticles}</h3>
-              <p>Articles</p>
+
+          {/* Actions Rapides */}
+          <div className="quick-actions-section">
+            <h3 style={{ marginBottom: '1rem', color: '#7D3CFF' }}>⚡ Actions Rapides</h3>
+            <div className="quick-actions-grid">
+              {(user.roles?.includes('ROLE_DATA_PROVIDER') || user.roles?.includes('ROLE_ADMIN')) && (
+                <button className="quick-action-btn" onClick={() => setShowDatasetsPanel(true)}>
+                  <span className="action-icon">📊</span>
+                  <span className="action-text">
+                    <strong>Dataset Manager</strong>
+                    <small>Gérer les datasets</small>
+                  </span>
+                </button>
+              )}
+              {(user.roles?.includes('ROLE_DESIGNER') || user.roles?.includes('ROLE_ADMIN')) && (
+                <button className="quick-action-btn" onClick={() => setShowDesignPanel(true)}>
+                  <span className="action-icon">🎨</span>
+                  <span className="action-text">
+                    <strong>Theme Designer</strong>
+                    <small>Personnaliser le design</small>
+                  </span>
+                </button>
+              )}
             </div>
           </div>
-          <div className="stat-card">
-            <div className="stat-icon">✅</div>
-            <div className="stat-content">
-              <h3>{stats.publishedArticles}</h3>
-              <p>Publiés</p>
-            </div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-icon">⭐</div>
-            <div className="stat-content">
-              <h3>{stats.premium}</h3>
-              <p>Premium</p>
-            </div>
-          </div>
-        </div>
+        </>
       )}
 
       {activeTab === 'users' && (
@@ -597,6 +621,80 @@ function AdminDashboard({ user, onBack }) {
                 }}>
                   Bouton exemple
                 </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Popups */}
+      {showDesignPanel && (
+        <Suspense fallback={null}>
+          <DesignPanel onClose={() => setShowDesignPanel(false)} />
+        </Suspense>
+      )}
+
+      {showDatasetsPanel && (
+        <Suspense fallback={<div className="loading-overlay">Chargement...</div>}>
+          <div className="modal-overlay" onClick={() => setShowDatasetsPanel(false)}>
+            <div className="modal-content large" onClick={(e) => e.stopPropagation()}>
+              <button className="modal-close" onClick={() => setShowDatasetsPanel(false)}>×</button>
+              <Datasets user={user} />
+            </div>
+          </div>
+        </Suspense>
+      )}
+
+      {showUploadPanel && (
+        <div className="modal-overlay" onClick={() => setShowUploadPanel(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setShowUploadPanel(false)}>×</button>
+            <div style={{ padding: '2rem' }}>
+              <h2 style={{ marginBottom: '1.5rem', color: '#7D3CFF' }}>📤 Importer un fichier XLSX</h2>
+              <div className="upload-zone">
+                <input 
+                  type="file" 
+                  accept=".xlsx,.xls"
+                  onChange={async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    const formData = new FormData();
+                    formData.append('file', file);
+
+                    try {
+                      const token = localStorage.getItem('token');
+                      const response = await fetch('http://localhost:8000/api/datasets/upload', {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}` },
+                        body: formData
+                      });
+
+                      if (response.ok) {
+                        alert('✅ Fichier uploadé avec succès !');
+                        setShowUploadPanel(false);
+                        fetchDashboardData();
+                      } else {
+                        const error = await response.json();
+                        alert(`❌ Erreur: ${error.error || 'Échec de l\'upload'}`);
+                      }
+                    } catch (error) {
+                      console.error('Erreur upload:', error);
+                      alert('❌ Erreur réseau');
+                    }
+                  }}
+                  style={{
+                    padding: '2rem',
+                    border: '2px dashed #7D3CFF',
+                    borderRadius: '12px',
+                    width: '100%',
+                    cursor: 'pointer',
+                    fontSize: '1rem'
+                  }}
+                />
+                <p style={{ marginTop: '1rem', color: '#7f8c8d', fontSize: '0.9rem' }}>
+                  Formats acceptés: .xlsx, .xls
+                </p>
               </div>
             </div>
           </div>

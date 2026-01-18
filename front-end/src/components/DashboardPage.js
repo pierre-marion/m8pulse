@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import './DashboardPageNew.css';
 import Icon from './Icon';
 
-function DashboardPage({ currentGame }) {
+const DesignPanel = lazy(() => import('./DesignPanel'));
+const Datasets = lazy(() => import('./Datasets'));
+
+function DashboardPage({ currentGame, user }) {
   const [stats, setStats] = useState({
     totalUsers: 0,
     activeSubscribers: 0,
@@ -11,6 +14,8 @@ function DashboardPage({ currentGame }) {
   });
   const [topArticles, setTopArticles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showDesignPanel, setShowDesignPanel] = useState(false);
+  const [showDatasetsPanel, setShowDatasetsPanel] = useState(false);
 
   useEffect(() => {
     fetchDashboardData();
@@ -178,16 +183,39 @@ function DashboardPage({ currentGame }) {
             <span className="action-icon"><Icon name="edit" size={32} color="#7D3CFF" /></span>
             <span className="action-label">Nouvel Article</span>
           </button>
-          <button className="action-card">
-            <span className="action-icon"><Icon name="database" size={32} color="#7D3CFF" /></span>
-            <span className="action-label">Dataset Manager</span>
-          </button>
-          <button className="action-card">
-            <span className="action-icon"><Icon name="palette" size={32} color="#7D3CFF" /></span>
-            <span className="action-label">Theme Designer</span>
-          </button>
+          {user?.roles?.includes('ROLE_DATA_PROVIDER') && (
+            <button className="action-card" onClick={() => setShowDatasetsPanel(true)}>
+              <span className="action-icon"><Icon name="database" size={32} color="#7D3CFF" /></span>
+              <span className="action-label">Dataset Manager</span>
+            </button>
+          )}
+          {user?.roles?.includes('ROLE_DESIGNER') && (
+            <button className="action-card" onClick={() => setShowDesignPanel(true)}>
+              <span className="action-icon"><Icon name="palette" size={32} color="#7D3CFF" /></span>
+              <span className="action-label">Theme Designer</span>
+            </button>
+          )}
         </div>
       </div>
+
+      {/* Popup Design Panel */}
+      {showDesignPanel && (
+        <Suspense fallback={null}>
+          <DesignPanel onClose={() => setShowDesignPanel(false)} />
+        </Suspense>
+      )}
+
+      {/* Popup Datasets */}
+      {showDatasetsPanel && (
+        <Suspense fallback={<div className="loading-overlay">Chargement...</div>}>
+          <div className="modal-overlay" onClick={() => setShowDatasetsPanel(false)}>
+            <div className="modal-content large" onClick={(e) => e.stopPropagation()}>
+              <button className="modal-close" onClick={() => setShowDatasetsPanel(false)}>×</button>
+              <Datasets user={user} />
+            </div>
+          </div>
+        </Suspense>
+      )}
     </div>
   );
 }

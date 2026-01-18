@@ -3,12 +3,12 @@ import './SubscriptionPage.css';
 import Icon from './Icon';
 
 function SubscriptionPage() {
-  const [selectedPlan, setSelectedPlan] = useState('pro');
+  const [selectedPlan, setSelectedPlan] = useState('silver');
   const [billingPeriod, setBillingPeriod] = useState('monthly'); // monthly or yearly
 
   const plans = {
-    basic: {
-      name: 'Basic',
+    free: {
+      name: 'Free',
       icon: 'barChart',
       monthlyPrice: 0,
       yearlyPrice: 0,
@@ -16,8 +16,8 @@ function SubscriptionPage() {
       features: [
         { name: 'Statistiques de base', included: true },
         { name: 'KD, ACS, Rating', included: true },
-        { name: 'Classements', included: true },
-        { name: 'Historique des matchs', included: true },
+        { name: 'Classements publics', included: true },
+        { name: 'Historique des matchs (7 jours)', included: true },
         { name: 'Profil joueur basique', included: true },
         { name: 'Stats avancées', included: false },
         { name: 'Timeline des kills', included: false },
@@ -28,18 +28,18 @@ function SubscriptionPage() {
         { name: 'Badge exclusif', included: false }
       ]
     },
-    pro: {
-      name: 'Pro',
-      icon: 'rocket',
+    silver: {
+      name: 'Silver',
+      icon: 'award',
       monthlyPrice: 9.99,
       yearlyPrice: 99.99,
-      color: '#7D3CFF',
+      color: '#C0C0C0',
       popular: true,
       features: [
         { name: 'Statistiques de base', included: true },
         { name: 'KD, ACS, Rating', included: true },
-        { name: 'Classements', included: true },
-        { name: 'Historique des matchs', included: true },
+        { name: 'Classements publics', included: true },
+        { name: 'Historique des matchs (illimité)', included: true },
         { name: 'Profil joueur basique', included: true },
         { name: 'Stats avancées', included: true },
         { name: 'Timeline des kills', included: true },
@@ -47,11 +47,11 @@ function SubscriptionPage() {
         { name: 'Heatmaps', included: true },
         { name: 'Comparaison joueurs', included: true },
         { name: 'Support prioritaire', included: false },
-        { name: 'Badge exclusif', included: false }
+        { name: 'Badge Silver', included: true }
       ]
     },
-    elite: {
-      name: 'Elite',
+    gold: {
+      name: 'Gold',
       icon: 'trophy',
       monthlyPrice: 24.99,
       yearlyPrice: 249.99,
@@ -59,16 +59,16 @@ function SubscriptionPage() {
       features: [
         { name: 'Statistiques de base', included: true },
         { name: 'KD, ACS, Rating', included: true },
-        { name: 'Classements', included: true },
-        { name: 'Historique des matchs', included: true },
+        { name: 'Classements publics', included: true },
+        { name: 'Historique des matchs (illimité)', included: true },
         { name: 'Profil joueur basique', included: true },
         { name: 'Stats avancées', included: true },
         { name: 'Timeline des kills', included: true },
         { name: 'Analyse tactique', included: true },
         { name: 'Heatmaps', included: true },
         { name: 'Comparaison joueurs', included: true },
-        { name: 'Support prioritaire', included: true },
-        { name: 'Badge exclusif', included: true }
+        { name: 'Support prioritaire 24/7', included: true },
+        { name: 'Badge Gold exclusif', included: true }
       ]
     }
   };

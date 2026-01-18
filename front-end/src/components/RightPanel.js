@@ -424,34 +424,50 @@ function RightPanel({ currentGame, onDashboardClick, onDesignClick, onDatasetsCl
         
         <div className="quick-actions">
           {user ? (
-            <>
-              {user.roles?.includes('ROLE_ADMIN') && (
-                <button className="action-mini admin" onClick={onDashboardClick}>
-                  <Icon name="barChart" size={16} /> Dashboard
+            user.roles?.includes('ROLE_ADMIN') ? (
+              <>
+                <button className="action-mini admin" onClick={onDashboardClick} title="Dashboard">
+                  <Icon name="barChart" size={16} />
                 </button>
-              )}
-              {(user.roles?.includes('ROLE_PROVIDER') || user.roles?.includes('ROLE_ADMIN')) && (
-                <button className="action-mini provider" onClick={onDatasetsClick}>
-                  <Icon name="database" size={16} /> Datasets
+                <button className="action-mini logout" onClick={onLogout} title="Déconnexion">
+                  <Icon name="logOut" size={16} />
                 </button>
-              )}
-              {user.roles?.includes('ROLE_EDITOR') && !user.roles?.includes('ROLE_ADMIN') && (
-                <button className="action-mini admin" onClick={onDashboardClick}>
-                  <Icon name="edit" size={16} /> Éditeur
+              </>
+            ) : user.roles?.includes('ROLE_PROVIDER') ? (
+              <>
+                <button className="action-mini provider" onClick={onDatasetsClick} title="Datasets">
+                  <Icon name="database" size={16} />
                 </button>
-              )}
-              {user.roles?.includes('ROLE_DESIGNER') && !user.roles?.includes('ROLE_ADMIN') && !user.roles?.includes('ROLE_EDITOR') && (
-                <button className="action-mini admin" onClick={onDesignClick}>
-                  <Icon name="palette" size={16} /> Design
+                <button className="action-mini logout" onClick={onLogout} title="Déconnexion">
+                  <Icon name="logOut" size={16} />
                 </button>
-              )}
-              <button className="action-mini logout" onClick={onLogout}>
-                <Icon name="logOut" size={16} /> Déconnexion
+              </>
+            ) : user.roles?.includes('ROLE_EDITOR') ? (
+              <>
+                <button className="action-mini admin" onClick={onDashboardClick} title="Éditeur">
+                  <Icon name="edit" size={16} />
+                </button>
+                <button className="action-mini logout" onClick={onLogout} title="Déconnexion">
+                  <Icon name="logOut" size={16} />
+                </button>
+              </>
+            ) : user.roles?.includes('ROLE_DESIGNER') ? (
+              <>
+                <button className="action-mini admin" onClick={onDesignClick} title="Design">
+                  <Icon name="palette" size={16} />
+                </button>
+                <button className="action-mini logout" onClick={onLogout} title="Déconnexion">
+                  <Icon name="logOut" size={16} />
+                </button>
+              </>
+            ) : (
+              <button className="action-mini logout" onClick={onLogout} title="Déconnexion">
+                <Icon name="logOut" size={16} />
               </button>
-            </>
+            )
           ) : (
-            <button className="action-mini login" onClick={onLoginClick}>
-              <Icon name="user" size={16} /> Connexion
+            <button className="action-mini login" onClick={onLoginClick} title="Connexion">
+              <Icon name="user" size={16} />
             </button>
           )}
         </div>
