@@ -1,0 +1,176 @@
+# M8Pulse
+
+CMS de data storytelling pour clubs esports. Projet académique BUT MMI - SAÉ 501.2
+
+## C'est quoi ?
+
+Un CMS qui permet aux clubs esports de créer leur site avec des visualisations de données et un système de thèmes personnalisables. Le même outil s'adapte à n'importe quel club (Team Liquid, G2, Karmine Corp...) grâce au designer intégré.
+
+## Le concept
+
+Les clubs esports ont besoin de montrer leurs stats, analyser leurs performances et se démarquer visuellement. M8Pulse permet de créer des articles avec des graphiques interactifs à partir de datasets CSV ou Google Sheets, le tout avec une identité visuelle propre à chaque club.
+
+**Modèle business** : SaaS en abonnement mensuel pour clubs semi-pro/pro
+
+## Fonctionnalités
+
+### Articles avec blocs modulaires
+- Types : standard, data story, analyse, tutoriel
+- Blocs : titres, texte, images, visualisations de données
+- Éditeur visuel pour créer des narrations avec graphiques
+
+### Visualisations interactives
+- Bar chart, pie chart, line chart, scatter plot, histogram
+- Configuration dynamique : choix du dataset, des variables, des couleurs
+- Détection auto du type de variable (catégorielle/numérique)
+
+### Upload de datasets
+- CSV (séparateur `;`) ou Google Sheets
+- Parsing automatique et validation
+- Exemple de format :
+```csv
+Joueur;Agent;Map;Kills;Deaths;ACS
+ScreaM;Jett;Ascent;24;15;312
+TenZ;Reyna;Bind;28;12;342
+```
+
+### Système de thèmes
+Le point clé du projet : personnalisation complète par club.
+- 3 niveaux : site global, page, article
+- Modifiable en temps réel : couleurs, typo, logo, layout, navigation
+- Chaque club peut avoir son identité visuelle unique
+
+### Système de notation
+- Notation par blocs (0-5 étoiles) pour les abonnés
+- Commentaires sur les articles
+
+### Page d'accueil 3D
+- Globe interactif (Three.js) avec capitales cliquables
+- Présentation du réseau de clubs
+
+## Stack technique
+
+**Docker Compose** avec 4 services :
+- Frontend React (port 3000)
+- Backend Symfony (port 8000)
+- MySQL 8.0 (port 3307)
+- PHPMyAdmin (port 8080)
+
+**Backend** : Symfony 7 + Doctrine ORM + JWT + API REST documentée
+**Frontend** : React 18 + Three.js + React Router
+**Base de données** : MySQL avec migrations Doctrine
+
+Entités principales : User, Article, Dataset, Visualization, Media, Theme, Rating, Comment
+
+## Installation
+
+```bash
+# Cloner et lancer
+git clone https://github.com/stonefaII/m8pulse.git
+cd m8pulse
+docker compose up -d --build
+
+# Setup backend
+docker exec -it m8pulse_backend bash
+composer install
+./setup.sh
+exit
+```
+
+**Accès** :
+- Frontend : http://localhost:3000
+- API : http://localhost:8000
+- Doc API : http://localhost:8000/api/doc
+- PHPMyAdmin : http://localhost:8080
+
+**BDD** : m8user / m8password / m8pulse
+
+**Comptes de test** (après setup.sh) :
+- visitor@m8pulse.com / visitor123
+- subscriber@m8pulse.com / subscriber123
+- author@m8pulse.com / author123
+- editor@m8pulse.com / editor123
+- designer@m8pulse.com / designer123
+- provider@m8pulse.com / provider123
+- admin@m8pulse.com / admin123
+
+## Utilisation
+
+**Créer un article avec graphique** (Author/Editor/Admin) :
+1. Dashboard → Nouvel article
+2. Titre, résumé, type (data story)
+3. Ajouter blocs : texte, image, visualisation
+4. Pour la viz : choisir dataset, type de graphique, variables, couleurs
+5. Publier
+
+**Uploader un dataset** (Provider/Admin) :
+1. Dashboard → Datasets → Nouveau
+2. Upload CSV (séparateur `;`)
+3. Validation auto des colonnes et types
+4. Corriger si besoin (catégorielle ↔ numérique)
+5. Valider
+
+**Personnaliser le thème** (Designer/Admin) :
+1. Dashboard → Panel Design
+2. Scope : site/article/page
+3. Modifier couleurs, logo, typo, layout
+4. Aperçu temps réel
+5. Sauvegarder
+
+Exemple : créer thème "Team Liquid" (bleu/noir) vs "G2" (rouge/blanc)
+
+## Rôles
+
+- **VISITOR** : Lecture seule
+- **SUBSCRIBER** : Lecture + notation + commentaires
+- **AUTHOR** : Création d'articles (seulement les siens)
+- **EDITOR** : Création + modif de tous les articles
+- **DESIGNER** : Gestion des thèmes
+- **PROVIDER** : Upload et validation de datasets
+- **ADMIN** : Accès complet
+
+## API
+
+Principaux endpoints :
+
+**Auth** : POST /api/login, /api/users/register
+**Articles** : GET/POST/PUT/DELETE /api/articles
+**Datasets** : GET/POST /api/datasets
+**Visualisations** : POST/GET /api/visualizations
+**Thèmes** : GET/POST/PUT /api/themes
+**Notations** : POST /api/ratings
+
+Doc complète : http://localhost:8000/api/doc
+
+## Technologies
+
+**Backend** : Symfony 7, Doctrine ORM, JWT, Google Sheets API
+**Frontend** : React 18, Three.js, GSAP, React Router
+**DevOps** : Docker, MySQL 8, PHPMyAdmin
+
+Principes : SOLID, design patterns (Repository, Factory), validation Symfony, sérialisation sécurisée, migrations versionnées.
+
+## Bonnes pratiques
+
+- Sécurité : JWT, CORS, validation inputs, prepared statements
+- Accessibilité : HTML sémantique, contrastes WCAG
+- Performance : lazy loading, optimisation requêtes
+- Responsive mobile-first
+
+## Contexte académique
+
+**SAÉ 501.2** - BUT MMI - Université de Tours (2025-2026)
+
+Ressources mobilisées :
+- R505 : Développement front avancé
+- R506 : Développement back avancé  
+- R507 : Dispositifs interactifs
+- R508 : Hébergement et cybersécurité
+- R502 : Management et Assurance qualité
+- R503 : Entrepreneuriat
+
+Problématique : Développer un produit interactif et créer une entreprise autour du projet.
+
+## License
+
+MIT
