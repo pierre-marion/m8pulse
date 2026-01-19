@@ -1,6 +1,6 @@
 import React from 'react';
 import './NewsCard.css';
-import Icon from '../Icon';
+import Icon from '../common/Icon/Icon';
 import Card from '../ui/Card';
 import Badge from '../ui/Badge';
 

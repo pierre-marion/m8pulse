@@ -574,7 +574,7 @@ class GoogleSheetsController extends AbstractController
             $dataset->setSource($data['url']);
             $dataset->setUploader($this->getUser());
             $dataset->setRowCount(count($playerData));
-            $dataset->setStatus('validated');
+            $dataset->setStatus('ready');
             $dataset->setValidatedAt(new \DateTime());
             
             // Déterminer les colonnes

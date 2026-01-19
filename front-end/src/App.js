@@ -1,31 +1,31 @@
 import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import './App.css';
-import Header from './components/Header';
-import HomePage from './components/HomePage';
-import GamesPage from './components/GamesPage';
-import RightPanel from './components/RightPanel';
-import TeamPage from './components/TeamPage';
-import NewsPage from './components/NewsPage';
-import ArticleDetail from './components/ArticleDetail';
-import SubscriptionPage from './components/SubscriptionPage';
-import DashboardPage from './components/DashboardPage';
-import LoginModal from './components/LoginModal';
-import RegisterModal from './components/RegisterModal';
-import ProfilePage from './components/ProfilePage';
-import PlayersPage from './components/PlayersPage';
-import ArticleManager from './components/ArticleManager';
-import Datasets from './components/Datasets';
-import ThemeToggle from './components/ThemeToggle';
+import Header from './components/common/Header/Header';
+import HomePage from './components/pages/HomePage/HomePage';
+import GamesPage from './components/pages/GamesPage/GamesPage';
+import RightPanel from './components/common/RightPanel/RightPanel';
+import TeamPage from './components/pages/TeamPage/TeamPage';
+import NewsPage from './components/pages/NewsPage/NewsPage';
+import ArticleDetail from './components/articles/ArticleDetail/ArticleDetail';
+import SubscriptionPage from './components/pages/SubscriptionPage/SubscriptionPage';
+import DashboardPage from './components/pages/DashboardPage/DashboardPage';
+import LoginModal from './components/auth/LoginModal/LoginModal';
+import RegisterModal from './components/auth/RegisterModal/RegisterModal';
+import ProfilePage from './components/pages/ProfilePage/ProfilePage';
+import PlayersPage from './components/pages/PlayersPage/PlayersPage';
+import ArticleManager from './components/articles/ArticleManager/ArticleManager';
+import Datasets from './components/admin/Datasets/Datasets';
+import ThemeToggle from './components/common/ThemeToggle/ThemeToggle';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { DarkModeProvider } from './contexts/DarkModeContext';
 import { applyDesignSettings } from './utils/applyDesignSettings';
 
 // Lazy loading pour les composants lourds (admin, editor...)
-const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
-const BlogEditorBlocks = lazy(() => import('./components/BlogEditorBlocks'));
-const DatasetManager = lazy(() => import('./components/DatasetManager'));
-const ThemeDesigner = lazy(() => import('./components/ThemeDesigner'));
-const DesignPanel = lazy(() => import('./components/DesignPanel'));
+const AdminDashboard = lazy(() => import('./components/admin/AdminDashboard/AdminDashboard'));
+const BlogEditorBlocks = lazy(() => import('./components/articles/BlogEditorBlocks/BlogEditorBlocks'));
+const DatasetManager = lazy(() => import('./components/admin/DatasetManager/DatasetManager'));
+const ThemeDesigner = lazy(() => import('./components/admin/ThemeDesigner/ThemeDesigner'));
+const DesignPanel = lazy(() => import('./components/admin/DesignPanel/DesignPanel'));
 
 function App() {
   const [currentPage, setCurrentPage] = useState('accueil');

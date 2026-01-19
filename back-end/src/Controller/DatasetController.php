@@ -336,7 +336,7 @@ class DatasetController extends AbstractController
         $dataset->setFilepath('/uploads/datasets/' . $filename);
         $dataset->setVariables($parsedData['variables']);
         $dataset->setData($parsedData['data']);
-        $dataset->setStatus('pending');
+        $dataset->setStatus('processing');
         $dataset->setUploader($this->getUser());
         
         $this->entityManager->persist($dataset);
@@ -369,7 +369,7 @@ class DatasetController extends AbstractController
             $dataset->setVariables($data['variables']);
         }
         
-        $dataset->setStatus('validated');
+        $dataset->setStatus('ready');
         
         $this->entityManager->flush();
         
