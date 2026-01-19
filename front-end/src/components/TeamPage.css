@@ -295,11 +295,6 @@
   padding: 0;
 }
 
-/* Si thème Call of Duty, afficher 4 colonnes (s'il n'y a que 4 joueurs) */
-.team-page.call-of-duty-theme .dark-grid-container {
-  grid-template-columns: repeat(4, 1fr);
-}
-
 .neon-card {
   background: var(--card-dark, #1f1f24);
   border-radius: 10px;
@@ -328,19 +323,19 @@
 }
 
 .neon-card.call-of-duty-game {
-  border-color: rgba(138,43,226,0.14);
-  background: linear-gradient(180deg, rgba(138,43,226,0.03), var(--card-dark, #1f1f24));
+  border-color: rgba(255,215,0,0.14);
+  background: linear-gradient(180deg, rgba(255,215,0,0.03), var(--card-dark, #1f1f24));
 }
 .neon-card.call-of-duty-game:hover {
-  box-shadow: 0 14px 36px rgba(138,43,226,0.12);
+  box-shadow: 0 14px 36px rgba(255,215,0,0.12);
 }
 
 .neon-card.counter-strike-game {
-  border-color: rgba(255,159,28,0.12);
-  background: linear-gradient(180deg, rgba(255,159,28,0.03), var(--card-dark, #1f1f24));
+  border-color: rgba(138,43,226,0.12);
+  background: linear-gradient(180deg, rgba(138,43,226,0.03), var(--card-dark, #1f1f24));
 }
 .neon-card.counter-strike-game:hover {
-  box-shadow: 0 14px 36px rgba(255,159,28,0.12);
+  box-shadow: 0 14px 36px rgba(138,43,226,0.12);
 }
 
 .card-top {
@@ -553,10 +548,7 @@ body.dark-mode .match-row { background: linear-gradient(180deg, rgba(255,255,255
 body.dark-mode .match-row.win { background: linear-gradient(180deg, rgba(52,211,153,0.03), rgba(0,0,0,0.02)); }
 body.dark-mode .match-row.loss { background: linear-gradient(180deg, rgba(239,68,68,0.02), rgba(0,0,0,0.02)); }
 
-/* Ne pas altérer les couleurs des logos en mode sombre : afficher les images natives */
-body.dark-mode .mini-logo { filter: none !important; opacity: 1 !important; }
-/* Aussi s'assurer que les logos larges restent ronds en mode sombre */
-body.dark-mode .lg-logo { filter: none !important; opacity: 1 !important; border-radius: 50%; }
+body.dark-mode .mini-logo { filter: brightness(0) invert(1) opacity(0.95); }
 
 /* Game-specific dark-mode accents */
 body.dark-mode .team-page.valorant-theme .ranking-section,
