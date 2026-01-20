@@ -218,7 +218,7 @@ const Globe = forwardRef(({ onPlayerSelect }, ref) => {
           if (!pos.x) return;
 
           const mesh = new THREE.Mesh(
-            new THREE.SphereGeometry(1.2, 8, 8),
+            new THREE.SphereGeometry(0.5, 8, 8),
             new THREE.MeshBasicMaterial({ color: capitalColor })
           );
           mesh.position.set(pos.x, pos.y, pos.z);
@@ -235,7 +235,7 @@ const Globe = forwardRef(({ onPlayerSelect }, ref) => {
           if (!pos.x) return;
 
           const mesh = new THREE.Mesh(
-            new THREE.SphereGeometry(0.8, 6, 6),
+            new THREE.SphereGeometry(0.5, 6, 6),
             new THREE.MeshBasicMaterial({ color: pointColor })
           );
           mesh.position.set(pos.x, pos.y, pos.z);
@@ -262,8 +262,10 @@ const Globe = forwardRef(({ onPlayerSelect }, ref) => {
 
       if (intersects.length > 0) {
         hoveredPoint = intersects[0].object;
-        hoveredPoint.scale.setScalar(2);
-        canvas.style.cursor = 'pointer';
+        if (hoveredPoint.userData.isCapital) {
+          hoveredPoint.scale.setScalar(2);
+          canvas.style.cursor = 'pointer';
+        }
       }
     };
 
