@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './HomePage.css';
 import Icon from './Icon';
-import { Button, StatCard, Loading } from './ui';
-import { MatchCard, NewsCard, PlayerCard } from './cards';
+import { Button, Loading } from './ui';
+import { NewsCard } from './cards';
 
 function HomePage({ user }) {
   const [pastMatches, setPastMatches] = useState([]);
@@ -16,71 +16,50 @@ function HomePage({ user }) {
   const VALORANT_SHEET_ID = '1d6b3E3KEy1TwPRJgjvbgcrDrUbawUkHl9ckpNESyzeg';
   const COD_SHEET_ID = '1semtK-pmRquxyF88CjpjwmNpwhYezCHaWRKFkX90WkY';
 
-  // Charger les matchs passés depuis Google Sheets
+  // Charger les données au montage
   useEffect(() => {
     fetchAllPastMatches();
     fetchLatestNews();
     fetchTopPlayers();
   }, []);
 
+  // --- DATA FETCHING ---
   const fetchTopPlayers = async () => {
     try {
       setLoadingPlayers(true);
       const allPlayers = [];
 
-      // Récupérer les joueurs Valorant
-      const valoResponse = await fetch(
-        `http://localhost:8000/api/google-sheets/players/valorant?spreadsheetId=${VALORANT_SHEET_ID}`
-      );
+      const valoResponse = await fetch(`http://localhost:8000/api/google-sheets/players/valorant?spreadsheetId=${VALORANT_SHEET_ID}`);
       const valoData = await valoResponse.json();
       if (valoData.success && valoData.players) {
-        const valoPlayers = valoData.players.map(player => ({
-          name: player.id,
-          role: player.roleSpecific || 'Player',
+        allPlayers.push(...valoData.players.map(p => ({
+          name: p.id,
+          role: p.roleSpecific || 'Player',
           game: 'Valorant',
           statLabel: 'Rating',
-          statValue: player.rating?.toFixed(2) || '0.00',
-          sortValue: player.rating || 0,
+          statValue: p.rating?.toFixed(2) || '0.00',
+          sortValue: p.rating || 0,
           color: '#FF4655'
-        }));
-        allPlayers.push(...valoPlayers);
+        })));
       }
 
-      // Récupérer les joueurs CoD
-      const codResponse = await fetch(
-        `http://localhost:8000/api/google-sheets/players/cod?spreadsheetId=${COD_SHEET_ID}`
-      );
+      const codResponse = await fetch(`http://localhost:8000/api/google-sheets/players/cod?spreadsheetId=${COD_SHEET_ID}`);
       const codData = await codResponse.json();
       if (codData.success && codData.players) {
-        const codPlayers = codData.players.map(player => ({
-          name: player.id,
-          role: player.roleSpecific || 'Player',
+        allPlayers.push(...codData.players.map(p => ({
+          name: p.id,
+          role: p.roleSpecific || 'Player',
           game: 'CoD',
           statLabel: 'K/D',
-          statValue: player.kdRatio?.toFixed(2) || '0.00',
-          sortValue: player.kdRatio || 0,
+          statValue: p.kdRatio?.toFixed(2) || '0.00',
+          sortValue: p.kdRatio || 0,
           color: '#8A2BE2'
-        }));
-        allPlayers.push(...codPlayers);
+        })));
       }
 
-      // Prendre max 2 joueurs par jeu et trier par stats
-      const valoTop = allPlayers
-        .filter(p => p.game === 'Valorant')
-        .sort((a, b) => b.sortValue - a.sortValue)
-        .slice(0, 2);
-      
-      const codTop = allPlayers
-        .filter(p => p.game === 'CoD')
-        .sort((a, b) => b.sortValue - a.sortValue)
-        .slice(0, 2);
-
-      // Mélanger et limiter à 3 joueurs au total
-      const top3 = [...valoTop, ...codTop].slice(0, 3);
-
-      setTopPlayers(top3);
+      setTopPlayers(allPlayers.sort((a, b) => b.sortValue - a.sortValue).slice(0, 3));
     } catch (error) {
-      console.error('Erreur lors du chargement des joueurs:', error);
+      console.error('Erreur joueurs:', error);
       setTopPlayers([]);
     } finally {
       setLoadingPlayers(false);
@@ -94,43 +73,24 @@ function HomePage({ user }) {
       const articles = await response.json();
       
       if (articles && articles.length > 0) {
-        const formattedNews = articles.map(article => ({
+        setLatestNews(articles.map(article => ({
           id: article.id,
-          category: article.type === 'news' ? 'NEWS' : 
-                   article.type === 'analysis' ? 'ANALYSE' :
-                   article.type === 'tutorial' ? 'TUTORIEL' : 'ARTICLE',
+          category: article.type === 'news' ? 'NEWS' : article.type === 'analysis' ? 'ANALYSE' : 'ARTICLE',
           title: article.title,
-          excerpt: article.summary || 'Aucun résumé disponible',
-          date: new Date(article.publishedAt).toLocaleDateString('fr-FR', { 
-            day: 'numeric', 
-            month: 'short', 
-            year: 'numeric' 
-          }),
-          image: article.type === 'news' ? 'newspaper' : 
-                 article.type === 'analysis' ? 'barChart' : 
-                 article.type === 'tutorial' ? 'book' : 'file',
-          color: article.game === 'valorant' ? '#FF4655' :
-                 article.game === 'cs2' ? '#FF9F1C' :
-                 article.game === 'cod' ? '#8A2BE2' :
-                 article.game === 'fortnite' ? '#00AEEF' : '#7D3CFF',
+          excerpt: article.summary || 'Lire la suite...',
+          date: new Date(article.publishedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }),
+          image: article.type === 'news' ? 'newspaper' : article.type === 'analysis' ? 'barChart' : 'file',
+          color: article.game === 'valorant' ? '#FF4655' : article.game === 'cod' ? '#8A2BE2' : '#7D3CFF',
           game: article.game
-        }));
-        setLatestNews(formattedNews);
+        })));
       } else {
-        // Fallback data si pas d'articles
-        setLatestNews([
-          {
-            category: 'INFO',
-            title: 'Bienvenue sur M8 Pulse',
-            excerpt: 'Consultez les statistiques en temps réel de Gentle Mates',
-            date: new Date().toLocaleDateString('fr-FR'),
-            image: 'trophy',
-            color: '#7D3CFF'
-          }
-        ]);
+        setLatestNews([{
+          category: 'INFO', title: 'Bienvenue sur M8 Pulse', excerpt: 'Le hub de statistiques Gentle Mates.',
+          date: 'Aujourd\'hui', image: 'trophy', color: '#7D3CFF'
+        }]);
       }
     } catch (error) {
-      console.error('Erreur lors du chargement des actualités:', error);
+      console.error('Erreur news:', error);
       setLatestNews([]);
     } finally {
       setLoadingNews(false);
@@ -142,244 +102,162 @@ function HomePage({ user }) {
       setLoading(true);
       const allMatches = [];
 
-      // Récupérer les matchs Valorant
-      const valoResponse = await fetch(
-        `http://localhost:8000/api/google-sheets/matches/valorant?spreadsheetId=${VALORANT_SHEET_ID}`
-      );
+      const valoResponse = await fetch(`http://localhost:8000/api/google-sheets/matches/valorant?spreadsheetId=${VALORANT_SHEET_ID}`);
       const valoData = await valoResponse.json();
       if (valoData.success && valoData.matches) {
-        const valoMatches = valoData.matches.slice(0, 3).map(match => ({
-          game: 'Valorant',
-          gameIcon: 'target',
-          team1: match.team || 'Gentle Mates',
-          team2: match.opponent,
-          score: match.score,
-          date: match.date,
-          tournament: match.tournament,
-          win: match.win,
-          color: '#FF4655'
-        }));
-        allMatches.push(...valoMatches);
+        allMatches.push(...valoData.matches.map(m => ({
+          game: 'Valorant', gameIcon: 'target', team1: m.team || 'M8', team2: m.opponent,
+          score: m.score, date: m.date, tournament: m.tournament, win: m.win, color: '#FF4655'
+        })));
       }
 
-      // Récupérer les matchs CoD
-      const codResponse = await fetch(
-        `http://localhost:8000/api/google-sheets/matches/cod?spreadsheetId=${COD_SHEET_ID}`
-      );
+      const codResponse = await fetch(`http://localhost:8000/api/google-sheets/matches/cod?spreadsheetId=${COD_SHEET_ID}`);
       const codData = await codResponse.json();
       if (codData.success && codData.matches) {
-        const codMatches = codData.matches.slice(0, 3).map(match => ({
-          game: 'Call of Duty',
-          gameIcon: 'shield',
-          team1: match.team || 'Gentle Mates',
-          team2: match.opponent,
-          score: match.score,
-          date: match.date,
-          tournament: match.tournament,
-          win: match.win,
-          color: '#8A2BE2'
-        }));
-        allMatches.push(...codMatches);
+        allMatches.push(...codData.matches.map(m => ({
+          game: 'Call of Duty', gameIcon: 'shield', team1: m.team || 'M8', team2: m.opponent,
+          score: m.score, date: m.date, tournament: m.tournament, win: m.win, color: '#8A2BE2'
+        })));
       }
 
-      // Mélanger et limiter à 4 matchs
-      setPastMatches(allMatches.slice(0, 4));
+      setPastMatches(allMatches.slice(0, 6)); // Top 6
     } catch (error) {
-      console.error('Erreur lors du chargement des matchs:', error);
+      console.error('Erreur matchs:', error);
       setPastMatches([]);
     } finally {
       setLoading(false);
     }
   };
 
+  const isPremium = user && (user.subscriptionLevel === 'silver' || user.subscriptionLevel === 'gold' || user.roles?.includes('ROLE_ADMIN'));
+  
+  const lastMatch = pastMatches[0];
+
   return (
-    <div className="home-page">
-      {/* Hero Section */}
-      <div className="home-hero">
-        <div className="hero-overlay"></div>
-        <div className="hero-content">
-          <h1 className="hero-title">M8 PULSE</h1>
-          <p className="hero-subtitle">Statistiques Esport en Temps Réel</p>
-          <div className="hero-tags">
-            <span className="hero-tag"><Icon name="chart" size={16} /> Stats Avancées</span>
-            <span className="hero-tag"><Icon name="trophy" size={16} /> Compétitions Pro</span>
-            <span className="hero-tag"><Icon name="trendingUp" size={16} /> Analyse Détaillée</span>
-          </div>
+    <div className="home-dashboard-v2">
+      
+      {/* HEADER SIMPLE */}
+      <header className="dashboard-header">
+        <div>
+          <h1>M8 PULSE</h1>
+          <p className="subtitle">Hub de Performance & Statistiques</p>
         </div>
-      </div>
-
-      {/* Quick Stats */}
-      <div className="quick-stats">
-        <StatCard
-          icon="gamepad"
-          value="4"
-          label="Jeux"
-          color="#7D3CFF"
-        />
-        <StatCard
-          icon="users"
-          value="50+"
-          label="Joueurs"
-          color="#7D3CFF"
-        />
-        <StatCard
-          icon="barChart"
-          value="1000+"
-          label="Matchs"
-          color="#7D3CFF"
-        />
-        <StatCard
-          icon="trophy"
-          value="15"
-          label="Trophées"
-          color="#7D3CFF"
-        />
-      </div>
-
-      {/* Main Content Grid */}
-      <div className="home-content">
-        {/* Matchs Passés */}
-        <div className="content-section results-section">
-          <div className="section-header">
-            <h2 className="section-title-home"><Icon name="trendingUp" size={24} /> Matchs Passés</h2>
-            <Button variant="ghost" size="small" icon="arrowRight" iconRight>
-              Voir tout
-            </Button>
-          </div>
-          {loading ? (
-            <Loading text="Chargement des matchs..." />
-          ) : (
-            <div className="results-list-home">
-              {pastMatches.length > 0 ? (
-                pastMatches.map((match, index) => (
-                  <MatchCard
-                    key={index}
-                    {...match}
-                  />
-                ))
-              ) : (
-                <div className="no-matches-message">Aucun match disponible</div>
-              )}
-            </div>
-          )}
+        <div className="header-stats">
+          <div className="h-stat"><span className="val">68%</span><span className="lbl">Win Rate</span></div>
+          <div className="h-stat"><span className="val">1,024</span><span className="lbl">Matchs</span></div>
         </div>
+      </header>
 
-        {/* Actualités */}
-        <div className="content-section news-section-home">
-          <div className="section-header">
-            <h2 className="section-title-home"><Icon name="newspaper" size={24} /> Dernières Actualités</h2>
-            <Button variant="ghost" size="small" icon="arrowRight" iconRight>
-              Voir tout
-            </Button>
-          </div>
-          {loadingNews ? (
-            <Loading text="Chargement des actualités..." />
-          ) : (
-            <div className="news-grid-home">
-              {latestNews.length > 0 ? (
-                latestNews.map((news, index) => (
-                  <NewsCard
-                    key={news.id || index}
-                    {...news}
-                  />
-                ))
-              ) : (
-                <div className="no-matches-message">Aucune actualité disponible</div>
-              )}
+      <div className="dashboard-layout">
+        
+        {/* COLONNE GAUCHE : CONTENU PRINCIPAL */}
+        <div className="main-feed">
+          
+          {/* Hero News */}
+          <section className="feed-section">
+            <div className="section-title">
+              <Icon name="newspaper" size={20} color="#7D3CFF" /> 
+              <h2>À la une</h2>
             </div>
-          )}
-        </div>
-
-        {/* Featured Players */}
-        <div className="content-section featured-section">
-          <div className="section-header">
-            <h2 className="section-title-home"><Icon name="star" size={24} /> Joueurs en Forme</h2>
-          </div>
-          {loadingPlayers ? (
-            <Loading text="Chargement des joueurs..." />
-          ) : (
-            <div className="featured-players">
-              {topPlayers.length > 0 ? (
-                topPlayers.map((player, index) => (
-                  <PlayerCard
-                    key={index}
-                    {...player}
-                  />
-                ))
-              ) : (
-                <div className="no-matches-message">Aucun joueur disponible</div>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Section Stats Avancées - Uniquement pour Silver, Gold et Admin */}
-        {user && (user.subscriptionLevel === 'silver' || user.subscriptionLevel === 'gold' || user.roles?.includes('ROLE_ADMIN')) && (
-          <div className="content-section premium-section">
-            <div className="section-header">
-              <h2 className="section-title-home">
-                <Icon name="barChart" size={24} /> 
-                Statistiques Avancées 
-                <span className="premium-badge">
-                  {user.subscriptionLevel === 'gold' ? '👑 GOLD' : '⭐ SILVER'}
-                </span>
-              </h2>
-            </div>
-            <div className="premium-stats-grid">
-              <div className="premium-stat-card">
-                <div className="premium-stat-header">
-                  <Icon name="trendingUp" size={32} color="#FFD700" />
-                  <h3>Win Rate Global</h3>
-                </div>
-                <div className="premium-stat-value">68.5%</div>
-                <div className="premium-stat-trend positive">+5.2% ce mois</div>
-              </div>
-              
-              <div className="premium-stat-card">
-                <div className="premium-stat-header">
-                  <Icon name="target" size={32} color="#FF4655" />
-                  <h3>Performance Moyenne</h3>
-                </div>
-                <div className="premium-stat-value">1.42</div>
-                <div className="premium-stat-trend positive">Rating moyen</div>
-              </div>
-              
-              <div className="premium-stat-card">
-                <div className="premium-stat-header">
-                  <Icon name="trophy" size={32} color="#7D3CFF" />
-                  <h3>Matchs Joués</h3>
-                </div>
-                <div className="premium-stat-value">156</div>
-                <div className="premium-stat-trend">Cette saison</div>
-              </div>
-              
-              {user.subscriptionLevel === 'gold' && (
-                <div className="premium-stat-card gold-exclusive">
-                  <div className="premium-stat-header">
-                    <Icon name="star" size={32} color="#FFD700" />
-                    <h3>MVP du Mois</h3>
+            {loadingNews ? <Loading /> : latestNews[0] && (
+              <div className="hero-news-card" style={{borderTopColor: latestNews[0].color}}>
+                <div className="hero-news-content">
+                  <div className="news-badges">
+                    <span className="n-tag" style={{background: latestNews[0].color}}>{latestNews[0].game || 'M8'}</span>
+                    <span className="n-date">{latestNews[0].date}</span>
                   </div>
-                  <div className="premium-stat-value">
-                    {topPlayers.length > 0 ? topPlayers[0].name : 'N/A'}
-                  </div>
-                  <div className="premium-stat-trend gold">Exclusif Gold</div>
+                  <h3>{latestNews[0].title}</h3>
+                  <p>{latestNews[0].excerpt}</p>
+                  <Button variant="ghost" icon="arrowRight" iconRight>Lire l'article</Button>
                 </div>
-              )}
+                <div className="hero-news-visual">
+                  <Icon name={latestNews[0].image} size={64} color={latestNews[0].color} />
+                </div>
+              </div>
+            )}
+            
+            {/* Secondary News Grid */}
+            <div className="secondary-news-grid">
+              {latestNews.slice(1).map((news, i) => (
+                <NewsCard key={i} {...news} className="compact-news" />
+              ))}
             </div>
-          </div>
-        )}
-      </div>
+          </section>
 
-      {/* CTA Section - Masqué pour Admin et Gold uniquement */}
-      {(!user || (user.subscriptionLevel !== 'gold' && !user.roles?.includes('ROLE_ADMIN'))) && (
-        <div className="cta-section">
-          <h2 className="cta-title">Débloquez toutes les statistiques</h2>
-          <p className="cta-text">Accédez aux analyses avancées, heatmaps et timelines avec nos abonnements Silver et Gold</p>
-          <Button variant="primary" size="large" icon="star">
-            Voir les Abonnements
-          </Button>
+          {/* Premium Section Banner */}
+          <section className={`premium-banner-v2 ${isPremium ? 'is-unlocked' : ''}`}> 
+             <div className="pb-content">
+               <div className="pb-icon"><Icon name="barChart" size={32} /></div>
+               <div className="pb-text">
+                 <h3>Stats Avancées {isPremium ? '(Débloqué)' : '(Verrouillé)'}</h3>
+                 <p>Heatmaps, Analyse de rounds, VOD Review.</p>
+               </div>
+               {!isPremium && <Button variant="primary" size="small">S'abonner</Button>}
+             </div>
+          </section>
+
         </div>
-      )}
+
+        {/* COLONNE DROITE : MATCH CENTER (SIDEBAR) */}
+        <aside className="sidebar-feed">
+          
+          {/* 1. LAST MATCH SPOTLIGHT - SIMPLIFIED */}
+          <div className="sidebar-widget match-spotlight">
+             <div className="widget-header">
+               <h3><Icon name="trophy" size={16} /> DERNIER RÉSULTAT</h3>
+             </div>
+             
+             {loading ? <Loading /> : lastMatch ? (
+               <div className="match-card-featured">
+                 <div className="mcf-header">
+                    <span className="mcf-badge" style={{background: lastMatch.color}}>{lastMatch.game}</span>
+                    <span className="mcf-date">{lastMatch.date}</span>
+                 </div>
+                 
+                 <div className="mcf-body">
+                    <div className="mcf-team">
+                      <span className="mcf-team-name">{lastMatch.team1}</span>
+                    </div>
+                    <div className="mcf-score">
+                      {lastMatch.score}
+                    </div>
+                    <div className="mcf-team">
+                      <span className="mcf-team-name">{lastMatch.team2}</span>
+                    </div>
+                 </div>
+
+                 <div className={`mcf-result ${lastMatch.win ? 'win' : 'loss'}`}>
+                    {lastMatch.win ? 'VICTOIRE' : 'DÉFAITE'}
+                 </div>
+               </div>
+             ) : (
+               <div className="empty-widget">Aucun match</div>
+             )}
+          </div>
+
+          {/* 2. RECENT MATCHES LIST */}
+          <div className="sidebar-widget match-history">
+            <div className="widget-header">
+              <h3>Historique</h3>
+            </div>
+            <div className="history-list">
+              {pastMatches.slice(1, 6).map((match, i) => (
+                <div key={i} className="history-item">
+                   <div className="h-status" style={{background: match.win ? '#4CAF50' : '#FF4655'}}></div>
+                   <div className="h-info">
+                     <span className="h-teams">{match.team1} vs {match.team2}</span>
+                     <span className="h-meta">{match.game}</span>
+                   </div>
+                   <div className="h-score">{match.score}</div>
+                </div>
+              ))}
+            </div>
+            <Button variant="ghost" size="small" className="w-full">Voir tout l\'historique</Button>
+          </div>
+
+        </aside>
+
+      </div>
     </div>
   );
 }
