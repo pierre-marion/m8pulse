@@ -49,7 +49,7 @@ Chaque controller correspond à un groupe de routes :
 **Fichier :** `back-end/src/Controller/MediaController.php`
 
 - `POST /api/media/upload` - Upload d'image/vidéo
-- `GET /api/media` - Liste des médias
+- `GET /api/media` - Liste des médias./
 - `GET /api/media/{id}` - Détails d'un média
 - `DELETE /api/media/{id}` - Supprimer un média
 

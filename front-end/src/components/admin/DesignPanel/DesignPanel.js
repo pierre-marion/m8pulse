@@ -25,7 +25,15 @@ function DesignPanel({ onClose }) {
     borderRadius: localStorage.getItem('borderRadius') || '12',
     logoPosition: localStorage.getItem('logoPosition') || 'left',
     headerHeight: localStorage.getItem('headerHeight') || '70',
-    headerTransparent: localStorage.getItem('headerTransparent') === 'true'
+    headerTransparent: localStorage.getItem('headerTransparent') === 'true',
+    
+    // Styles d'article
+    articleTextColor: localStorage.getItem('articleTextColor') || '#2c3e50',
+    articleTextSize: localStorage.getItem('articleTextSize') || '1.05rem',
+    articleTextFont: localStorage.getItem('articleTextFont') || 'Inter, system-ui, sans-serif',
+    articleTextLineHeight: localStorage.getItem('articleTextLineHeight') || '1.8',
+    articleBg: localStorage.getItem('articleBg') || '#ffffff',
+    articleBorderRadius: localStorage.getItem('articleBorderRadius') || '30px'
   });
 
   const [activeTab, setActiveTab] = useState('colors'); // colors, logo, articles, layout
@@ -83,6 +91,14 @@ function DesignPanel({ onClose }) {
     document.documentElement.style.setProperty('--border-radius', `${settings.borderRadius}px`);
     document.documentElement.style.setProperty('--font-family', settings.fontFamily);
     document.documentElement.style.setProperty('--font-size', `${settings.fontSize}px`);
+    
+    // Styles d'article
+    document.documentElement.style.setProperty('--article-text-color', settings.articleTextColor);
+    document.documentElement.style.setProperty('--article-text-size', settings.articleTextSize);
+    document.documentElement.style.setProperty('--article-text-font', settings.articleTextFont);
+    document.documentElement.style.setProperty('--article-text-line-height', settings.articleTextLineHeight);
+    document.documentElement.style.setProperty('--article-bg-color', settings.articleBg);
+    document.documentElement.style.setProperty('--article-border-radius', settings.articleBorderRadius);
   }, [settings]);
 
   const handleChange = (key, value) => {
@@ -479,6 +495,82 @@ function DesignPanel({ onClose }) {
           {/* Tab: Articles (WordPress-like) */}
           {activeTab === 'articles' && (
             <>
+              <div className="design-section">
+                <h3>🎨 Couleurs et Polices d'Article</h3>
+                <p style={{ fontSize: '0.9rem', opacity: 0.7, marginBottom: '1rem' }}>
+                  Personnalisez l'apparence du texte dans vos articles
+                </p>
+                
+                <div className="control-group">
+                  <label>Couleur du texte</label>
+                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                    <input
+                      type="color"
+                      value={settings.articleTextColor}
+                      onChange={(e) => handleChange('articleTextColor', e.target.value)}
+                    />
+                    <span style={{ fontSize: '0.85rem', opacity: 0.7 }}>{settings.articleTextColor}</span>
+                  </div>
+                </div>
+
+                <div className="control-group">
+                  <label>Taille du texte</label>
+                  <input
+                    type="text"
+                    value={settings.articleTextSize}
+                    onChange={(e) => handleChange('articleTextSize', e.target.value)}
+                    placeholder="1.05rem"
+                  />
+                </div>
+
+                <div className="control-group">
+                  <label>Police d'écriture</label>
+                  <select
+                    value={settings.articleTextFont}
+                    onChange={(e) => handleChange('articleTextFont', e.target.value)}
+                  >
+                    <option value="Inter, system-ui, sans-serif">Inter (Moderne)</option>
+                    <option value="'Bebas Neue', sans-serif">Bebas Neue (Gaming)</option>
+                    <option value="Georgia, serif">Georgia (Classique)</option>
+                    <option value="'Courier New', monospace">Courier (Code)</option>
+                    <option value="Arial, sans-serif">Arial (Simple)</option>
+                    <option value="'Times New Roman', serif">Times New Roman</option>
+                  </select>
+                </div>
+
+                <div className="control-group">
+                  <label>Hauteur de ligne</label>
+                  <input
+                    type="text"
+                    value={settings.articleTextLineHeight}
+                    onChange={(e) => handleChange('articleTextLineHeight', e.target.value)}
+                    placeholder="1.8"
+                  />
+                </div>
+
+                <div className="control-group">
+                  <label>Fond de l'article</label>
+                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                    <input
+                      type="color"
+                      value={settings.articleBg}
+                      onChange={(e) => handleChange('articleBg', e.target.value)}
+                    />
+                    <span style={{ fontSize: '0.85rem', opacity: 0.7 }}>{settings.articleBg}</span>
+                  </div>
+                </div>
+
+                <div className="control-group">
+                  <label>Arrondi des coins</label>
+                  <input
+                    type="text"
+                    value={settings.articleBorderRadius}
+                    onChange={(e) => handleChange('articleBorderRadius', e.target.value)}
+                    placeholder="30px"
+                  />
+                </div>
+              </div>
+
               <div className="design-section">
                 <h3>📝 Éditeur de Template d'Articles</h3>
                 <p style={{ fontSize: '0.9rem', opacity: 0.7, marginBottom: '1rem' }}>

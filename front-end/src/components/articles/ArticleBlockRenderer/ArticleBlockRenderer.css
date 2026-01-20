@@ -117,19 +117,27 @@ body.dark-mode .article-date {
 }
 
 .text-content {
-  color: #2c3e50;
+  color: var(--article-text-color, #2c3e50);
+  font-size: var(--article-text-size, 1.05rem);
+  font-family: var(--article-text-font, 'Inter', system-ui, sans-serif);
+  line-height: var(--article-text-line-height, 1.8);
   margin-bottom: 1.5rem;
 }
 
 .text-content p {
   margin-bottom: 1rem;
+  color: inherit;
+  font-size: inherit;
+  font-family: inherit;
+  line-height: inherit;
 }
 
 .text-content h2,
 .text-content h3 {
   margin-top: 2rem;
   margin-bottom: 1rem;
-  color: #667eea;
+  color: var(--article-title-color, #667eea);
+  font-weight: var(--article-title-weight, 800);
 }
 
 body.dark-mode .text-content {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './ThemeDesigner.css';
+import { applyDesignSettings } from '../../../utils/applyDesignSettings';
 
 const ThemeDesigner = () => {
     const [scope, setScope] = useState('site');
@@ -26,6 +27,17 @@ const ThemeDesigner = () => {
             borderColor: '#e0e0e0',
             borderRadius: '12px',
             padding: '20px'
+        },
+        article: {
+            bg: '#ffffff',
+            borderRadius: '20px',
+            shadow: '0 10px 40px rgba(0, 0, 0, 0.1)'
+        },
+        articleText: {
+            color: '#333333',
+            fontSize: '16px',
+            fontFamily: 'Inter, system-ui, sans-serif',
+            lineHeight: '1.7'
         },
         primary: '#667eea',
         secondary: '#764ba2',
@@ -112,6 +124,22 @@ const ThemeDesigner = () => {
 
     const handleApply = async () => {
         try {
+            // Sauvegarde locale pour application immédiate
+            if (styles.article?.bg) localStorage.setItem('articleBg', styles.article.bg);
+            if (styles.article?.borderRadius) localStorage.setItem('articleBorderRadius', styles.article.borderRadius);
+            if (styles.primary) localStorage.setItem('primaryColor', styles.primary);
+            if (styles.secondary) localStorage.setItem('secondaryColor', styles.secondary);
+            if (styles.accent) localStorage.setItem('accentColor', styles.accent);
+            
+            // Sauvegarder les styles de texte d'article
+            if (styles.articleText?.color) localStorage.setItem('articleTextColor', styles.articleText.color);
+            if (styles.articleText?.fontSize) localStorage.setItem('articleTextSize', styles.articleText.fontSize);
+            if (styles.articleText?.fontFamily) localStorage.setItem('articleTextFont', styles.articleText.fontFamily);
+            if (styles.articleText?.lineHeight) localStorage.setItem('articleTextLineHeight', styles.articleText.lineHeight);
+            
+            // Appliquer les changements CSS
+            applyDesignSettings();
+
             const payload = {
                 name: themeName || `Theme ${scope}`,
                 scope,
@@ -262,6 +290,75 @@ const ThemeDesigner = () => {
                 </div>
 
                 <div className="style-section">
+                    <h3>Conteneur Article</h3>
+                    <div className="style-controls">
+                        <div className="control-group">
+                            <label>Fond Article</label>
+                            <input
+                                type="color"
+                                value={styles.article?.bg || '#ffffff'}
+                                onChange={(e) => updateStyle('article', 'bg', e.target.value)}
+                            />
+                        </div>
+                        <div className="control-group">
+                            <label>Arrondi</label>
+                            <input
+                                type="text"
+                                value={styles.article?.borderRadius || '20px'}
+                                onChange={(e) => updateStyle('article', 'borderRadius', e.target.value)}
+                                placeholder="20px"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="style-section">
+                    <h3>Texte d'article</h3>
+                    <div className="style-controls">
+                        <div className="control-group">
+                            <label>Couleur du texte</label>
+                            <input
+                                type="color"
+                                value={styles.articleText?.color || '#333333'}
+                                onChange={(e) => updateStyle('articleText', 'color', e.target.value)}
+                            />
+                        </div>
+                        <div className="control-group">
+                            <label>Taille police</label>
+                            <input
+                                type="text"
+                                value={styles.articleText?.fontSize || '16px'}
+                                onChange={(e) => updateStyle('articleText', 'fontSize', e.target.value)}
+                                placeholder="16px"
+                            />
+                        </div>
+                        <div className="control-group">
+                            <label>Police</label>
+                            <select
+                                value={styles.articleText?.fontFamily || 'Inter, system-ui, sans-serif'}
+                                onChange={(e) => updateStyle('articleText', 'fontFamily', e.target.value)}
+                            >
+                                <option value="Inter, system-ui, sans-serif">Inter (Moderne)</option>
+                                <option value="'Bebas Neue', sans-serif">Bebas Neue (Gaming)</option>
+                                <option value="Georgia, serif">Georgia (Classique)</option>
+                                <option value="'Courier New', monospace">Courier (Code)</option>
+                                <option value="Arial, sans-serif">Arial (Simple)</option>
+                                <option value="'Times New Roman', serif">Times New Roman</option>
+                            </select>
+                        </div>
+                        <div className="control-group">
+                            <label>Hauteur de ligne</label>
+                            <input
+                                type="text"
+                                value={styles.articleText?.lineHeight || '1.7'}
+                                onChange={(e) => updateStyle('articleText', 'lineHeight', e.target.value)}
+                                placeholder="1.7"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="style-section">
                     <h3>Blocs</h3>
                     <div className="style-controls">
                         <div className="control-group">
@@ -348,22 +445,41 @@ const ThemeDesigner = () => {
                         Header Example
                     </div>
                     <div style={{ padding: '2rem' }}>
-                        <h1 style={{
-                            color: styles.title.color,
-                            fontSize: styles.title.fontSize,
-                            fontWeight: styles.title.fontWeight
-                        }}>
-                            Titre d'Article
-                        </h1>
                         <div style={{
-                            background: styles.block.bg,
-                            borderColor: styles.block.borderColor,
-                            borderRadius: styles.block.borderRadius,
-                            padding: styles.block.padding,
-                            border: `1px solid ${styles.block.borderColor}`,
-                            marginTop: '1rem'
+                            background: styles.article?.bg || '#ffffff',
+                            borderRadius: styles.article?.borderRadius || '20px',
+                            padding: '2rem',
+                            boxShadow: styles.article?.shadow || '0 10px 40px rgba(0,0,0,0.1)'
                         }}>
-                            Contenu du bloc d'article avec les styles appliqués
+                            <h1 style={{
+                                color: styles.title.color,
+                                fontSize: styles.title.fontSize,
+                                fontWeight: styles.title.fontWeight,
+                                margin: 0
+                            }}>
+                                Titre d'Article
+                            </h1>
+                            <p style={{
+                                color: styles.articleText?.color || '#333333',
+                                fontSize: styles.articleText?.fontSize || '16px',
+                                fontFamily: styles.articleText?.fontFamily || 'Inter, system-ui, sans-serif',
+                                lineHeight: styles.articleText?.lineHeight || '1.7',
+                                marginTop: '1rem'
+                            }}>
+                                Ceci est un exemple de texte d'article. Le designer peut modifier la couleur, 
+                                la taille de police, la police de caractère et la hauteur de ligne pour 
+                                personnaliser l'apparence du texte dans les articles.
+                            </p>
+                            <div style={{
+                                background: styles.block.bg,
+                                borderColor: styles.block.borderColor,
+                                borderRadius: styles.block.borderRadius,
+                                padding: styles.block.padding,
+                                border: `1px solid ${styles.block.borderColor}`,
+                                marginTop: '1rem'
+                            }}>
+                                Contenu du bloc d'article avec les styles appliqués
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -74,6 +74,61 @@ function ArticleDetail({ articleId, onBack }) {
     }
   }, [articleId, fetchArticle, fetchComments, fetchUserRating]);
 
+  // Charger et appliquer le thème de l'article
+  useEffect(() => {
+    const loadTheme = async () => {
+      try {
+        // Essayer de charger le thème spécifique à l'article
+        const response = await fetch(`http://localhost:8000/api/themes?scope=article&targetId=${articleId}`);
+        if (response.ok) {
+          const themes = await response.json();
+          if (themes.length > 0 && themes[0].styles) {
+            applyArticleTheme(themes[0].styles);
+          }
+        }
+      } catch (error) {
+        console.error('Erreur chargement thème:', error);
+      }
+    };
+
+    if (articleId) {
+      loadTheme();
+    }
+  }, [articleId]);
+
+  // Fonction pour appliquer les styles du thème
+  const applyArticleTheme = (styles) => {
+    const root = document.documentElement;
+    
+    // Appliquer les couleurs et polices du texte d'article
+    if (styles.articleText) {
+      if (styles.articleText.color) {
+        root.style.setProperty('--article-text-color', styles.articleText.color);
+      }
+      if (styles.articleText.fontSize) {
+        root.style.setProperty('--article-text-size', styles.articleText.fontSize);
+      }
+      if (styles.articleText.fontFamily) {
+        root.style.setProperty('--article-text-font', styles.articleText.fontFamily);
+      }
+      if (styles.articleText.lineHeight) {
+        root.style.setProperty('--article-text-line-height', styles.articleText.lineHeight);
+      }
+    }
+
+    // Appliquer les autres styles (titre, fond, etc.)
+    if (styles.title) {
+      if (styles.title.color) root.style.setProperty('--article-title-color', styles.title.color);
+      if (styles.title.fontSize) root.style.setProperty('--article-title-size', styles.title.fontSize);
+      if (styles.title.fontWeight) root.style.setProperty('--article-title-weight', styles.title.fontWeight);
+    }
+    
+    if (styles.article) {
+      if (styles.article.bg) root.style.setProperty('--article-bg-color', styles.article.bg);
+      if (styles.article.borderRadius) root.style.setProperty('--article-border-radius', styles.article.borderRadius);
+    }
+  };
+
   // Écouter les changements de template depuis le DesignPanel
   useEffect(() => {
     const handleTemplateChange = () => {
