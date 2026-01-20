@@ -1,3 +1,53 @@
 Équipe;Rounds Gagnés;Rounds Perdus;Clutchs;Aces;Bomb Plants
 Vitality;16;3;8;2;12
 Gentlemates;3;16;2;0;5
+
+
+[
+    {
+        "type": "title",
+        "level": 2,
+        "content": "Introduction : Un mois intense",
+        "position": 0
+    },
+    {
+        "type": "text",
+        "content": "Le mois de janvier a Ã©tÃ© marquÃ© par notre participation au **VCT Challengers France**. Notre roster a affrontÃ© les meilleures Ã©quipes franÃ§aises avec un objectif clair : se qualifier pour les playoffs. Les statistiques rÃ©vÃ¨lent des performances prometteuses mais aussi des points Ã  travailler.",
+        "position": 1
+    },
+    {
+        "type": "visualization",
+        "config": {
+            "type": "bar",
+            "color": "#FF4655",
+            "title": "Average Combat Score par joueur",
+            "xAxis": "Joueur",
+            "yAxis": "ACS",
+            "dataset": "stats-valorant-janvier"
+        },
+        "content": null,
+        "position": 2
+    },
+    {
+        "type": "title",
+        "level": 2,
+        "content": "Nos stars : ScreaM et TenZ en forme",
+        "position": 3
+    },
+    {
+        "type": "text",
+        "content": "Sans surprise, **ScreaM** domine nos statistiques avec un ACS moyen de 312. Son agressivitÃ© calculÃ©e sur Jett lui permet de crÃ©er des ouvertures dÃ©cisives. **TenZ** suit de prÃ¨s avec 298 ACS, excellant particuliÃ¨rement sur les maps Haven et Bind grÃ¢ce Ã  sa maÃ®trise de Reyna.",
+        "position": 4
+    },
+    {
+        "type": "title",
+        "level": 2,
+        "content": "Axes d'amÃ©lioration",
+        "position": 5
+    },
+    {
+        "type": "text",
+        "content": "Notre taux de victoire sur Icebox reste problÃ©matique (33%). L'Ã©quipe doit retravailler les rotations dÃ©fensives et mieux coordonner les utilities. Le coaching staff a prÃ©vu des scrims intensifs cette semaine.",
+        "position": 6
+    }
+]

@@ -21,9 +21,12 @@ nelmio_api_doc:
                 
                 | Rôle | Permissions |
                 |------|-------------|
-                | **VISITOR** | Lecture des articles publiés |
-                | **SUBSCRIBER** | + Commentaires et notations |
-                | **EDITOR** | + Création et modification d'articles |
+                | **VISITOR** | Lecture des articles publics |
+                | **SUBSCRIBER** | + Commentaires, notations et abonnements |
+                | **AUTHOR** | + Création d'articles (brouillons) |
+                | **EDITOR** | + Publication et modification de tous les articles |
+                | **DESIGNER** | + Personnalisation des thèmes visuels |
+                | **PROVIDER** | + Upload et validation des datasets |
                 | **ADMIN** | Accès complet à toutes les fonctionnalités |
                 
                 ## 🔐 Guide d'authentification
@@ -55,11 +58,11 @@ nelmio_api_doc:
                 
                 ## 📚 Endpoints principaux
                 
-                - `/api/articles` - Gestion des articles
-                - `/api/media/upload` - Upload de fichiers
-                - `/api/datasets` - Import de données
-                - `/api/themes` - Personnalisation visuelle
-                - `/api/google-sheets/import` - Import Google Sheets
+                - `/api/articles` - Articles
+                - `/api/media/upload` - Upload fichiers
+                - `/api/datasets` - Import données
+                - `/api/themes` - Thèmes
+                - `/api/google-sheets/import` - Google Sheets
                 
                 ---
                 
@@ -75,31 +78,70 @@ nelmio_api_doc:
               description: 🔧 Développement local
         tags:
             - name: Authentification
-              description: Connexion, inscription et gestion des tokens JWT
+              description: |
+                  Connexion, inscription et gestion des tokens JWT
+                  
+                  📁 **Fichier** : `src/Controller/AuthController.php`
             - name: Utilisateurs
-              description: Gestion des utilisateurs, profils et abonnements
+              description: |
+                  Gestion des utilisateurs, profils et abonnements
+                  
+                  📁 **Fichier** : `src/Controller/UserController.php`
             - name: Articles
-              description: CRUD des articles, publication et statistiques
+              description: |
+                  CRUD des articles, publication et statistiques
+                  
+                  📁 **Fichier** : `src/Controller/ArticleController.php`
             - name: Blocs
-              description: Gestion des blocs de contenu modulaires dans les articles
+              description: |
+                  Gestion des blocs de contenu modulaires dans les articles
+                  
+                  📁 **Fichier** : `src/Controller/BlockController.php`
             - name: Médias
-              description: Upload et gestion des fichiers média (images, vidéos)
+              description: |
+                  Upload et gestion des fichiers média (images, vidéos)
+                  
+                  📁 **Fichier** : `src/Controller/MediaController.php`
             - name: Datasets
-              description: Upload et traitement des fichiers CSV, import Google Sheets
+              description: |
+                  Upload et traitement des fichiers CSV, import Google Sheets
+                  
+                  📁 **Fichier** : `src/Controller/DatasetController.php`
             - name: Visualisations
-              description: Création et gestion des graphiques et visualisations
+              description: |
+                  Création et gestion des graphiques et visualisations
+                  
+                  📁 **Fichier** : `src/Controller/VisualizationController.php`
             - name: Notations
-              description: Système de notation par étoiles (1-5) pour articles et blocs
+              description: |
+                  Système de notation par étoiles (1-5) pour articles et blocs
+                  
+                  📁 **Fichier** : `src/Controller/RatingController.php`
             - name: Commentaires
-              description: Système de commentaires sur les articles
+              description: |
+                  Système de commentaires sur les articles
+                  
+                  📁 **Fichier** : `src/Controller/CommentController.php`
             - name: Thèmes
-              description: Gestion des thèmes visuels et personnalisation
+              description: |
+                  Gestion des thèmes visuels et personnalisation
+                  
+                  📁 **Fichier** : `src/Controller/ThemeController.php`
             - name: "Page d'accueil"
-              description: "Configuration de la page d'accueil et visualisations 3D"
+              description: |
+                  Configuration de la page d'accueil et visualisations 3D
+                  
+                  📁 **Fichier** : `src/Controller/HomePageController.php`
             - name: Administration
-              description: "Outils d'administration (stats, gestion utilisateurs)"
+              description: |
+                  Outils d'administration (stats, gestion utilisateurs)
+                  
+                  📁 **Fichier** : `src/Controller/AdminController.php`
             - name: Google Sheets
-              description: Intégration et import de données depuis Google Sheets
+              description: |
+                  Intégration et import de données depuis Google Sheets
+                  
+                  📁 **Fichier** : `src/Controller/GoogleSheetsController.php`
         components:
             securitySchemes:
                 bearerAuth:
