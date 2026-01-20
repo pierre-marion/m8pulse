@@ -1,6 +1,6 @@
 import React from 'react';
 import './GameCard.css';
-import Icon from '../Icon';
+import Icon from '../common/Icon/Icon';
 import Card from '../ui/Card';
 
 /**

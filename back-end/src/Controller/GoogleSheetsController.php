@@ -334,11 +334,11 @@ class GoogleSheetsController extends AbstractController
             $dataset->setName($data['name']);
             $dataset->setDescription($data['description'] ?? '');
             $dataset->setFilename('google-sheet-' . $spreadsheetId . '.json');
-            $dataset->setOriginalFilename($data['name'] . '.json');
-            $dataset->setFilePath('google-sheets/' . $spreadsheetId);
-            $dataset->setMimeType('application/json');
-            $dataset->setSizeBytes(strlen(json_encode($sheetData)));
-            $dataset->setRowCount(count($sheetData));
+            // $dataset->setOriginalFilename($data['name'] . '.json'); // Méthode inexistante
+            // $dataset->setFilePath('google-sheets/' . $spreadsheetId); // Méthode inexistante
+            // $dataset->setMimeType('application/json'); // Méthode inexistante
+            // $dataset->setSizeBytes(strlen(json_encode($sheetData))); // Méthode inexistante
+            // $dataset->setRowCount(count($sheetData)); // Méthode inexistante
             
             // Déterminer les colonnes
             if (!empty($sheetData)) {
@@ -351,10 +351,11 @@ class GoogleSheetsController extends AbstractController
                         'description' => ''
                     ];
                 }
-                $dataset->setColumnsInfo($columns);
+                // $dataset->setColumnsInfo($columns); // Méthode inexistante - utiliser setVariables() à la place
+                $dataset->setVariables($columns);
             }
             
-            $dataset->setProvider($this->getUser());
+            $dataset->setUploader($this->getUser()); // Changé: setProvider -> setUploader
             $dataset->setPublic($data['public'] ?? false);
             $dataset->setStatus('ready');
             
@@ -375,8 +376,8 @@ class GoogleSheetsController extends AbstractController
                 'dataset' => [
                     'id' => $dataset->getId(),
                     'name' => $dataset->getName(),
-                    'rowCount' => $dataset->getRowCount(),
-                    'columns' => $dataset->getColumnsInfo()
+                    // 'rowCount' => $dataset->getRowCount(), // Méthode inexistante
+                    'columns' => $dataset->getVariables() // Changé: getColumnsInfo -> getVariables
                 ]
             ], Response::HTTP_CREATED);
             
@@ -573,9 +574,9 @@ class GoogleSheetsController extends AbstractController
             $dataset->setDescription($data['description'] ?? 'Importé depuis Google Sheets: ' . $sheetInfo['title']);
             $dataset->setSource($data['url']);
             $dataset->setUploader($this->getUser());
-            $dataset->setRowCount(count($playerData));
-            $dataset->setStatus('validated');
-            $dataset->setValidatedAt(new \DateTime());
+            // $dataset->setRowCount(count($playerData)); // Méthode inexistante
+            $dataset->setStatus('ready');
+            // $dataset->setValidatedAt(new \DateTime()); // Méthode inexistante - géré automatiquement par setStatus('ready')
             
             // Déterminer les colonnes
             if (!empty($playerData)) {

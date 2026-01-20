@@ -62,7 +62,7 @@ class Dataset
 
     #[ORM\Column(type: 'string', length: 50)]
     #[Groups(['dataset:read'])]
-    private ?string $status = 'pending'; // pending, validated, error
+    private ?string $status = 'processing'; // processing, ready, error
 
     #[ORM\Column(type: 'string', length: 50)]
     #[Groups(['dataset:read', 'dataset:write'])]
@@ -186,7 +186,7 @@ class Dataset
     public function setStatus(string $status): self
     {
         $this->status = $status;
-        if ($status === 'validated') {
+        if ($status === 'ready') {
             $this->validatedAt = new \DateTime();
         }
         return $this;

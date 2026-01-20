@@ -17,8 +17,8 @@ create_user() {
 
 # Administrateurs
 echo "👑 COMPTES ADMINISTRATEURS"
-create_user "admin@m8pulse.com" "admin" "password" "ROLE_ADMIN,ROLE_EDITOR,ROLE_DESIGNER,ROLE_PROVIDER"
-create_user "superadmin@m8pulse.com" "superadmin" "super123" "ROLE_ADMIN"
+create_user "admin@m8pulse.com" "admin" "admin123" "ROLE_ADMIN,ROLE_EDITOR,ROLE_DESIGNER,ROLE_PROVIDER"
+create_user "superadmin@m8pulse.com" "superadmin" "admin123" "ROLE_ADMIN"
 
 # Éditeurs
 echo ""
@@ -34,7 +34,7 @@ create_user "author2@m8pulse.com" "author2" "author123" "ROLE_AUTHOR,ROLE_SUBSCR
 # Designers
 echo ""
 echo "🎨 COMPTES DESIGNERS"
-create_user "designer@m8pulse.com" "designer" "design123" "ROLE_DESIGNER,ROLE_SUBSCRIBER"
+create_user "designer@m8pulse.com" "designer" "designer123" "ROLE_DESIGNER,ROLE_SUBSCRIBER"
 
 # Fournisseurs de données
 echo ""
@@ -44,8 +44,8 @@ create_user "provider@m8pulse.com" "provider" "provider123" "ROLE_PROVIDER,ROLE_
 # Abonnés
 echo ""
 echo "👤 COMPTES ABONNÉS"
-create_user "subscriber1@m8pulse.com" "subscriber1" "sub123" "ROLE_SUBSCRIBER"
-create_user "subscriber2@m8pulse.com" "subscriber2" "sub123" "ROLE_SUBSCRIBER"
+create_user "subscriber1@m8pulse.com" "subscriber1" "subscriber123" "ROLE_SUBSCRIBER"
+create_user "subscriber2@m8pulse.com" "subscriber2" "subscriber123" "ROLE_SUBSCRIBER"
 create_user "test@m8pulse.com" "testuser" "test123" "ROLE_USER"
 
 echo ""

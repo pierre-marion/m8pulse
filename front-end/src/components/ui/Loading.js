@@ -1,6 +1,6 @@
 import React from 'react';
 import './Loading.css';
-import Icon from '../Icon';
+import Icon from '../common/Icon/Icon';
 
 /**
  * Composant Loading réutilisable

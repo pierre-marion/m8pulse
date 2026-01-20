@@ -1,0 +1,563 @@
+/* ===== SUBSCRIPTION PAGE - LIGHT & DARK MODE ===== */
+.subscription-page {
+  padding: 40px 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  color: #2c3e50;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+body.dark-mode .subscription-page {
+  color: #ecf0f1;
+}
+
+/* ===== HEADER ===== */
+.subscription-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.subscription-title {
+  font-size: 56px;
+  font-weight: 900;
+  margin: 0 0 15px 0;
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+  letter-spacing: 2px;
+  background: linear-gradient(135deg, #7D3CFF 0%, #FF3B3B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subscription-subtitle {
+  font-size: 20px;
+  color: #7f8c8d;
+  margin: 0;
+  font-weight: 400;
+}
+
+body.dark-mode .subscription-subtitle {
+  color: #bdc3c7;
+}
+
+/* ===== BILLING TOGGLE ===== */
+.billing-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 50px;
+  background: rgba(125, 60, 255, 0.08);
+  padding: 8px;
+  border-radius: 50px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  border: 2px solid rgba(125, 60, 255, 0.2);
+}
+
+body.dark-mode .billing-toggle {
+  background: rgba(157, 108, 255, 0.15);
+  border-color: rgba(157, 108, 255, 0.3);
+}
+
+.billing-btn {
+  padding: 12px 35px;
+  border: none;
+  border-radius: 50px;
+  background: transparent;
+  color: #7f8c8d;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+  letter-spacing: 1px;
+}
+
+body.dark-mode .billing-btn {
+  color: #bdc3c7;
+}
+
+.billing-btn:hover {
+  color: #2c3e50;
+}
+
+body.dark-mode .billing-btn:hover {
+  color: #ecf0f1;
+}
+
+.billing-btn.active {
+  background: linear-gradient(135deg, #7D3CFF, #9D5CFF);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(125, 60, 255, 0.5);
+}
+
+.save-badge {
+  position: absolute;
+  top: -10px;
+  right: -12px;
+  background: #FF3B3B;
+  color: #fff;
+  font-size: 10px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 10px rgba(255, 59, 59, 0.4);
+}
+
+/* ===== PLANS CONTAINER ===== */
+.plans-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  margin-bottom: 80px;
+}
+
+/* ===== PLAN CARD ===== */
+.plan-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 35px;
+  border: 3px solid rgba(125, 60, 255, 0.15);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+body.dark-mode .plan-card {
+  background: linear-gradient(135deg, rgba(35, 35, 55, 0.98), rgba(30, 30, 50, 0.98));
+  border-color: rgba(157, 108, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.plan-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: var(--plan-color);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.plan-card:hover::before,
+.plan-card.selected::before {
+  opacity: 1;
+}
+
+.plan-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 40px rgba(125, 60, 255, 0.25);
+}
+
+body.dark-mode .plan-card:hover {
+  box-shadow: 0 12px 40px rgba(157, 108, 255, 0.35);
+}
+
+.plan-card.selected {
+  border-color: var(--plan-color);
+  box-shadow: 0 12px 40px rgba(125, 60, 255, 0.35);
+}
+
+.plan-card.popular {
+  border-width: 4px;
+  transform: scale(1.05);
+}
+
+body.dark-mode .plan-card.popular {
+  border-color: rgba(125, 60, 255, 0.6);
+}
+
+.popular-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: linear-gradient(135deg, #7D3CFF, #9D5CFF);
+  color: #fff;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  box-shadow: 0 4px 15px rgba(125, 60, 255, 0.4);
+}
+
+/* ===== PLAN HEADER ===== */
+.plan-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding-bottom: 25px;
+  border-bottom: 2px solid rgba(125, 60, 255, 0.15);
+}
+
+body.dark-mode .plan-header {
+  border-bottom-color: rgba(157, 108, 255, 0.25);
+}
+
+.plan-icon {
+  font-size: 48px;
+  margin-bottom: 15px;
+}
+
+.plan-name {
+  font-size: 32px;
+  font-weight: 900;
+  margin: 0 0 20px 0;
+  color: #2c3e50;
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+  letter-spacing: 2px;
+}
+
+body.dark-mode .plan-name {
+  color: #ecf0f1;
+}
+
+.plan-price {
+  margin-bottom: 10px;
+}
+
+.price-free {
+  font-size: 36px;
+  font-weight: 900;
+  color: #7D3CFF;
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+}
+
+body.dark-mode .price-free {
+  color: #9D6CFF;
+}
+
+.price-amount {
+  font-size: 42px;
+  font-weight: 900;
+  color: #2c3e50;
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+}
+
+body.dark-mode .price-amount {
+  color: #ecf0f1;
+}
+
+.price-period {
+  font-size: 16px;
+  color: #7f8c8d;
+  font-weight: 600;
+}
+
+body.dark-mode .price-period {
+  color: #bdc3c7;
+}
+
+.savings-info {
+  color: #27ae60;
+  font-size: 13px;
+  font-weight: 700;
+  margin-top: 8px;
+}
+
+body.dark-mode .savings-info {
+  color: #2ecc71;
+}
+
+/* ===== FEATURES LIST ===== */
+.features-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 30px 0;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(125, 60, 255, 0.08);
+}
+
+body.dark-mode .feature-item {
+  border-bottom-color: rgba(157, 108, 255, 0.15);
+}
+
+.feature-item:last-child {
+  border-bottom: none;
+}
+
+.feature-icon {
+  font-size: 16px;
+  font-weight: 700;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.feature-item.included .feature-icon {
+  color: #27ae60;
+  background: rgba(39, 174, 96, 0.1);
+}
+
+body.dark-mode .feature-item.included .feature-icon {
+  color: #2ecc71;
+  background: rgba(46, 204, 113, 0.15);
+}
+
+.feature-item.excluded .feature-icon {
+  color: #e74c3c;
+  background: rgba(231, 76, 60, 0.1);
+}
+
+body.dark-mode .feature-item.excluded .feature-icon {
+  color: #95a5a6;
+  background: rgba(149, 165, 166, 0.15);
+}
+
+.feature-name {
+  font-size: 14px;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+body.dark-mode .feature-name {
+  color: #ecf0f1;
+}
+
+.feature-item.excluded .feature-name {
+  opacity: 0.4;
+  text-decoration: line-through;
+}
+
+/* ===== SUBSCRIBE BUTTON ===== */
+.subscribe-btn {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.subscribe-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.subscribe-btn:active {
+  transform: translateY(0);
+}
+
+/* ===== FEATURES EXPLANATION ===== */
+.features-explanation {
+  margin-bottom: 80px;
+}
+
+.explanation-title {
+  text-align: center;
+  font-size: 40px;
+  font-weight: 900;
+  margin: 0 0 50px 0;
+  color: #2c3e50;
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+  letter-spacing: 2px;
+}
+
+body.dark-mode .explanation-title {
+  color: #ecf0f1;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+}
+
+.feature-detail {
+  background: rgba(125, 60, 255, 0.05);
+  border-radius: 16px;
+  padding: 30px;
+  text-align: center;
+  border: 2px solid rgba(125, 60, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+body.dark-mode .feature-detail {
+  background: rgba(157, 108, 255, 0.08);
+  border-color: rgba(157, 108, 255, 0.2);
+}
+
+.feature-detail:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(125, 60, 255, 0.2);
+  border-color: rgba(125, 60, 255, 0.3);
+}
+
+body.dark-mode .feature-detail:hover {
+  box-shadow: 0 8px 25px rgba(157, 108, 255, 0.3);
+  border-color: rgba(157, 108, 255, 0.4);
+}
+
+.feature-detail-icon {
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+.feature-detail h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  color: #2c3e50;
+}
+
+body.dark-mode .feature-detail h3 {
+  color: #ecf0f1;
+}
+
+.feature-detail p {
+  font-size: 14px;
+  color: #7f8c8d;
+  margin: 0;
+  line-height: 1.6;
+}
+
+body.dark-mode .feature-detail p {
+  color: #bdc3c7;
+}
+
+/* ===== FAQ SECTION ===== */
+.faq-section {
+  margin-bottom: 60px;
+}
+
+.faq-title {
+  text-align: center;
+  font-size: 40px;
+  font-weight: 900;
+  margin: 0 0 50px 0;
+  color: #2c3e50;
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+  letter-spacing: 2px;
+}
+
+body.dark-mode .faq-title {
+  color: #ecf0f1;
+}
+
+.faq-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+}
+
+.faq-item {
+  background: rgba(125, 60, 255, 0.05);
+  border-radius: 16px;
+  padding: 30px;
+  border-left: 4px solid #7D3CFF;
+  transition: all 0.3s ease;
+}
+
+body.dark-mode .faq-item {
+  background: rgba(157, 108, 255, 0.08);
+  border-left-color: #9D6CFF;
+}
+
+.faq-item:hover {
+  transform: translateX(5px);
+  box-shadow: 0 4px 20px rgba(125, 60, 255, 0.15);
+}
+
+body.dark-mode .faq-item:hover {
+  box-shadow: 0 4px 20px rgba(157, 108, 255, 0.25);
+}
+
+.faq-item h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  color: #2c3e50;
+}
+
+body.dark-mode .faq-item h3 {
+  color: #ecf0f1;
+}
+
+.faq-item p {
+  font-size: 14px;
+  color: #7f8c8d;
+  margin: 0;
+  line-height: 1.6;
+}
+
+body.dark-mode .faq-item p {
+  color: #bdc3c7;
+}
+
+/* ===== SCROLLBAR ===== */
+.subscription-page::-webkit-scrollbar {
+  width: 8px;
+}
+
+.subscription-page::-webkit-scrollbar-track {
+  background: rgba(125, 60, 255, 0.05);
+  border-radius: 10px;
+}
+
+body.dark-mode .subscription-page::-webkit-scrollbar-track {
+  background: rgba(157, 108, 255, 0.1);
+}
+
+.subscription-page::-webkit-scrollbar-thumb {
+  background: rgba(125, 60, 255, 0.3);
+  border-radius: 10px;
+}
+
+body.dark-mode .subscription-page::-webkit-scrollbar-thumb {
+  background: rgba(157, 108, 255, 0.4);
+}
+
+.subscription-page::-webkit-scrollbar-thumb:hover {
+  background: rgba(125, 60, 255, 0.5);
+}
+
+body.dark-mode .subscription-page::-webkit-scrollbar-thumb:hover {
+  background: rgba(157, 108, 255, 0.6);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1200px) {
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .plans-container {
+    grid-template-columns: 1fr;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .faq-grid {
+    grid-template-columns: 1fr;
+  }
+}

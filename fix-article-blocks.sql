@@ -1,12 +1,9 @@
 -- Script pour corriger le format des blocs des articles pré-générés
--- Transforme le format imbriqué en format plat compatible avec le renderer
 
 USE m8pulse;
 
--- Supprimer les anciens articles de démo s'ils existent
 DELETE FROM articles WHERE id IN (1, 2);
 
--- Recréer les articles avec un format de blocs compatible
 INSERT INTO articles (id, title, summary, type, game, author_id, status, blocks, published_at) VALUES
 (1, 
  'Analyse de la performance Gentlemates vs Vitality', 

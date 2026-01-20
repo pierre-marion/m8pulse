@@ -68,6 +68,15 @@ docker exec m8pulse_backend php bin/console doctrine:migrations:migrate --no-int
 echo "👤 Création des utilisateurs administrateurs par défaut..."
 docker exec m8pulse_backend php bin/console app:create-admins --no-interaction 2>/dev/null || echo "ℹ️  Utilisateurs administrateurs déjà créés"
 
+# Créer tous les comptes de test
+echo "👥 Création des comptes de test..."
+./create-all-test-accounts.sh
+
+# Initialiser les articles de démo
+echo "📝 Initialisation des articles de démo..."
+docker exec -i m8pulse_db mysql -u m8user -pm8password m8pulse < init-articles.sql
+echo "   ✅ 3 articles créés (Valorant, CS2, CoD)"
+
 echo ""
 echo "✅ M8Pulse est maintenant en ligne !"
 echo ""

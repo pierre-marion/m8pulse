@@ -268,7 +268,7 @@ class DatasetController extends AbstractController
             $dataset->setDescription($data['description'] ?? null);
             $dataset->setFilename($filename);
             $dataset->setSource('Google Sheets: ' . $data['spreadsheet_id']);
-            $dataset->setUploadedBy($this->getUser());
+            $dataset->setUploader($this->getUser()); // Changé: setUploadedBy -> setUploader
             $dataset->setVariables($importedData['variables']); // Auto-détection des types
             
             $this->entityManager->persist($dataset);
@@ -336,7 +336,7 @@ class DatasetController extends AbstractController
         $dataset->setFilepath('/uploads/datasets/' . $filename);
         $dataset->setVariables($parsedData['variables']);
         $dataset->setData($parsedData['data']);
-        $dataset->setStatus('pending');
+        $dataset->setStatus('processing');
         $dataset->setUploader($this->getUser());
         
         $this->entityManager->persist($dataset);
@@ -369,7 +369,7 @@ class DatasetController extends AbstractController
             $dataset->setVariables($data['variables']);
         }
         
-        $dataset->setStatus('validated');
+        $dataset->setStatus('ready');
         
         $this->entityManager->flush();
         
