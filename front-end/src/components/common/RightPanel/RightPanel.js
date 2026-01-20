@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import Calendar from '../Calendar/Calendar';
 import './RightPanel.css';
-import { useDarkMode } from '../../../contexts/DarkModeContext';
+import { useTheme } from '../../../contexts/ThemeContext';
 import Icon from '../Icon/Icon';
 
 function useMediaQuery(query) {
@@ -35,7 +35,8 @@ function useMediaQuery(query) {
 
 function RightPanel({ currentGame, onDashboardClick, onDesignClick, onDatasetsClick, user, onLogout, onLoginClick, currentPage, selectedCity, onPlayerClick }) {
   const [selectedPlayer, setSelectedPlayer] = useState(0);
-  const { isDarkMode, toggleDarkMode } = useDarkMode();
+  const { theme, toggleTheme } = useTheme();
+  const isDarkMode = theme === 'dark';
 
   // Laptop/MacBook widths: show fewer items to avoid crowding.
   // - <= 1600px: show 2 (covers Windows 125% scaling where 1920px often becomes ~1536px CSS)
@@ -407,7 +408,7 @@ function RightPanel({ currentGame, onDashboardClick, onDesignClick, onDatasetsCl
                user ? <><Icon name="gamepad" size={14} /> Joueur</> : <><Icon name="user" size={14} /> Visiteur</>}
             </div>
           </div>
-          <button className="theme-toggle-mini" onClick={toggleDarkMode} title={isDarkMode ? 'Mode clair' : 'Mode sombre'}>
+          <button className="theme-toggle-mini" onClick={toggleTheme} title={isDarkMode ? 'Mode clair' : 'Mode sombre'}>
             {isDarkMode ? '☀️' : '🌙'}
           </button>
         </div>

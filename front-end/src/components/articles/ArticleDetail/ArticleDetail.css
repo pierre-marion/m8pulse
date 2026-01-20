@@ -1,3 +1,16 @@
+/* Variables CSS pour thème personnalisable */
+:root {
+  --article-text-color: #2c3e50;
+  --article-text-size: 1.05rem;
+  --article-text-font: 'Inter', system-ui, sans-serif;
+  --article-text-line-height: 1.8;
+  --article-title-color: #667eea;
+  --article-title-size: 2.5rem;
+  --article-title-weight: 800;
+  --article-bg-color: #ffffff;
+  --article-border-radius: 30px;
+}
+
 .article-detail {
   width: 100%;
   min-height: 100vh;
@@ -28,11 +41,11 @@
 }
 
 .article-content-wrapper {
-  background: white;
+  background: var(--article-bg-color, white);
   padding: 0;
   margin: 2rem auto;
   max-width: 900px;
-  border-radius: 20px;
+  border-radius: var(--article-border-radius, 20px);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
@@ -90,8 +103,8 @@
 }
 
 .article-title {
-  font-size: 2.5rem;
-  font-weight: 900;
+  font-size: var(--article-title-size, 2.5rem);
+  font-weight: var(--article-title-weight, 900);
   color: white;
   margin: 0;
   line-height: 1.2;
@@ -145,9 +158,10 @@
 }
 
 .article-block-text {
-  color: #2c3e50;
-  font-size: 1.05rem;
-  line-height: 1.8;
+  color: var(--article-text-color, #2c3e50);
+  font-size: var(--article-text-size, 1.05rem);
+  font-family: var(--article-text-font, 'Inter', system-ui, sans-serif);
+  line-height: var(--article-text-line-height, 1.8);
   white-space: pre-wrap;
 }
 

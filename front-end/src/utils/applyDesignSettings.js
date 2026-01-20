@@ -31,4 +31,34 @@ export const applyDesignSettings = () => {
   if (borderRadius) {
     document.documentElement.style.setProperty('--border-radius', `${borderRadius}px`);
   }
+
+  // Article
+  const articleBg = localStorage.getItem('articleBg');
+  const articleBorderRadius = localStorage.getItem('articleBorderRadius');
+  
+  if (articleBg) {
+    document.documentElement.style.setProperty('--article-bg', articleBg);
+  }
+  if (articleBorderRadius) {
+    document.documentElement.style.setProperty('--article-border-radius', articleBorderRadius); // Note: ArticleDetail.css might need to use this too if we want dynamic radius
+  }
+
+  // Texte d'article
+  const articleTextColor = localStorage.getItem('articleTextColor');
+  const articleTextSize = localStorage.getItem('articleTextSize');
+  const articleTextFont = localStorage.getItem('articleTextFont');
+  const articleTextLineHeight = localStorage.getItem('articleTextLineHeight');
+  
+  if (articleTextColor) {
+    document.documentElement.style.setProperty('--article-text-color', articleTextColor);
+  }
+  if (articleTextSize) {
+    document.documentElement.style.setProperty('--article-text-size', articleTextSize);
+  }
+  if (articleTextFont) {
+    document.documentElement.style.setProperty('--article-text-font', articleTextFont);
+  }
+  if (articleTextLineHeight) {
+    document.documentElement.style.setProperty('--article-text-line-height', articleTextLineHeight);
+  }
 };
