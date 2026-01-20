@@ -9,7 +9,7 @@ function SubscriptionPage() {
   const plans = {
     free: {
       name: 'Free',
-      icon: 'barChart',
+     
       monthlyPrice: 0,
       yearlyPrice: 0,
       color: '#6C757D',
@@ -30,7 +30,7 @@ function SubscriptionPage() {
     },
     silver: {
       name: 'Silver',
-      icon: 'award',
+    
       monthlyPrice: 9.99,
       yearlyPrice: 99.99,
       color: '#C0C0C0',
@@ -52,7 +52,7 @@ function SubscriptionPage() {
     },
     gold: {
       name: 'Gold',
-      icon: 'trophy',
+      
       monthlyPrice: 24.99,
       yearlyPrice: 249.99,
       color: '#FFD700',
