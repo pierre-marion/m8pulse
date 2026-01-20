@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './HomePage.css';
-import Icon from './Icon';
-import { Button, Loading } from './ui';
-import { NewsCard } from './cards';
+import Icon from '../../common/Icon/Icon';
+import { Button, Loading } from '../../ui';
+import { NewsCard } from '../../cards';
 
 function HomePage({ user }) {
   const [pastMatches, setPastMatches] = useState([]);
