@@ -670,399 +670,380 @@
 }
 
 /* Dark Mode Support */
-body.dark-mode .article-detail {
-    background: linear-gradient(135deg, #0a0a0f 0%, #15151f 50%, #1a1a2e 100%);
+.article-detail.dark-mode {
+    background: linear-gradient(135deg, #0a0a0f 0%, #15151f 50%, #1a1a2e 100%) !important;
 }
 
-body.dark-mode .btn-back {
+.article-detail.dark-mode .article-content-wrapper {
+    background: linear-gradient(135deg, rgba(35, 35, 55, 0.98), rgba(30, 30, 50, 0.98)) !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+}
+
+.article-detail.dark-mode .article-main-content {
+    background: transparent !important;
+}
+
+.article-detail.dark-mode .article-meta {
+    background: rgba(20, 25, 35, 0.6) !important;
+}
+
+.article-detail.dark-mode .btn-back {
     background: transparent;
     color: rgba(255, 255, 255, 0.8);
     border-color: rgba(255, 255, 255, 0.1);
 }
 
-body.dark-mode .btn-back:hover {
+.article-detail.dark-mode .btn-back:hover {
     background: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.3);
     color: white;
 }
 
-body.dark-mode .article-header {
+.article-detail.dark-mode .article-header {
     border-bottom-color: rgba(255, 255, 255, 0.08);
 }
 
-body.dark-mode .badge {
+.article-detail.dark-mode .badge {
     background: rgba(255, 255, 255, 0.05);
     color: rgba(255, 255, 255, 0.6);
     border-color: rgba(255, 255, 255, 0.1);
 }
 
-body.dark-mode .badge-game {
+.article-detail.dark-mode .badge-game {
     background: rgba(102, 126, 234, 0.2);
     color: #9d6cff;
     border-color: rgba(102, 126, 234, 0.3);
 }
 
-body.dark-mode .badge-type {
+.article-detail.dark-mode .badge-type {
     background: rgba(255, 255, 255, 0.05);
     color: rgba(255, 255, 255, 0.7);
     border-color: rgba(255, 255, 255, 0.1);
 }
 
-body.dark-mode .article-title {
+.article-detail.dark-mode .article-title {
     color: white;
 }
 
-body.dark-mode .article-summary {
+.article-detail.dark-mode .article-summary {
     color: rgba(255, 255, 255, 0.6);
 }
 
-body.dark-mode .article-block-title {
+.article-detail.dark-mode .article-block-title {
     color: white;
 }
 
-body.dark-mode .article-block-title.h3 {
+.article-detail.dark-mode .article-block-title.h3 {
     color: rgba(255, 255, 255, 0.9);
 }
 
-body.dark-mode .article-block-title.h4 {
+.article-detail.dark-mode .article-block-title.h4 {
     color: rgba(255, 255, 255, 0.8);
 }
 
-body.dark-mode .article-block-text {
+.article-detail.dark-mode .article-block-text {
     color: rgba(255, 255, 255, 0.7);
 }
 
-body.dark-mode .stats-table-container {
+.article-detail.dark-mode .stats-table-container {
   border-color: rgba(255, 255, 255, 0.1);
 }
 
-body.dark-mode .stats-table {
+.article-detail.dark-mode .stats-table {
   background: rgba(20, 25, 35, 0.6);
 }
 
-body.dark-mode .stats-table thead {
+.article-detail.dark-mode .stats-table thead {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
-body.dark-mode .stats-table td {
+.article-detail.dark-mode .stats-table td {
   border-bottom-color: rgba(255, 255, 255, 0.05);
   color: rgba(255, 255, 255, 0.8);
 }
 
-body.dark-mode .stats-table tbody tr:hover {
+.article-detail.dark-mode .stats-table tbody tr:hover {
   background: rgba(102, 126, 234, 0.1);
 }
 
-body.dark-mode .article-placeholder {
+.article-detail.dark-mode .article-placeholder {
     color: rgba(255, 255, 255, 0.3);
 }
 
-body.dark-mode .article-meta {
+.article-detail.dark-mode .article-meta {
     border-top-color: rgba(255, 255, 255, 0.06);
 }
 
-body.dark-mode .meta-item {
+.article-detail.dark-mode .meta-item {
     color: rgba(255, 255, 255, 0.4);
 }
 
-body.dark-mode .article-detail-page {
+.article-detail.dark-mode .article-detail-page {
     background: #0a0e27;
     color: #ffffff;
 }
 
-body.dark-mode .article-detail-container {
+.article-detail.dark-mode .article-detail-container,
+.article-detail.dark-mode .article-content-wrapper {
     background: linear-gradient(135deg, rgba(35, 35, 55, 0.98), rgba(30, 30, 50, 0.98));
     border-color: rgba(157, 108, 255, 0.3);
 }
 
-body.dark-mode .article-header h1 {
+.article-detail.dark-mode .article-header h1 {
     color: #ffffff;
 }
 
-body.dark-mode .article-meta {
-    color: rgba(255, 255, 255, 0.6);
-}
-
-body.dark-mode .meta-item {
-    color: rgba(255, 255, 255, 0.7);
-}
-
-body.dark-mode .article-tags {
+.article-detail.dark-mode .article-tags {
     background: rgba(157, 108, 255, 0.1);
 }
 
-body.dark-mode .tag {
+.article-detail.dark-mode .tag {
     background: rgba(157, 108, 255, 0.3);
     color: #ffffff;
 }
 
-body.dark-mode .article-content {
+.article-detail.dark-mode .article-content {
     color: rgba(255, 255, 255, 0.9);
 }
 
-body.dark-mode .article-content h2,
-body.dark-mode .article-content h3 {
+.article-detail.dark-mode .article-content h2,
+.article-detail.dark-mode .article-content h3 {
     color: #ffffff;
 }
 
-body.dark-mode .article-content blockquote {
+.article-detail.dark-mode .article-content blockquote {
     background: rgba(157, 108, 255, 0.1);
     border-left-color: #9d6cff;
     color: rgba(255, 255, 255, 0.8);
 }
 
-body.dark-mode .article-content code {
+.article-detail.dark-mode .article-content code {
     background: rgba(20, 25, 35, 0.8);
     color: #9d6cff;
 }
 
-body.dark-mode .article-content pre {
+.article-detail.dark-mode .article-content pre {
     background: rgba(20, 25, 35, 0.9);
 }
 
-body.dark-mode .article-sidebar {
+.article-detail.dark-mode .article-sidebar {
     background: linear-gradient(135deg, rgba(35, 35, 55, 0.98), rgba(30, 30, 50, 0.98));
     border-color: rgba(157, 108, 255, 0.3);
 }
 
-body.dark-mode .sidebar-section h3 {
+.article-detail.dark-mode .sidebar-section h3 {
     color: #9d6cff;
 }
 
-body.dark-mode .author-info {
+.article-detail.dark-mode .author-info {
     background: rgba(20, 25, 35, 0.6);
 }
 
-body.dark-mode .author-name {
+.article-detail.dark-mode .author-name {
     color: #ffffff;
 }
 
-body.dark-mode .author-bio {
+.article-detail.dark-mode .author-bio {
     color: rgba(255, 255, 255, 0.7);
 }
 
-body.dark-mode .toc-list a {
+.article-detail.dark-mode .toc-list a {
     color: rgba(255, 255, 255, 0.8);
 }
 
-body.dark-mode .toc-list a:hover,
-body.dark-mode .toc-list a.active {
+.article-detail.dark-mode .toc-list a:hover,
+.article-detail.dark-mode .toc-list a.active {
     color: #9d6cff;
 }
 
-body.dark-mode .related-articles-list {
+.article-detail.dark-mode .related-articles-list {
     background: rgba(20, 25, 35, 0.6);
 }
 
-body.dark-mode .related-article {
+.article-detail.dark-mode .related-article {
     border-bottom-color: rgba(157, 108, 255, 0.2);
 }
 
-body.dark-mode .related-article:hover {
+.article-detail.dark-mode .related-article:hover {
     background: rgba(157, 108, 255, 0.1);
 }
 
-body.dark-mode .related-article-title {
+.article-detail.dark-mode .related-article-title {
     color: #ffffff;
 }
 
-body.dark-mode .related-article-excerpt {
+.article-detail.dark-mode .related-article-excerpt {
     color: rgba(255, 255, 255, 0.6);
 }
 
-body.dark-mode .comments-section {
+.article-detail.dark-mode .comments-section {
     background: linear-gradient(135deg, rgba(35, 35, 55, 0.98), rgba(30, 30, 50, 0.98));
     border-color: rgba(157, 108, 255, 0.3);
 }
 
-body.dark-mode .comments-section h3 {
+.article-detail.dark-mode .comments-section h3 {
     color: #ffffff;
 }
 
-body.dark-mode .comment-form textarea {
+.article-detail.dark-mode .comment-form textarea {
     background: rgba(20, 25, 35, 0.8);
     border-color: rgba(157, 108, 255, 0.3);
     color: #ffffff;
 }
 
-body.dark-mode .comment-form textarea:focus {
+.article-detail.dark-mode .comment-form textarea:focus {
     border-color: #9d6cff;
     background: rgba(20, 25, 35, 0.9);
 }
 
-body.dark-mode .comment-card {
+.article-detail.dark-mode .comment-card {
     background: rgba(20, 25, 35, 0.6);
     border-color: rgba(157, 108, 255, 0.2);
 }
 
-body.dark-mode .comment-author {
+.article-detail.dark-mode .comment-author {
     color: #9d6cff;
 }
 
-body.dark-mode .comment-date {
+.article-detail.dark-mode .comment-date {
     color: rgba(255, 255, 255, 0.5);
 }
 
-body.dark-mode .comment-text {
+.article-detail.dark-mode .comment-text {
     color: rgba(255, 255, 255, 0.9);
 }
 
-body.dark-mode .btn-back {
-    background: rgba(157, 108, 255, 0.2);
-    color: #9d6cff;
-}
-
-body.dark-mode .btn-back:hover {
-    background: rgba(157, 108, 255, 0.3);
-}
-
 /* Dark mode - Section bottom */
-body.dark-mode .bottom-section {
+.article-detail.dark-mode .bottom-section {
   border-top-color: rgba(255, 255, 255, 0.08);
 }
 
-body.dark-mode .section-title {
+.article-detail.dark-mode .section-title {
   color: white;
 }
 
 /* Dark mode - Rating section */
-body.dark-mode .average-rating {
+.article-detail.dark-mode .average-rating {
   color: white;
 }
 
-body.dark-mode .rating-stars-display .star {
+.article-detail.dark-mode .rating-stars-display .star {
   color: rgba(255, 255, 255, 0.15);
 }
 
-body.dark-mode .rating-count {
+.article-detail.dark-mode .rating-stars-display .star.filled {
+  color: #fbbf24 !important;
+}
+
+.article-detail.dark-mode .rating-count {
   color: rgba(255, 255, 255, 0.4);
 }
 
-body.dark-mode .rating-input p {
+.article-detail.dark-mode .rating-input p {
   color: rgba(255, 255, 255, 0.6);
 }
 
-body.dark-mode .star-button {
+.article-detail.dark-mode .star-button {
   color: rgba(255, 255, 255, 0.15);
 }
 
-body.dark-mode .user-rating-text {
+.article-detail.dark-mode .star-button:hover,
+.article-detail.dark-mode .star-button.active {
+  color: #fbbf24 !important;
+}
+
+.article-detail.dark-mode .user-rating-text {
   color: rgba(255, 255, 255, 0.5);
 }
 
 /* Dark mode - Comments section */
-body.dark-mode .comment-form textarea {
+.article-detail.dark-mode .comment-form textarea {
   background: rgba(255, 255, 255, 0.03);
   border-color: rgba(255, 255, 255, 0.08);
   color: white;
 }
 
-body.dark-mode .comment-form textarea:focus {
+.article-detail.dark-mode .comment-form textarea:focus {
   border-color: rgba(255, 255, 255, 0.15);
   background: rgba(255, 255, 255, 0.04);
 }
 
-body.dark-mode .comment-form textarea::placeholder {
+.article-detail.dark-mode .comment-form textarea::placeholder {
   color: rgba(255, 255, 255, 0.3);
 }
 
-body.dark-mode .btn-submit-comment {
+.article-detail.dark-mode .btn-submit-comment {
   background: rgba(255, 255, 255, 0.05);
   color: white;
   border-color: rgba(255, 255, 255, 0.1);
 }
 
-body.dark-mode .btn-submit-comment:hover:not(:disabled) {
+.article-detail.dark-mode .btn-submit-comment:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.2);
 }
 
-body.dark-mode .comments-list::-webkit-scrollbar-track {
+.article-detail.dark-mode .comments-list::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.02);
 }
 
-body.dark-mode .comments-list::-webkit-scrollbar-thumb {
+.article-detail.dark-mode .comments-list::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.1);
 }
 
-body.dark-mode .comments-list::-webkit-scrollbar-thumb:hover {
+.article-detail.dark-mode .comments-list::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.15);
 }
 
-body.dark-mode .no-comments {
+.article-detail.dark-mode .no-comments {
   color: rgba(255, 255, 255, 0.3);
 }
 
-body.dark-mode .comment-card {
+.article-detail.dark-mode .comment-card {
   background: rgba(255, 255, 255, 0.02);
   border-color: rgba(255, 255, 255, 0.06);
 }
 
-body.dark-mode .comment-card:hover {
+.article-detail.dark-mode .comment-card:hover {
   background: rgba(255, 255, 255, 0.03);
   border-color: rgba(255, 255, 255, 0.1);
 }
 
-body.dark-mode .comment-author {
+.article-detail.dark-mode .comment-author {
   color: white;
 }
 
-body.dark-mode .comment-date {
+.article-detail.dark-mode .comment-date {
   color: rgba(255, 255, 255, 0.3);
 }
 
-body.dark-mode .comment-content {
+.article-detail.dark-mode .comment-content {
   color: rgba(255, 255, 255, 0.7);
-}
-
-/* Alternative: Support direct dark-mode class on article-detail */
-.article-detail.dark-mode {
-    background: linear-gradient(135deg, #0a0a0f 0%, #15151f 50%, #1a1a2e 100%) !important;
-    color: rgba(255, 255, 255, 0.9) !important;
-}
-
-.article-detail.dark-mode .btn-back {
-    background: transparent !important;
-    color: rgba(255, 255, 255, 0.8) !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
-}
-
-.article-detail.dark-mode .article-title {
-    color: white !important;
-}
-
-.article-detail.dark-mode .article-summary {
-    color: rgba(255, 255, 255, 0.7) !important;
-}
-
-.article-detail.dark-mode .article-content-wrapper {
-    background: rgba(255, 255, 255, 0.02) !important;
-    border-color: rgba(255, 255, 255, 0.05) !important;
 }
 
 .article-detail.dark-mode .text-content,
 .article-detail.dark-mode .article-block-text {
-    color: rgba(255, 255, 255, 0.85) !important;
+    color: rgba(255, 255, 255, 0.85);
 }
 
 .article-detail.dark-mode .stats-table {
-    background: rgba(255, 255, 255, 0.03) !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.1);
 }
 
 .article-detail.dark-mode .stats-table thead {
-    background: rgba(255, 255, 255, 0.05) !important;
-    color: white !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
 }
 
 .article-detail.dark-mode .stats-table th {
-    color: white !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: white;
+    border-color: rgba(255, 255, 255, 0.1);
 }
 
 .article-detail.dark-mode .stats-table td {
-    border-color: rgba(255, 255, 255, 0.05) !important;
-    color: rgba(255, 255, 255, 0.8) !important;
+    border-color: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.8);
 }
 
 .article-detail.dark-mode .stats-table tbody tr:hover {

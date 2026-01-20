@@ -44,7 +44,7 @@ class DatasetController extends AbstractController
                     new OA\Property(property: 'id', type: 'integer', example: 1),
                     new OA\Property(property: 'name', type: 'string', example: 'stats-vitality-2024.csv'),
                     new OA\Property(property: 'source', type: 'string', example: 'google_sheets'),
-                    new OA\Property(property: 'uploadedAt', type: 'string', format: 'date-time'),
+                    // new OA\Property(property: 'uploadedAt', type: 'string', format: 'date-time'),
                     new OA\Property(property: 'rowCount', type: 'integer', example: 245)
                 ]
             )
@@ -54,7 +54,7 @@ class DatasetController extends AbstractController
     {
         $datasets = $this->entityManager->getRepository(Dataset::class)->findBy(
             [],
-            ['uploadedAt' => 'DESC']
+            ['createdAt' => 'DESC']
         );
         
         $data = $this->serializer->serialize($datasets, 'json', ['groups' => 'dataset:read']);
@@ -94,21 +94,36 @@ class DatasetController extends AbstractController
     public function show(int $id): JsonResponse
     {
         $dataset = $this->entityManager->getRepository(Dataset::class)->find($id);
-        
         if (!$dataset) {
             return $this->json(['error' => 'Dataset not found'], Response::HTTP_NOT_FOUND);
         }
-        
         $this->denyAccessUnlessGranted('DATASET_VIEW', $dataset);
-        
+
         // Inclure les variables dans la réponse
         $data = json_decode($this->serializer->serialize($dataset, 'json', ['groups' => 'dataset:read']), true);
-        
-        // Charger les variables si elles sont définies
-        if ($dataset->getVariables()) {
-            $data['variables'] = $dataset->getVariables();
+        if ($dataset->getColumnsInfo()) {
+            $data['variables'] = $dataset->getColumnsInfo();
         }
-        
+
+        // Ajouter les données du CSV (pour affichage dans le front)
+        try {
+            $filename = $dataset->getFilename();
+            if ($filename) {
+                $fullPath = $this->uploadDirectory . '/' . $filename;
+                if (file_exists($fullPath)) {
+                    $parsed = $this->parseCSV($fullPath);
+                    $data['data'] = $parsed['data'] ?? [];
+                } else {
+                    $data['data'] = [];
+                }
+            } else {
+                $data['data'] = [];
+            }
+        } catch (\Exception $e) {
+            // Si erreur lors du parsing, on retourne un tableau vide
+            $data['data'] = [];
+        }
+
         return $this->json($data);
     }
 
@@ -185,12 +200,12 @@ class DatasetController extends AbstractController
             }
         }
         
-        $dataset->setVariables($data['variables']);
+        $dataset->setColumnsInfo($data['variables']);
         $this->entityManager->flush();
         
         return $this->json([
             'message' => 'Variables updated successfully',
-            'variables' => $dataset->getVariables()
+            'variables' => $dataset->getColumnsInfo()
         ]);
     }
 
@@ -268,8 +283,8 @@ class DatasetController extends AbstractController
             $dataset->setDescription($data['description'] ?? null);
             $dataset->setFilename($filename);
             $dataset->setSource('Google Sheets: ' . $data['spreadsheet_id']);
-            $dataset->setUploader($this->getUser()); // Changé: setUploadedBy -> setUploader
-            $dataset->setVariables($importedData['variables']); // Auto-détection des types
+            $dataset->setProvider($this->getUser());
+            $dataset->setColumnsInfo($importedData['variables']); // Auto-détection des types
             
             $this->entityManager->persist($dataset);
             $this->entityManager->flush();
@@ -330,17 +345,27 @@ class DatasetController extends AbstractController
         $dataset->setName($request->request->get('name') ?? $file->getClientOriginalName());
         $dataset->setDescription($request->request->get('description'));
         $dataset->setSource($request->request->get('source'));
-        $dataset->setGame($request->request->get('game', 'general'));
         $dataset->setPublic($request->request->get('public', 'true') === 'true');
         $dataset->setFilename($filename);
-        $dataset->setFilepath('/uploads/datasets/' . $filename);
-        $dataset->setVariables($parsedData['variables']);
-        $dataset->setData($parsedData['data']);
+        $dataset->setOriginalFilename($file->getClientOriginalName());
+        $dataset->setFilePath('/uploads/datasets/' . $filename);
+        $dataset->setMimeType(mime_content_type($filepath) ?: 'text/csv');
+        $dataset->setSizeBytes(filesize($filepath));
+        $dataset->setColumnsInfo($parsedData['variables']);
+        $dataset->setRowCount(count($parsedData['data']));
         $dataset->setStatus('processing');
-        $dataset->setUploader($this->getUser());
+        $dataset->setProvider($this->getUser());
         
-        $this->entityManager->persist($dataset);
-        $this->entityManager->flush();
+        try {
+            $this->entityManager->persist($dataset);
+            $this->entityManager->flush();
+        } catch (\Throwable $e) {
+            return $this->json([
+                'error' => 'Erreur lors de l\'enregistrement en base',
+                'exception' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
         
         return $this->json([
             'message' => 'Dataset uploaded successfully',
@@ -366,7 +391,7 @@ class DatasetController extends AbstractController
         
         // Mettre à jour les types de variables si fournis
         if (isset($data['variables'])) {
-            $dataset->setVariables($data['variables']);
+            $dataset->setColumnsInfo($data['variables']);
         }
         
         $dataset->setStatus('ready');
@@ -399,7 +424,7 @@ class DatasetController extends AbstractController
         }
         
         if (isset($data['variables'])) {
-            $dataset->setVariables($data['variables']);
+            $dataset->setColumnsInfo($data['variables']);
         }
         
         $this->entityManager->flush();

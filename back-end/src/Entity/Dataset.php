@@ -40,54 +40,66 @@ class Dataset
     #[Assert\Url(message: "L'URL de la source n'est pas valide")]
     private ?string $source = null; // URL Google Sheets, fichier CSV, etc.
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255)]
     #[Groups(['dataset:read'])]
     private ?string $filename = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(name: 'original_filename', type: 'string', length: 255)]
     #[Groups(['dataset:read'])]
-    private ?string $filepath = null;
+    private ?string $originalFilename = null;
 
-    #[ORM\Column(type: 'json')]
+    #[ORM\Column(name: 'file_path', type: 'string', length: 500)]
+    #[Groups(['dataset:read'])]
+    private ?string $filePath = null;
+
+    #[ORM\Column(name: 'mime_type', type: 'string', length: 100)]
+    #[Groups(['dataset:read'])]
+    private ?string $mimeType = null;
+
+    #[ORM\Column(name: 'size_bytes', type: 'bigint')]
+    #[Groups(['dataset:read'])]
+    private ?int $sizeBytes = null;
+
+    #[ORM\Column(name: 'row_count', type: 'integer', nullable: true)]
+    #[Groups(['dataset:read'])]
+    private ?int $rowCount = 0;
+
+    #[ORM\Column(name: 'columns_info', type: 'json')]
     #[Groups(['dataset:read', 'visualization:read'])]
-    private array $variables = []; // [{name: "Kills", type: "numérique"}, ...]
-
-    #[ORM\Column(type: 'json', nullable: true)]
-    #[Groups(['dataset:read'])]
-    private ?array $data = null; // Données parsées
-
-    #[ORM\Column(type: 'integer', nullable: true)]
-    #[Groups(['dataset:read'])]
-    private ?int $rowCount = null;
-
-    #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['dataset:read'])]
-    private ?string $status = 'processing'; // processing, ready, error
-
-    #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['dataset:read', 'dataset:write'])]
-    private ?string $game = 'general'; // general, cs2, valorant, etc.
-
-    #[ORM\Column(type: 'boolean')]
-    #[Groups(['dataset:read', 'dataset:write'])]
-    private bool $public = true; // Dataset public ou privé
+    private array $columnsInfo = [];
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'datasets')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name: 'provider_id', nullable: false)]
     #[Groups(['dataset:read'])]
-    private ?User $uploader = null;
+    private ?User $provider = null;
 
-    #[ORM\Column(type: 'datetime')]
-    #[Groups(['dataset:read'])]
-    private ?\DateTimeInterface $uploadedAt = null;
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    #[Groups(['dataset:read', 'dataset:write'])]
+    private bool $public = false;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: 'string', columnDefinition: "ENUM('processing', 'ready', 'error')", nullable: true)]
     #[Groups(['dataset:read'])]
-    private ?\DateTimeInterface $validatedAt = null;
+    private ?string $status = 'processing';
+
+    #[ORM\Column(name: 'error_message', type: 'text', nullable: true)]
+    #[Groups(['dataset:read'])]
+    private ?string $errorMessage = null;
+
+    #[ORM\Column(name: 'created_at', type: 'datetime', nullable: true)]
+    #[Groups(['dataset:read'])]
+    private ?\DateTimeInterface $createdAt = null;
+
+    #[ORM\Column(name: 'updated_at', type: 'datetime', nullable: true)]
+    #[Groups(['dataset:read'])]
+    private ?\DateTimeInterface $updatedAt = null;
 
     public function __construct()
     {
-        $this->uploadedAt = new \DateTime();
+        $this->createdAt = new \DateTime();
+        $this->columnsInfo = [];
+        $this->public = false;
+        $this->status = 'processing';
+        $this->rowCount = 0;
     }
 
     public function getId(): ?int
@@ -139,43 +151,102 @@ class Dataset
         return $this;
     }
 
-    public function getFilepath(): ?string
+    public function getOriginalFilename(): ?string
     {
-        return $this->filepath;
+        return $this->originalFilename;
     }
 
-    public function setFilepath(?string $filepath): self
+    public function setOriginalFilename(?string $originalFilename): self
     {
-        $this->filepath = $filepath;
+        $this->originalFilename = $originalFilename;
         return $this;
     }
 
-    public function getVariables(): array
+    public function getFilePath(): ?string
     {
-        return $this->variables;
+        return $this->filePath;
     }
 
-    public function setVariables(array $variables): self
+    public function setFilePath(?string $filePath): self
     {
-        $this->variables = $variables;
+        $this->filePath = $filePath;
         return $this;
     }
 
-    public function getData(): ?array
+    public function getMimeType(): ?string
     {
-        return $this->data;
+        return $this->mimeType;
     }
 
-    public function setData(?array $data): self
+    public function setMimeType(?string $mimeType): self
     {
-        $this->data = $data;
-        $this->rowCount = $data ? count($data) : 0;
+        $this->mimeType = $mimeType;
         return $this;
+    }
+
+    public function getSizeBytes(): ?int
+    {
+        return $this->sizeBytes;
+    }
+
+    public function setSizeBytes(?int $sizeBytes): self
+    {
+        $this->sizeBytes = $sizeBytes;
+        return $this;
+    }
+
+    public function getColumnsInfo(): array
+    {
+        return $this->columnsInfo;
+    }
+
+    public function setColumnsInfo(array $columnsInfo): self
+    {
+        $this->columnsInfo = $columnsInfo;
+        return $this;
+    }
+
+    public function getProvider(): ?User
+    {
+        return $this->provider;
+    }
+
+    public function setProvider(?User $provider): self
+    {
+        $this->provider = $provider;
+        return $this;
+    }
+
+    public function getErrorMessage(): ?string
+    {
+        return $this->errorMessage;
+    }
+
+    public function setErrorMessage(?string $errorMessage): self
+    {
+        $this->errorMessage = $errorMessage;
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
     }
 
     public function getRowCount(): ?int
     {
         return $this->rowCount;
+    }
+
+    public function setRowCount(?int $rowCount): self
+    {
+        $this->rowCount = $rowCount;
+        return $this;
     }
 
     public function getStatus(): ?string
@@ -186,41 +257,6 @@ class Dataset
     public function setStatus(string $status): self
     {
         $this->status = $status;
-        if ($status === 'ready') {
-            $this->validatedAt = new \DateTime();
-        }
-        return $this;
-    }
-
-    public function getUploader(): ?User
-    {
-        return $this->uploader;
-    }
-
-    public function setUploader(?User $uploader): self
-    {
-        $this->uploader = $uploader;
-        return $this;
-    }
-
-    public function getUploadedAt(): ?\DateTimeInterface
-    {
-        return $this->uploadedAt;
-    }
-
-    public function getValidatedAt(): ?\DateTimeInterface
-    {
-        return $this->validatedAt;
-    }
-
-    public function getGame(): ?string
-    {
-        return $this->game;
-    }
-
-    public function setGame(string $game): self
-    {
-        $this->game = $game;
         return $this;
     }
 

@@ -122,6 +122,12 @@ function ArticleBlockRenderer({ blocks, article }) {
               console.log('📊 Content type:', typeof block.content);
               console.log('📊 Content value:', block.content);
               
+              // Vérifier si le contenu est vide
+              if (!block.content || (typeof block.content === 'string' && block.content.trim() === '')) {
+                console.log('⚠️ Block stats ignoré : pas de données');
+                return null;
+              }
+              
               let data = null;
               try {
                 // block.content contient les données du dataset
@@ -130,6 +136,11 @@ function ArticleBlockRenderer({ blocks, article }) {
                 console.log('✅ Data[0]:', data?.[0]);
               } catch (error) {
                 console.error('❌ Erreur parsing données tableau:', error);
+                return null;
+              }
+              
+              if (!data || !Array.isArray(data) || data.length === 0) {
+                console.log('⚠️ Block stats ignoré : données invalides');
                 return null;
               }
               
