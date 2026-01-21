@@ -195,11 +195,11 @@ body.dark-mode .theme-toggle-mini {
   }
   
   .top-players {
-    max-height: 500px !important;
+    max-height: 600px !important;
   }
   
   .player-stats-detailed {
-    max-height: 450px !important;
+    max-height: 450px;
   }
   
   .planning-modern {
@@ -253,7 +253,7 @@ body.dark-mode .theme-toggle-mini {
   }
   
   .player-stats-detailed {
-    max-height: 400px !important;
+    max-height: 600px ;
   }
   
   .planning-modern {
@@ -271,13 +271,17 @@ body.dark-mode .theme-toggle-mini {
   }
   
   .top-players {
-    max-height: 250px;
+    max-height: 300px;
   }
   
   .player-stats-detailed,
   .planning-modern {
-    max-height: 320px;
+    max-height: 400px;
   }
+}
+
+.right-panel .player-stats-detailed {
+    max-height: 675px !important;
 }
 
 /* MacBook / Laptops (≤1440px) - 13-14 pouces */
@@ -1409,18 +1413,19 @@ body.dark-mode .planning-modern::-webkit-scrollbar-thumb:hover {
 
 /* ===== STATS DÉTAILLÉES DES JOUEURS ===== */
 .player-stats-detailed {
-  padding: 16px !important;
+  padding: 20px !important;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: visible;
   flex: 1;
   min-height: 0;
+  max-height: 700px;
 }
 
 .stats-scrollable-content {
-  overflow-y: auto;
+  overflow-y: visible;
   overflow-x: hidden;
-  padding-right: 4px;
+  padding-right: 0;
   flex: 1;
   min-height: 0;
 }

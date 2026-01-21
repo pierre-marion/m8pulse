@@ -75,28 +75,28 @@ function ArticleManager({ user }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           {!isAuthenticated && (
             <div style={{ 
-              color: '#ff4655', 
-              fontSize: '14px', 
+              color: '#f44336', 
+              fontSize: '0.875rem', 
               fontWeight: '600',
-              padding: '8px 16px',
-              background: 'rgba(255, 70, 85, 0.1)',
-              borderRadius: '8px',
-              border: '2px solid rgba(255, 70, 85, 0.3)'
+              padding: '0.5rem 1rem',
+              background: 'rgba(244, 67, 54, 0.1)',
+              borderRadius: '10px',
+              border: '1px solid rgba(244, 67, 54, 0.2)'
             }}>
-              🔒 Non connecté - Connectez-vous pour créer des articles
+              🔒 Connexion requise
             </div>
           )}
           {isAuthenticated && (
             <div style={{ 
-              color: '#4ade80', 
-              fontSize: '14px', 
+              color: '#4CAF50', 
+              fontSize: '0.875rem', 
               fontWeight: '600',
-              padding: '8px 16px',
-              background: 'rgba(74, 222, 128, 0.1)',
-              borderRadius: '8px',
-              border: '2px solid rgba(74, 222, 128, 0.3)'
+              padding: '0.5rem 1rem',
+              background: 'rgba(76, 175, 80, 0.1)',
+              borderRadius: '10px',
+              border: '1px solid rgba(76, 175, 80, 0.2)'
             }}>
-              ✅ Connecté en tant qu'{user.roles?.includes('ROLE_ADMIN') ? 'Admin' : 'Éditeur'}
+              ✅ {user.roles?.includes('ROLE_ADMIN') ? 'Admin' : 'Éditeur'}
             </div>
           )}
           <button 
@@ -105,7 +105,7 @@ function ArticleManager({ user }) {
             disabled={!isAuthenticated}
             style={!isAuthenticated ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
           >
-            ✏️ Nouvel Article
+            ✨ Nouvel Article
           </button>
         </div>
       </div>

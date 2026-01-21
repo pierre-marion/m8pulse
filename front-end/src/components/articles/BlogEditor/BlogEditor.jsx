@@ -155,13 +155,13 @@ function BlogEditor({ user, onBack }) {
   return (
     <div className="blog-editor">
       <div className="editor-header">
-        <div>
+        <div className="header-title">
           <h1>Gestion des Articles</h1>
           <p>Créez et gérez vos articles de blog</p>
         </div>
         <div className="header-actions">
           <button className="btn-new" onClick={() => { setShowForm(true); setEditingArticle(null); resetForm(); }}>
-            + Nouvel Article
+            ✨ Nouvel Article
           </button>
           {onBack && <button className="btn-back" onClick={onBack}>← Retour</button>}
         </div>

@@ -361,7 +361,7 @@ function RightPanel({ currentGame, onDashboardClick, onDesignClick, onDatasetsCl
             {currentPage === 'joueurs' && selectedCity ? selectedCity.toUpperCase() : 'TOP PLAYERS'}
           </h3>
           <span className="section-badge">
-            {currentPage === 'joueurs' && selectedCity ? `${playersToDisplay.length} joueur${playersToDisplay.length > 1 ? 's' : ''}` : 'M8 Global'}
+            {currentPage === 'joueurs' && selectedCity ? `${playersToDisplay.length} joueur${playersToDisplay.length > 0 ? 's' : ''}` : 'M8 Global'}
           </span>
         </div>
         
@@ -381,7 +381,7 @@ function RightPanel({ currentGame, onDashboardClick, onDesignClick, onDatasetsCl
                 <div className="player-info-compact">
                   <div className="player-name-compact">{player.name}</div>
                   <div className="player-game-compact" style={{ color: getGameColor(player.game) }}>
-                    {player.game.replace('Counter Strike', 'CS2').replace('Call of Duty', 'CoD')}
+                    {player.game.replace('Counter Strike', 'CS2')}
                   </div>
                 </div>
                 <div className="player-rating-compact">
