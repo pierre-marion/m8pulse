@@ -7,6 +7,43 @@ import { useDarkMode } from '../../../contexts/DarkModeContext';
 
 function ArticleDetail({ articleId, onBack }) {
   const { isDarkMode } = useDarkMode();
+  
+  // State local pour forcer le re-render
+  const [localDarkMode, setLocalDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
+  
+  // Écouter les changements du localStorage
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const newValue = localStorage.getItem('darkMode') === 'true';
+      console.log('💾 Storage changed:', newValue);
+      setLocalDarkMode(newValue);
+    };
+    
+    // Écouter les changements
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Vérifier périodiquement (fallback pour changements locaux)
+    const interval = setInterval(() => {
+      const currentValue = localStorage.getItem('darkMode') === 'true';
+      if (currentValue !== localDarkMode) {
+        setLocalDarkMode(currentValue);
+      }
+    }, 100);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
+    };
+  }, [localDarkMode]);
+  
+  // Fallback sur localStorage si le contexte ne fonctionne pas
+  const effectiveDarkMode = isDarkMode ?? localDarkMode;
+  
+  console.log('🎨 ArticleDetail - isDarkMode (context):', isDarkMode);
+  console.log('🎨 ArticleDetail - localStorage:', localStorage.getItem('darkMode'));
+  console.log('🎨 ArticleDetail - localDarkMode:', localDarkMode);
+  console.log('🎨 ArticleDetail - effective:', effectiveDarkMode);
+  
   const [article, setArticle] = useState(null);
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,6 +52,13 @@ function ArticleDetail({ articleId, onBack }) {
   const [submittingComment, setSubmittingComment] = useState(false);
   const [hoveredStar, setHoveredStar] = useState(0);
   const [templateVersion, setTemplateVersion] = useState(0);
+  const [darkModeKey, setDarkModeKey] = useState(0);
+
+  // Force re-render quand le dark mode change
+  useEffect(() => {
+    console.log('🔄 Dark mode changé:', effectiveDarkMode);
+    setDarkModeKey(prev => prev + 1);
+  }, [effectiveDarkMode]);
 
   // Mémoriser les fonctions de fetch pour éviter les re-renders
   const fetchArticle = useCallback(async () => {
@@ -275,7 +319,7 @@ function ArticleDetail({ articleId, onBack }) {
   }
 
   return (
-    <div className={`article-detail ${isDarkMode ? 'dark-mode' : ''}`}>
+    <div className={`article-detail ${effectiveDarkMode ? 'dark-mode' : ''}`}>
       <button className="btn-back" onClick={onBack}>
         ← Retour aux news
       </button>

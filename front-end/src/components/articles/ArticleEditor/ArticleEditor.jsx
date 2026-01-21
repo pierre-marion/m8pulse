@@ -180,10 +180,12 @@ function ArticleEditor({ user, articleId, onBack, onSave }) {
   };
 
   const handleDatasetSelection = async (index, datasetId) => {
+    console.log('🔄 Sélection dataset:', datasetId, 'pour block index:', index);
+    
     if (!datasetId) {
       updateBlockData(index, { 
         datasetId: null,
-        content: null,
+        content: '',
         fileName: null 
       });
       return;
@@ -191,22 +193,44 @@ function ArticleEditor({ user, articleId, onBack, onSave }) {
 
     try {
       const token = localStorage.getItem('token');
+      console.log('📡 Fetching dataset:', `http://localhost:8000/api/datasets/${datasetId}`);
+      
       const response = await fetch(`http://localhost:8000/api/datasets/${datasetId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
       
+      console.log('📡 Response status:', response.status);
+      
       if (response.ok) {
         const dataset = await response.json();
+        console.log('✅ Dataset reçu:', dataset);
+        console.log('📊 Dataset.data type:', typeof dataset.data);
+        console.log('📊 Dataset.data:', dataset.data);
+        
+        // Si dataset.data est déjà un tableau, on le stringifie, sinon on laisse tel quel
+        let content = '';
+        if (Array.isArray(dataset.data)) {
+          content = JSON.stringify(dataset.data);
+          console.log('✅ Content stringifié (longueur):', content.length);
+        } else if (typeof dataset.data === 'string') {
+          content = dataset.data;
+          console.log('✅ Content string (longueur):', content.length);
+        }
+        
         updateBlockData(index, { 
           datasetId: dataset.id,
-          content: dataset.data,
+          content,
           fileName: dataset.name 
         });
+        console.log('✅ Block mis à jour avec dataset:', dataset.id);
+      } else {
+        const errorText = await response.text();
+        console.error('❌ Erreur API:', response.status, errorText);
       }
     } catch (err) {
-      console.error('Erreur chargement dataset:', err);
+      console.error('❌ Erreur chargement dataset:', err);
     }
   };
 
