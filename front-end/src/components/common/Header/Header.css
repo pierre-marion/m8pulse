@@ -428,6 +428,40 @@ body.dark-mode .hamburger span {
     color: #9d6cff;
   }
 
+  .nav-role-btn {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(125, 60, 255, 0.3);
+    background: rgba(125, 60, 255, 0.1);
+    color: #7d3cff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  body.dark-mode .nav-role-btn {
+    background: rgba(157, 108, 255, 0.15);
+    border-color: rgba(157, 108, 255, 0.4);
+    color: #9d6cff;
+  }
+
+  .nav-role-btn:hover {
+    background: rgba(125, 60, 255, 0.2);
+    border-color: rgba(125, 60, 255, 0.5);
+    transform: translateX(3px);
+  }
+
+  body.dark-mode .nav-role-btn:hover {
+    background: rgba(157, 108, 255, 0.25);
+    border-color: rgba(157, 108, 255, 0.6);
+  }
+
   .nav-logout-btn,
   .nav-login-btn,
   .nav-register-btn {
@@ -439,12 +473,17 @@ body.dark-mode .hamburger span {
     cursor: pointer;
     transition: all 0.2s ease;
     border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
   }
 
   .nav-logout-btn {
     background: rgba(255, 59, 48, 0.1);
     color: #ff3b30;
     border: 1px solid rgba(255, 59, 48, 0.3);
+    margin-top: 8px;
   }
 
   .nav-logout-btn:hover {

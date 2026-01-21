@@ -108,6 +108,52 @@ function Header({ currentPage, setCurrentPage, user, onLogout, onLoginClick, onR
                   {!user.roles?.includes('ROLE_ADMIN') && user.roles?.includes('ROLE_PROVIDER') && <span className="user-badge-mobile"><Icon name="database" size={14} /> Provider</span>}
                 </span>
               </button>
+              
+              {/* Boutons admin/roles */}
+              {user.roles?.includes('ROLE_ADMIN') && (
+                <>
+                  <button 
+                    className="nav-role-btn"
+                    onClick={() => handleNavClick('dashboard')}
+                  >
+                    <Icon name="shield" size={16} /> Dashboard Admin
+                  </button>
+                  <button 
+                    className="nav-role-btn"
+                    onClick={() => handleNavClick('designer')}
+                  >
+                    <Icon name="palette" size={16} /> Designer
+                  </button>
+                </>
+              )}
+              
+              {(user.roles?.includes('ROLE_EDITOR') || user.roles?.includes('ROLE_ADMIN')) && (
+                <button 
+                  className="nav-role-btn"
+                  onClick={() => handleNavClick('blog-editor')}
+                >
+                  <Icon name="edit" size={16} /> Gestion Articles
+                </button>
+              )}
+              
+              {user.roles?.includes('ROLE_DESIGNER') && !user.roles?.includes('ROLE_ADMIN') && (
+                <button 
+                  className="nav-role-btn"
+                  onClick={() => handleNavClick('designer')}
+                >
+                  <Icon name="palette" size={16} /> Designer
+                </button>
+              )}
+              
+              {user.roles?.includes('ROLE_PROVIDER') && (
+                <button 
+                  className="nav-role-btn"
+                  onClick={() => handleNavClick('provider')}
+                >
+                  <Icon name="database" size={16} /> Provider
+                </button>
+              )}
+              
               <button 
                 className="nav-logout-btn"
                 onClick={handleLogoutClick}
