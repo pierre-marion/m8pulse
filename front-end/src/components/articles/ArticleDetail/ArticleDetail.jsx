@@ -142,6 +142,12 @@ function ArticleDetail({ articleId, onBack }) {
 
   // Fonction pour appliquer les styles du thème
   const applyArticleTheme = (styles) => {
+    // Ne pas appliquer le thème si le dark mode est actif
+    if (effectiveDarkMode) {
+      console.log('🌙 Dark mode actif, thème article ignoré');
+      return;
+    }
+    
     const root = document.documentElement;
     
     // Appliquer les couleurs et polices du texte d'article
@@ -325,7 +331,14 @@ function ArticleDetail({ articleId, onBack }) {
       </button>
 
       <article className="article-content-wrapper">
-        <header className="article-header">
+        <header 
+          className="article-header"
+          style={article.coverImage ? {
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url(http://localhost:8000${article.coverImage})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+          } : {}}
+        >
           <div className="article-badges">
             <span className={`badge badge-type badge-${article.type}`}>
               {article.type === 'standard' && <><Icon name="fileText" size={14} /> Standard</>}

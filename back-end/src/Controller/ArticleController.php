@@ -239,6 +239,11 @@ class ArticleController extends AbstractController
         $article->setStatus($data['status'] ?? 'draft');
         $article->setAuthor($this->getUser());
         
+        // Set cover image if provided
+        if (isset($data['coverImage'])) {
+            $article->setCoverImage($data['coverImage']);
+        }
+        
         // Sauvegarder les blocs en JSON
         if (isset($data['blocks']) && is_array($data['blocks'])) {
             $article->setBlocks($data['blocks']);
@@ -277,6 +282,14 @@ class ArticleController extends AbstractController
         
         if (isset($data['type'])) {
             $article->setType($data['type']);
+        }
+        
+        if (isset($data['game'])) {
+            $article->setGame($data['game']);
+        }
+        
+        if (isset($data['coverImage'])) {
+            $article->setCoverImage($data['coverImage']);
         }
         
         // Mettre à jour les blocs si présents

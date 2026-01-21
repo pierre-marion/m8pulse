@@ -269,7 +269,7 @@ body.dark-mode .theme-toggle-mini {
   }
   
   .top-players {
-    max-height: 220px;
+    max-height: 250px;
   }
   
   .player-stats-detailed,
@@ -288,8 +288,8 @@ body.dark-mode .theme-toggle-mini {
   }
   
   .profile-modern {
-    max-height: 85px !important;
-    padding: 9px !important;
+    max-height: 185px !important;
+    padding: 19px !important;
   }
   
   .profile-compact {
@@ -472,6 +472,55 @@ body.dark-mode .accordion-icon {
 .action-mini.login:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(79, 172, 254, 0.5);
+}
+
+/* Dark mode - Boutons d'action */
+body.dark-mode .action-mini.admin {
+  background: linear-gradient(135deg, #4a5c9c, #5d4a7d) !important;
+  color: white !important;
+  box-shadow: 0 4px 15px rgba(74, 92, 156, 0.4) !important;
+}
+
+body.dark-mode .action-mini.admin:hover {
+  background: linear-gradient(135deg, #667eea, #764ba2) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6) !important;
+}
+
+body.dark-mode .action-mini.provider {
+  background: linear-gradient(135deg, #0d7a6e, #2bc19f) !important;
+  color: white !important;
+  box-shadow: 0 4px 15px rgba(13, 122, 110, 0.4) !important;
+}
+
+body.dark-mode .action-mini.provider:hover {
+  background: linear-gradient(135deg, #11998e, #38ef7d) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(17, 153, 142, 0.6) !important;
+}
+
+body.dark-mode .action-mini.logout {
+  background: linear-gradient(135deg, #c75f7b, #d1445d) !important;
+  color: white !important;
+  box-shadow: 0 4px 15px rgba(199, 95, 123, 0.4) !important;
+}
+
+body.dark-mode .action-mini.logout:hover {
+  background: linear-gradient(135deg, #f093fb, #f5576c) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(245, 87, 108, 0.6) !important;
+}
+
+body.dark-mode .action-mini.login {
+  background: linear-gradient(135deg, #3a8cc9, #00c2d4) !important;
+  color: white !important;
+  box-shadow: 0 4px 15px rgba(58, 140, 201, 0.4) !important;
+}
+
+body.dark-mode .action-mini.login:hover {
+  background: linear-gradient(135deg, #4facfe, #00f2fe) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(79, 172, 254, 0.6) !important;
 }
 
 /* ===== TOP PLAYERS ===== */

@@ -16,15 +16,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['user:read', 'article:read'])]
+    #[Groups(['user:read', 'article:read', 'theme:read'])]
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
-    #[Groups(['user:read', 'article:read'])]
+    #[Groups(['user:read', 'article:read', 'theme:read'])]
     private ?string $email = null;
 
     #[ORM\Column(type: 'string', length: 100)]
-    #[Groups(['user:read', 'article:read'])]
+    #[Groups(['user:read', 'article:read', 'theme:read'])]
     private ?string $username = null;
 
     #[ORM\Column(type: 'json')]

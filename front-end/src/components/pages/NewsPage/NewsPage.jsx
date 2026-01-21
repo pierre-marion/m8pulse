@@ -194,7 +194,14 @@ function NewsPage({ onArticleClick, user, onNavigate }) {
                 onClick={() => onArticleClick && onArticleClick(article.id)}
                 style={{ cursor: 'pointer' }}
               >
-                <div className="article-image-news">
+                <div 
+                  className="article-image-news"
+                  style={article.coverImage ? {
+                    backgroundImage: `linear-gradient(rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.5)), url(http://localhost:8000${article.coverImage})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
+                  } : {}}
+                >
                   <div className="article-emoji-news"><Icon name={getGameEmoji(article.game)} size={32} color="white" /></div>
                   <div className="article-overlay">
                     <span className="badge-category-small" style={{ backgroundColor: getCategoryColor(article.type) }}>

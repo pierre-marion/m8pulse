@@ -111,24 +111,38 @@ function Datasets({ user }) {
   const updateColumnType = async (datasetId, columnIndex, newType) => {
     const dataset = datasets.find(d => d.id === datasetId);
     const updatedColumns = [...dataset.columnsInfo];
-    updatedColumns[columnIndex].type = newType;
+    
+    // Convertir les valeurs anglaises en français pour le backend
+    const typeMapping = {
+      'number': 'numérique',
+      'string': 'catégorielle',
+      'numérique': 'numérique',
+      'catégorielle': 'catégorielle'
+    };
+    
+    updatedColumns[columnIndex].type = typeMapping[newType] || newType;
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:8000/api/datasets/${datasetId}/columns`, {
-        method: 'PUT',
+      const response = await fetch(`http://localhost:8000/api/datasets/${datasetId}/variables`, {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ columns: updatedColumns })
+        body: JSON.stringify({ variables: updatedColumns })
       });
 
       if (response.ok) {
         fetchDatasets();
+      } else {
+        const error = await response.json();
+        console.error('Erreur mise à jour:', error);
+        alert(`Erreur: ${error.error || 'Mise à jour échouée'}`);
       }
     } catch (error) {
       console.error('Erreur mise à jour colonne:', error);
+      alert('Erreur lors de la mise à jour');
     }
   };
 
@@ -259,7 +273,7 @@ function Datasets({ user }) {
                       <div key={index} className="column-item">
                         <div className="column-name">{column.name}</div>
                         <select
-                          value={column.type}
+                          value={column.type === 'numérique' ? 'number' : column.type === 'catégorielle' ? 'string' : column.type}
                           onChange={(e) => updateColumnType(dataset.id, index, e.target.value)}
                           className="column-type-select"
                         >

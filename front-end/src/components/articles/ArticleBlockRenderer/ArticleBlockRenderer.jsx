@@ -3,6 +3,9 @@ import './ArticleBlockRenderer.css';
 import StatsChart from '../../visualizations/StatsChart/StatsChart';
 
 function ArticleBlockRenderer({ blocks, article }) {
+  console.log('🎬 ArticleBlockRenderer render - Blocks reçus:', blocks);
+  console.log('🎬 Nombre de blocs:', blocks?.length);
+  
   // Charger le template personnalisé depuis localStorage
   const customTemplate = localStorage.getItem('articleBlocksTemplate');
   let blockOrder = [];
@@ -10,6 +13,7 @@ function ArticleBlockRenderer({ blocks, article }) {
   if (customTemplate) {
     try {
       blockOrder = JSON.parse(customTemplate);
+      console.log('📋 Template personnalisé chargé:', blockOrder);
     } catch (error) {
       console.error('Erreur lors du chargement du template:', error);
     }
@@ -24,10 +28,27 @@ function ArticleBlockRenderer({ blocks, article }) {
       { id: 4, type: 'stats', position: 'full' },
       { id: 5, type: 'gallery', position: 'full', layout: 'grid' }
     ];
+    console.log('📋 Template par défaut utilisé:', blockOrder);
+  } else {
+    // Vérifier si le template personnalisé contient un bloc stats
+    const hasStatsBlock = blockOrder.some(block => block.type === 'stats');
+    if (!hasStatsBlock) {
+      console.warn('⚠️ Le template personnalisé ne contient pas de bloc stats. Ajout automatique...');
+      // Ajouter le bloc stats après le bloc text
+      const textIndex = blockOrder.findIndex(b => b.type === 'text');
+      const insertIndex = textIndex >= 0 ? textIndex + 1 : blockOrder.length;
+      blockOrder.splice(insertIndex, 0, { 
+        id: blockOrder.length + 1, 
+        type: 'stats', 
+        position: 'full' 
+      });
+    }
   }
 
   const renderBlock = (templateBlock, index) => {
     const { type, position, size, layout } = templateBlock;
+    console.log(`🔨 Rendering block type: ${type}`);
+    
     
     // Classes pour la position
     const positionClass = `block-position-${position || 'full'}`;
@@ -120,7 +141,7 @@ function ArticleBlockRenderer({ blocks, article }) {
             {tableBlocks.map((block, idx) => {
               console.log('🔍 Bloc stats trouvé:', block);
               console.log('📊 Content type:', typeof block.content);
-              console.log('📊 Content value:', block.content);
+              console.log('📊 Content raw:', block.content);
               
               // Vérifier si le contenu est vide
               if (!block.content || (typeof block.content === 'string' && block.content.trim() === '')) {
@@ -130,23 +151,62 @@ function ArticleBlockRenderer({ blocks, article }) {
               
               let data = null;
               try {
-                // block.content contient les données du dataset
-                data = typeof block.content === 'string' ? JSON.parse(block.content) : block.content;
-                console.log('✅ Data parsée:', data);
-                console.log('✅ Data[0]:', data?.[0]);
+                // Si c'est une string, essayer de parser
+                if (typeof block.content === 'string') {
+                  console.log('📝 Parsing string content...');
+                  data = JSON.parse(block.content);
+                  console.log('✅ Data après 1er parse:', data);
+                  
+                  // Si après le parse c'est encore une string, parser une 2ème fois (double encoding)
+                  if (typeof data === 'string') {
+                    console.log('⚠️ Double encoding détecté, 2ème parse...');
+                    data = JSON.parse(data);
+                    console.log('✅ Data après 2ème parse:', data);
+                  }
+                } else {
+                  // Si c'est déjà un objet/array
+                  data = block.content;
+                  console.log('✅ Data déjà parsée:', data);
+                }
               } catch (error) {
                 console.error('❌ Erreur parsing données tableau:', error);
-                return null;
+                console.error('Content qui a causé l\'erreur:', block.content);
+                return (
+                  <div className="stats-error">
+                    Erreur de parsing des données
+                    <details style={{ marginTop: '10px', fontSize: '12px' }}>
+                      <summary>Détails (debug)</summary>
+                      <pre style={{ textAlign: 'left', fontSize: '10px' }}>
+                        {String(block.content).substring(0, 500)}
+                      </pre>
+                    </details>
+                  </div>
+                );
               }
               
               if (!data || !Array.isArray(data) || data.length === 0) {
                 console.log('⚠️ Block stats ignoré : données invalides');
-                return null;
+                console.log('Data reçue:', data);
+                return (
+                  <div className="stats-error">
+                    Données invalides
+                    <details style={{ marginTop: '10px', fontSize: '12px' }}>
+                      <summary>Détails (debug)</summary>
+                      <pre style={{ textAlign: 'left', fontSize: '10px' }}>
+                        Type: {typeof data}
+                        {'\n'}
+                        IsArray: {String(Array.isArray(data))}
+                        {'\n'}
+                        Value: {JSON.stringify(data, null, 2)}
+                      </pre>
+                    </details>
+                  </div>
+                );
               }
               
               return (
                 <div key={idx} className="stats-block-wrapper">
-                  {block.title && <h3 className="stats-block-title">{block.title}</h3>}
+                  {block.fileName && <h3 className="stats-block-title">{block.fileName}</h3>}
                   <StatsChart data={data} vizType={block.vizType || 'table'} />
                 </div>
               );

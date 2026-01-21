@@ -8,11 +8,13 @@ function ArticleEditor({ user, articleId, onBack, onSave }) {
     type: 'news',
     game: 'general',
     status: 'published',
+    coverImage: '',
     blocks: []
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [availableDatasets, setAvailableDatasets] = useState([]);
+  const [uploadingCover, setUploadingCover] = useState(false);
 
   useEffect(() => {
     if (articleId) {
@@ -93,6 +95,9 @@ function ArticleEditor({ user, articleId, onBack, onSave }) {
         })
       };
       
+      console.log('💾 Saving article with coverImage:', articleToSave.coverImage);
+      console.log('💾 Full article data:', articleToSave);
+      
       const response = await fetch(url, {
         method: articleId ? 'PUT' : 'POST',
         headers: {
@@ -161,6 +166,44 @@ function ArticleEditor({ user, articleId, onBack, onSave }) {
       updateBlock(index, reader.result);
     };
     reader.readAsDataURL(file);
+  };
+
+  const handleCoverImageUpload = async (file) => {
+    if (!file) return;
+    
+    console.log('📸 Upload cover image:', file);
+    setUploadingCover(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:8000/api/media/upload', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+
+      console.log('📸 Upload response status:', response.status);
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('📸 Upload response data:', data);
+        console.log('📸 Setting coverImage to:', data.path);
+        setArticle({ ...article, coverImage: data.path });
+      } else {
+        const errorData = await response.json();
+        console.error('📸 Upload error:', errorData);
+        alert('Erreur lors de l\'upload de l\'image de couverture');
+      }
+    } catch (err) {
+      console.error('📸 Erreur upload:', err);
+      alert('Erreur lors de l\'upload');
+    } finally {
+      setUploadingCover(false);
+    }
   };
 
   const handleStatsUpload = async (index, file) => {
@@ -292,6 +335,42 @@ function ArticleEditor({ user, articleId, onBack, onSave }) {
             placeholder="Résumé court de l'article"
             rows={3}
           />
+        </div>
+
+        <div className="form-group">
+          <label>Image de couverture</label>
+          <div className="cover-image-upload">
+            {article.coverImage && (
+              <div className="cover-image-preview">
+                <img src={`http://localhost:8000${article.coverImage}`} alt="Couverture" />
+                <button 
+                  type="button" 
+                  className="btn-remove-cover"
+                  onClick={() => setArticle({ ...article, coverImage: '' })}
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+            {!article.coverImage && (
+              <div className="cover-upload-zone">
+                <input
+                  type="file"
+                  accept="image/*"
+                  id="coverImageInput"
+                  onChange={(e) => handleCoverImageUpload(e.target.files[0])}
+                  style={{ display: 'none' }}
+                />
+                <label htmlFor="coverImageInput" className="cover-upload-label">
+                  {uploadingCover ? (
+                    <>⏳ Upload en cours...</>
+                  ) : (
+                    <>🖼️ Ajouter une image de couverture</>
+                  )}
+                </label>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="form-row">

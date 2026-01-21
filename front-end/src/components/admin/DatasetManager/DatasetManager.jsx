@@ -82,8 +82,20 @@ const DatasetManager = () => {
             if (response.ok) {
                 const media = await response.json();
                 
+                // Convertir les types de variables en français pour le backend
+                const typeMapping = {
+                    'numeric': 'numérique',
+                    'categorical': 'catégorielle'
+                };
+                
+                const convertedVariables = newDataset.variables.map(v => ({
+                    ...v,
+                    type: typeMapping[v.type] || v.type
+                }));
+                
                 const datasetData = {
                     ...newDataset,
+                    variables: convertedVariables,
                     sourceUrl: `http://localhost:8000${media.path}`
                 };
 

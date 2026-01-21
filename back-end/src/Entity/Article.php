@@ -37,6 +37,10 @@ class Article
     )]
     private ?string $summary = null;
 
+    #[ORM\Column(type: 'string', length: 500, nullable: true)]
+    #[Groups(['article:read', 'article:write'])]
+    private ?string $coverImage = null;
+
     #[ORM\Column(type: 'string', length: 50)]
     #[Groups(['article:read', 'article:write'])]
     #[Assert\Choice(
@@ -138,6 +142,18 @@ class Article
     public function setSummary(?string $summary): self
     {
         $this->summary = $summary;
+        $this->updatedAt = new \DateTime();
+        return $this;
+    }
+
+    public function getCoverImage(): ?string
+    {
+        return $this->coverImage;
+    }
+
+    public function setCoverImage(?string $coverImage): self
+    {
+        $this->coverImage = $coverImage;
         $this->updatedAt = new \DateTime();
         return $this;
     }

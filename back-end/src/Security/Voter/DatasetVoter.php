@@ -59,7 +59,7 @@ class DatasetVoter extends Voter
     {
         // Fournisseurs peuvent modifier leurs propres datasets
         if (in_array('ROLE_PROVIDER', $user->getRoles())) {
-            return $dataset->getUploadedBy() === $user;
+            return $dataset->getProvider() === $user;
         }
 
         return false;
@@ -69,7 +69,7 @@ class DatasetVoter extends Voter
     {
         // Fournisseurs peuvent supprimer leurs propres datasets
         if (in_array('ROLE_PROVIDER', $user->getRoles())) {
-            return $dataset->getUploadedBy() === $user;
+            return $dataset->getProvider() === $user;
         }
 
         return false;

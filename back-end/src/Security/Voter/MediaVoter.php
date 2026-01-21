@@ -36,11 +36,16 @@ class MediaVoter extends Voter
             return true;
         }
 
+        // Pour UPLOAD, pas besoin de Media
+        if ($attribute === self::UPLOAD) {
+            return $this->canUpload($user);
+        }
+
+        // Pour DELETE et VIEW, on a besoin d'un Media
         /** @var Media $media */
         $media = $subject;
 
         return match($attribute) {
-            self::UPLOAD => $this->canUpload($user),
             self::DELETE => $this->canDelete($media, $user),
             self::VIEW => $this->canView($media, $user),
             default => false,

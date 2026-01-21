@@ -48,7 +48,17 @@ const VisualizationBuilder = ({ onSave, existingViz }) => {
 
     const getVariablesByType = (type) => {
         if (!selectedDataset) return [];
-        return selectedDataset.variables.filter(v => v.type === type);
+        
+        // Mapper les types anglais vers français pour la comparaison
+        const typeMapping = {
+            'numeric': 'numérique',
+            'categorical': 'catégorielle',
+            'numérique': 'numérique',
+            'catégorielle': 'catégorielle'
+        };
+        
+        const mappedType = typeMapping[type] || type;
+        return selectedDataset.variables.filter(v => v.type === mappedType);
     };
 
     const isConfigValid = () => {
