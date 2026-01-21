@@ -40,32 +40,12 @@ const Globe = forwardRef(({ onPlayerSelect }, ref) => {
     };
   }, []);
 
-  const animateCamera = useCallback((targetPos, duration = 1.5, onComplete) => {
-    if (!cameraRef.current || !controlsRef.current) return;
-    
-    gsap.to(cameraRef.current.position, {
-      x: targetPos.x,
-      y: targetPos.y,
-      z: targetPos.z,
-      duration,
-      ease: "power2.inOut",
-      onUpdate: () => {
-        cameraRef.current.lookAt(0, 0, 0);
-        controlsRef.current.update();
-      },
-      onComplete
-    });
-  }, []);
-
   const zoomToCity = useCallback((cityName) => {
     const cityPoint = capitalMeshesRef.current.find(m => m.userData.name === cityName);
     if (!cityPoint || !cameraRef.current || !controlsRef.current) return;
 
-    console.log('🎯 Zoom vers:', cityName);
     const controls = controlsRef.current;
     const camera = cameraRef.current;
-    
-    console.log('Position actuelle:', camera.position.x, camera.position.y, camera.position.z);
     
     controls.autoRotate = false;
     controls.enabled = false;
@@ -76,10 +56,7 @@ const Globe = forwardRef(({ onPlayerSelect }, ref) => {
     const direction = cityPos.normalize();
     const targetPos = direction.multiplyScalar(ZOOM_DISTANCE);
     
-    console.log('Position cible:', targetPos.x, targetPos.y, targetPos.z);
-    
     const startPos = camera.position.clone();
-    const distance = startPos.distanceTo(targetPos);
     
     const midHeight = Math.max(startPos.length(), targetPos.length()) + 100;
     const midPos = new THREE.Vector3()
@@ -93,7 +70,6 @@ const Globe = forwardRef(({ onPlayerSelect }, ref) => {
       t: 1,
       duration: 2,
       ease: "power2.inOut",
-      onStart: () => console.log('🚀 Animation démarrée'),
       onUpdate: () => {
         const t = path.t;
         const t1 = 1 - t;
@@ -105,7 +81,6 @@ const Globe = forwardRef(({ onPlayerSelect }, ref) => {
         camera.lookAt(0, 0, 0);
       },
       onComplete: () => {
-        console.log('✅ Animation terminée');
         controls.enabled = true;
         setIsZoomed(true);
       }
@@ -218,7 +193,7 @@ const Globe = forwardRef(({ onPlayerSelect }, ref) => {
           if (!pos.x) return;
 
           const mesh = new THREE.Mesh(
-            new THREE.SphereGeometry(1.2, 8, 8),
+            new THREE.SphereGeometry(0.5, 8, 8),
             new THREE.MeshBasicMaterial({ color: capitalColor })
           );
           mesh.position.set(pos.x, pos.y, pos.z);
@@ -235,7 +210,7 @@ const Globe = forwardRef(({ onPlayerSelect }, ref) => {
           if (!pos.x) return;
 
           const mesh = new THREE.Mesh(
-            new THREE.SphereGeometry(0.8, 6, 6),
+            new THREE.SphereGeometry(0.5, 6, 6),
             new THREE.MeshBasicMaterial({ color: pointColor })
           );
           mesh.position.set(pos.x, pos.y, pos.z);
@@ -262,8 +237,10 @@ const Globe = forwardRef(({ onPlayerSelect }, ref) => {
 
       if (intersects.length > 0) {
         hoveredPoint = intersects[0].object;
-        hoveredPoint.scale.setScalar(2);
-        canvas.style.cursor = 'pointer';
+        if (hoveredPoint.userData.isCapital) {
+          hoveredPoint.scale.setScalar(2);
+          canvas.style.cursor = 'pointer';
+        }
       }
     };
 
