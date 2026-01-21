@@ -49,80 +49,6 @@ function RightPanel({ currentGame, onDashboardClick, onDesignClick, onDatasetsCl
     setSelectedPlayer(0);
   }, [selectedCity]);
 
-  const defaultPlayersForGlobe = [
-    { 
-      id: 1,
-      name: 'Alex', 
-      fullName: 'Alejandro Masanet',
-      game: 'Counter Strike',
-      role: 'IGL',
-      city: 'Madrid',
-      rating: '1.01', 
-      tRating: '1.00',
-      ctRating: '1.01',
-      wr: '48.5%',
-      gamesPlayed: 33,
-      description: 'Leader en jeu espagnol avec une excellente vision tactique. Guide son équipe avec calme et précision.'
-    },
-    { 
-      id: 6,
-      name: 'bipo', 
-      fullName: 'Taranvir Singh',
-      game: 'Valorant',
-      role: 'Duelist',
-      city: 'Rome',
-      kda: '1.35', 
-      acs: '231',
-      rating: '1.04',
-      wr: '33.3%',
-      gamesPlayed: 3,
-      description: 'Duelist agressif italien avec un jeu explosif. Spécialiste des entrées fracassantes et des multi-kills.'
-    },
-    { 
-      id: 7,
-      name: 'Envoy', 
-      fullName: 'Dylan Hannon',
-      game: 'Call of Duty',
-      role: 'SMG',
-      city: 'Washington DC',
-      overallKD: '0.9',
-      hpKD: '0.9',
-      sndKD: '0.97',
-      olKD: '0.87',
-      wr: '77.8%',
-      gamesPlayed: 9,
-      description: 'Joueur SMG rapide et agressif. Expert en mouvement et contrôle de map en mode Hardpoint.'
-    },
-    { 
-      id: 11,
-      name: 'GLYPFI', 
-      fullName: 'Conner Garcia',
-      game: 'Valorant',
-      role: 'Co-IGL/Smoker',
-      city: 'Manille',
-      kda: '1.6', 
-      acs: '175',
-      rating: '0.96',
-      wr: '33.3%',
-      gamesPlayed: 3,
-      description: 'Co-IGL philippin avec une excellente vision stratégique. Expert en smokes et coordination d\'équipe.'
-    },
-    { 
-      id: 13,
-      name: 'marteen', 
-      fullName: 'Martin Pištek',
-      game: 'Valorant',
-      role: 'Flex',
-      city: 'Varsovie',
-      kda: '1.68', 
-      acs: '261',
-      rating: '1.2',
-      wr: '33.3%',
-      gamesPlayed: 3,
-      description: 'Joueur flex tchèque extrêmement polyvalent. Capable de jouer tous les rôles avec excellence.'
-    }
-  ];
-
   const playersByCity = {
     'Madrid': [
       { 
@@ -322,47 +248,11 @@ function RightPanel({ currentGame, onDashboardClick, onDesignClick, onDatasetsCl
     ]
   };
 
-  // Données des joueurs par jeu (pour les autres pages)
-  const playersData = {
-    'Valorant': [
-      { name: 'Minny', role: 'Duelist', kd: '1.24', acs: '245', wr: '64%' },
-      { name: 'Dipzh', role: 'Controller', kd: '1.08', acs: '198', wr: '62%' },
-      { name: 'Buys', role: 'Initiator', kd: '1.15', acs: '215', wr: '63%' },
-      { name: 'Marteen', role: 'Sentinel', kd: '0.98', acs: '167', wr: '61%' },
-      { name: 'Starxo', role: 'Flex', kd: '1.19', acs: '223', wr: '65%' }
-    ],
-    'Counter Strike': [
-      { name: 'JaCkz', role: 'AWPer', kd: '1.31', rating: '1.18', wr: '58%' },
-      { name: 'afro', role: 'Rifler', kd: '1.15', rating: '1.09', wr: '57%' },
-      { name: 'bodyy', role: 'Entry', kd: '1.08', rating: '1.04', wr: '56%' },
-      { name: 'Lucky', role: 'Support', kd: '0.96', rating: '0.98', wr: '55%' },
-      { name: 'JACKZ', role: 'IGL', kd: '1.02', rating: '1.01', wr: '58%' }
-    ],
-    'Call of Duty': [
-      { name: 'HyDra', role: 'SMG', kd: '1.22', spm: '342', wr: '61%' },
-      { name: 'Nastie', role: 'AR', kd: '1.18', spm: '298', wr: '60%' },
-      { name: 'Vikul', role: 'Flex', kd: '1.05', spm: '276', wr: '59%' },
-      { name: 'Kremp', role: 'AR', kd: '1.11', spm: '289', wr: '61%' }
-    ],
-  };
-
-
+  // Top joueurs affichés par défaut (extraits de playersByCity)
   const topPlayers = [
-    { 
-      id: 1,
-      name: 'Alex', 
-      fullName: 'Alejandro Masanet',
-      game: 'Counter Strike',
-      role: 'IGL',
-      city: 'Madrid',
-      rating: '1.01',
-      wr: '48.5%',
-      gamesPlayed: 33
-    },
-
-  
- 
-
+    playersByCity['Madrid'][0],      // Alex
+    playersByCity['Rome'][0],         // bipo
+    playersByCity['Washington DC'][0] // Envoy
   ];
 
   const getGameColor = (game) => {

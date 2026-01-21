@@ -1,11 +1,10 @@
-import React, { useRef, useState, Suspense, lazy, forwardRef, useImperativeHandle } from 'react';
+import React, { useRef, Suspense, lazy, forwardRef, useImperativeHandle } from 'react';
 import './PlayersPage.css';
 
 const Globe = lazy(() => import('../../common/Globe/Globe'));
 
-const PlayersPage = forwardRef(({ user, onLogout, onLoginClick, onDashboardClick, onCitySelect }, ref) => {
+const PlayersPage = forwardRef(({ onCitySelect }, ref) => {
   const globeRef = useRef(null);
-  const [selectedCity, setSelectedCity] = useState(null);
 
   useImperativeHandle(ref, () => ({
     zoomToCity: (cityName) => {
@@ -21,8 +20,6 @@ const PlayersPage = forwardRef(({ user, onLogout, onLoginClick, onDashboardClick
   }));
 
   const handleCitySelect = (cityName) => {
-    console.log('Ville sélectionnée:', cityName);
-    setSelectedCity(cityName);
     if (onCitySelect) {
       onCitySelect(cityName);
     }
